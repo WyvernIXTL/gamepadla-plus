@@ -1,5 +1,11 @@
 ver = "1.1.7"
 
+from typing_extensions import Annotated
+import os
+from enum import Enum
+
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
+
 from colorama import Fore, Style
 import time
 import json
@@ -10,251 +16,251 @@ import requests
 import uuid
 import webbrowser
 import pygame
+import typer
+from rich import print
+from rich.markdown import Markdown
 
-# Print introductory information
-print(f" ")
-print(f" ")
-print("   ██████╗  █████╗ ███╗   ███╗███████╗██████╗  █████╗ ██████╗ " + Fore.CYAN + "██╗      █████╗ " + Fore.RESET)
-print("  ██╔════╝ ██╔══██╗████╗ ████║██╔════╝██╔══██╗██╔══██╗██╔══██╗" + Fore.CYAN + "██║     ██╔══██╗" + Fore.RESET)
-print("  ██║  ███╗███████║██╔████╔██║█████╗  ██████╔╝███████║██║  ██║" + Fore.CYAN + "██║     ███████║" + Fore.RESET)
-print("  ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  ██╔═══╝ ██╔══██║██║  ██║" + Fore.CYAN + "██║     ██╔══██║" + Fore.RESET)
-print("  ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗██║     ██║  ██║██████╔╝" + Fore.CYAN + "███████╗██║  ██║" + Fore.RESET)
-print("   ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚═════╝ " + Fore.CYAN + "╚══════╝╚═╝  ╚═╝" + Fore.RESET)
-print(Fore.CYAN + "    " + "Gamepadla Tester" + Fore.RESET + "  " + ver + "                           https://gamepadla.com")
-print(f" ")
-print(f" ")
-print(f"Credits:")
-print("Based on the method of: https://github.com/chrizonix/XInputTest")
-pygame.init()  # Initialize Pygame
+app = typer.Typer(
+    no_args_is_help=True,
+    help="Gamepad latency and polling rate tester.",
+)
 
-# Function to filter out outliers in latency data
-def filter_outliers(array):
-    lower_quantile = 0.02
-    upper_quantile = 0.995
 
-    sorted_array = sorted(array)
-    lower_index = int(len(sorted_array) * lower_quantile)
-    upper_index = int(len(sorted_array) * upper_quantile)
+class StickSelector(str, Enum):
+    left = "left"
+    right = "right"
 
-    return sorted_array[lower_index:upper_index + 1]
 
-while True:
-    pygame.joystick.init()  # Initialize joystick
-    joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+def get_joysticks() -> list | None:
+    pygame.joystick.init()
+    joysticks = [
+        pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())
+    ]
     delay_list = []
 
-    if not joysticks:
-        print("No controller found")
-        time.sleep(10)
-        exit(1)
+    if joysticks:
+        return joysticks
     else:
-        print(f" ")
-        print(f"Found {len(joysticks)} controller(s)")
+        return None
+
+
+@app.command()
+def list():
+    """
+    List controller id's.
+    """
+    pygame.init()
+    if joysticks := get_joysticks():
+        print(f"[green]Found {len(joysticks)} controllers[/green]")
 
         for idx, joystick in enumerate(joysticks):
-            print(f"{idx + 1}. {joystick.get_name()}")
+            print(f"[blue]{idx}.[/blue] [bold cyan]{joystick.get_name()}[/bold cyan]")
+    else:
+        print("[red]No controllers found.[/red]")
 
-        # Prompt user to select the controller to test
-        selected_index = input("Please enter the index of the controller you want to test: ")
-        try:
-            selected_index = int(selected_index) - 1
-            if 0 <= selected_index < len(joysticks):
-                joystick = joysticks[selected_index]
-            else:
-                print("Invalid index. Defaulting to the first controller.")
-                joystick = joysticks[0]
-        except ValueError:
-            print("Invalid input. Defaulting to the first controller.")
-            joystick = joysticks[0]
 
-        joystick.init()  # Initialize the selected joystick
-        joystick_name = joystick.get_name()
+@app.command()
+def test(
+    out: str = typer.Option(help="Write result to file.", default=""),
+    samples: int = typer.Option(help="How many samples are to be taken.", default=2000),
+    stick: StickSelector = typer.Option(
+        help="Choose which stick to test with.", default=StickSelector.left
+    ),
+    upload: bool = typer.Option(
+        help="Upload result to <gamepadla.com>?", default=False
+    ),
+    id: int = typer.Argument(
+        help="Controller id. Check possible controllers with list command.", default=0
+    ),
+):
+    pygame.init()
 
-        print("")
-        print(f"Gamepad mode:       {joystick_name}")
-        os_name = platform.system()
-        uname = platform.uname()
-        os_version = uname.version
-        print(f"Operating System:   {os_name}")
+    def filter_outliers(array):
+        """
+        Function to filter out outliers in latency data.
+        """
+        lower_quantile = 0.02
+        upper_quantile = 0.995
 
-        # Prompt user to select number of tests or set a custom number
-        repeat = 1988
-        repeatq = input("Please select number of tests (1. 2000, 2. 4000, 3. 6000), or enter your own number: ")
-        if repeatq == "1":
-            repeat = 2000
-        elif repeatq == "2":
-            repeat = 4000
-        elif repeatq == "3":
-            repeat = 6000
-        else:
-            try:
-                repeat = int(repeatq)
-            except ValueError:
-                print("Invalid input. Please enter a valid number.")
+        sorted_array = sorted(array)
+        lower_index = int(len(sorted_array) * lower_quantile)
+        upper_index = int(len(sorted_array) * upper_quantile)
 
-        # Prompt user to select the stick to test (left or right)
-        print("")
-        print("Please select the stick you want to test:")
-        print("1. Left stick")
-        print("2. Right stick")
-        stick_choice = input("Enter the number (1 or 2): ")
+        return sorted_array[lower_index : upper_index + 1]
 
-        print("")
-        if stick_choice == "1":
-            axis_x = 0  # Axis for the left stick
-            axis_y = 1
-            print("Testing left stick.")
-        elif stick_choice == "2":
-            axis_x = 2  # Axis for the right stick
-            axis_y = 3
-            print("Testing right stick.")
-        else:
-            print("Invalid choice. Defaulting to left stick.")
-            axis_x = 0
-            axis_y = 1
+    joysticks = get_joysticks()
+    if not joysticks:
+        print("[red]No controllers where found.[/red]")
+        exit(1)
+    joystick = joysticks[id]
 
-        if not joystick.get_init():
-            print("Controller not connected")
-            exit(1)
+    joystick.init()  # Initialize the selected joystick
+    joystick_name = joystick.get_name()
 
-        times = []
-        start_time = time.time()
-        prev_x, prev_y = None, None
+    if stick == StickSelector.left:
+        axis_x = 0  # Axis for the left stick
+        axis_y = 1
+    elif stick == StickSelector.right:
+        axis_x = 2  # Axis for the right stick
+        axis_y = 3
 
-        # Main loop to gather latency data from joystick movements
-        with tqdm(total=repeat, ncols=76, bar_format='{l_bar}{bar} | {postfix[0]}', postfix=[0]) as pbar:
-            while True:
-                pygame.event.pump()
-                x = joystick.get_axis(axis_x)
-                y = joystick.get_axis(axis_y)
-                pygame.event.clear()
+    if not joystick.get_init():
+        print("[red]Controller not connected[/red]")
+        exit(1)
 
-                # Ensure the stick has moved significantly (anti-drift)
-                if not ("0.0" in str(x) and "0.0" in str(y)):
-                    if prev_x is None and prev_y is None:
-                        prev_x, prev_y = x, y
-                    elif x != prev_x or y != prev_y:
-                        end_time = time.time()
-                        duration = round((end_time - start_time) * 1000, 2)
-                        start_time = end_time
-                        prev_x, prev_y = x, y
+    times = []
+    delay_list = []
+    start_time = time.time()
+    prev_x, prev_y = None, None
 
-                        while True:
-                            pygame.event.pump()
-                            new_x = joystick.get_axis(axis_x)
-                            new_y = joystick.get_axis(axis_y)
-                            pygame.event.clear()
+    # Main loop to gather latency data from joystick movements
+    with tqdm(
+        total=samples,
+        ncols=76,
+        bar_format="{l_bar}{bar} | {postfix[0]}",
+        postfix=[0],
+    ) as pbar:
+        while True:
+            pygame.event.pump()
+            x = joystick.get_axis(axis_x)
+            y = joystick.get_axis(axis_y)
+            pygame.event.clear()
 
-                            # If stick moved again, calculate delay
-                            if new_x != x or new_y != y:
-                                end = time.time()
-                                delay = round((end - start_time) * 1000, 2)
-                                if delay != 0.0 and delay > 0.2 and delay < 150:
-                                    times.append(delay * 1.057)  # Adjust for a 5% offset
-                                    pbar.update(1)
-                                    pbar.postfix[0] = "{:05.2f} ms".format(delay)
-                                    delay_list.append(delay)
+            # Ensure the stick has moved significantly (anti-drift)
+            if not ("0.0" in str(x) and "0.0" in str(y)):
+                if prev_x is None and prev_y is None:
+                    prev_x, prev_y = x, y
+                elif x != prev_x or y != prev_y:
+                    end_time = time.time()
+                    duration = round((end_time - start_time) * 1000, 2)
+                    start_time = end_time
+                    prev_x, prev_y = x, y
 
-                                break
+                    while True:
+                        pygame.event.pump()
+                        new_x = joystick.get_axis(axis_x)
+                        new_y = joystick.get_axis(axis_y)
+                        pygame.event.clear()
 
-                    if len(times) >= repeat:
-                        break
+                        # If stick moved again, calculate delay
+                        if new_x != x or new_y != y:
+                            end = time.time()
+                            delay = round((end - start_time) * 1000, 2)
+                            if delay != 0.0 and delay > 0.2 and delay < 150:
+                                times.append(delay * 1.057)  # Adjust for a 5% offset
+                                pbar.update(1)
+                                pbar.postfix[0] = "{:05.2f} ms".format(delay)
+                                delay_list.append(delay)
 
-        # Filter outliers from delay list
-        delay_clear = delay_list
-        delay_list = filter_outliers(delay_list)
+                            break
 
-        # Calculate statistical data
-        filteredMin = min(delay_list)
-        filteredMax = max(delay_list)
-        filteredAverage = np.mean(delay_list)
-        filteredAverage_rounded = round(filteredAverage, 2)
+                if len(times) >= samples:
+                    break
 
-        polling_rate = round(1000 / filteredAverage, 2)
-        jitter = round(np.std(delay_list), 2)
+    # Filter outliers from delay list
+    delay_clear = delay_list
+    delay_list = filter_outliers(delay_list)
 
-        # Function to determine max polling rate based on actual polling rate
-        def get_polling_rate_max(actual_rate):
-            max_rate = 125
-            if actual_rate > 150:
-                max_rate = 250
-            if actual_rate > 320:
-                max_rate = 500
-            if actual_rate > 600:
-                max_rate = 1000
-            return max_rate
+    # Calculate statistical data
+    filteredMin = min(delay_list)
+    filteredMax = max(delay_list)
+    filteredAverage = np.mean(delay_list)
+    filteredAverage_rounded = round(filteredAverage, 2)
 
-        # Display results
-        print("")
-        max_polling_rate = get_polling_rate_max(polling_rate)
-        print(f"Polling Rate Max.:  {max_polling_rate} Hz")
-        print(f"Polling Rate Avg.:  {polling_rate} Hz")
-        stablility = round((polling_rate/max_polling_rate)*100, 2)
-        print(f"Stability:          {stablility}%")
+    polling_rate = round(1000 / filteredAverage, 2)
+    jitter = round(np.std(delay_list), 2)
 
-        print(f" ")
-        print(f"=== Synthetic tests ===")
-        print(f"Minimal latency:    {filteredMin} ms")
-        print(f"Average latency:    {filteredAverage_rounded} ms")
-        print(f"Maximum latency:    {filteredMax} ms")
-        print(f"Jitter:             {jitter} ms")
+    # Function to determine max polling rate based on actual polling rate
+    def get_polling_rate_max(actual_rate):
+        max_rate = 125
+        if actual_rate > 150:
+            max_rate = 250
+        if actual_rate > 320:
+            max_rate = 500
+        if actual_rate > 600:
+            max_rate = 1000
+        return max_rate
 
-        # Generate a unique test key
-        test_key = uuid.uuid4()
+    os_name = platform.system()
+    max_polling_rate = get_polling_rate_max(polling_rate)
+    stablility = round((polling_rate / max_polling_rate) * 100, 2)
 
-        # Prepare data for JSON output
-        data = {
-            'test_key': str(test_key),
-            'version': ver,
-            'url': 'https://gamepadla.com',
-            'date': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
-            'driver': joystick_name,
-            'os_name': os_name,
-            'os_version': os_version,
-            'min_latency': filteredMin,
-            'avg_latency': filteredAverage_rounded,
-            'max_latency': filteredMax,
-            'polling_rate': polling_rate,
-            'jitter': jitter,
-            'mathod': 'GP',
-            'delay_list': ', '.join(map(str, delay_clear))
-        }
+    print(
+        Markdown(
+            f"""
+| Parameter           | Value                         |
+|---------------------|-------------------------------|
+| Gamepad mode        | {joystick_name}               |
+| Operating System    | {os_name}                     |
+| Polling Rate Max.   | {max_polling_rate} Hz         |
+| Polling Rate Avg.   | {polling_rate} Hz             |
+| Stability           | {stablility}%                 |
+|                     |                               |
+| Minimal latency     | {filteredMin} ms              |
+| Average latency     | {filteredAverage_rounded} ms  |
+| Maximum latency     | {filteredMax} ms              |
+| Jitter              | {jitter} ms                   |
+"""
+        )
+    )
 
-        # Write data to file
-        with open('data.txt', 'w') as outfile:
+    stamp = uuid.uuid4()
+    uname = platform.uname()
+    os_version = uname.version
+
+    data = {
+        "test_key": str(stamp),
+        "version": ver,
+        "url": "https://gamepadla.com",
+        "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+        "driver": joystick_name,
+        "os_name": os_name,
+        "os_version": os_version,
+        "min_latency": filteredMin,
+        "avg_latency": filteredAverage_rounded,
+        "max_latency": filteredMax,
+        "polling_rate": polling_rate,
+        "jitter": jitter,
+        "mathod": "GP",
+        "delay_list": ", ".join(map(str, delay_clear)),
+    }
+
+    if out != "":
+        with open(out, "w") as outfile:
             json.dump(data, outfile, indent=4)
+        print(f"[green]Wrote result to file {out}[/green]")
 
-        # Ask if user wants to open the results in a browser
-        if input("Open in browser? (Y/N): ").lower() == "y":
-            gamepad_name = input("Please enter the name of your gamepad: ")
-            connection = input("Please select connection type (1. Cable, 2. Bluetooth, 3. Dongle): ")
-            if connection == "1":
-                connection = "Cable"
-            elif connection == "2":
-                connection = "Bluetooth"
-            elif connection == "3":
-                connection = "Dongle"
-            else:
-                print("Invalid choice. Defaulting to Cable.")
-                connection = "Unset"
+    if upload:
+        gamepad_name = input("Please enter the name of your gamepad: ")
+        connection = input(
+            "Please select connection type (1. Cable, 2. Bluetooth, 3. Dongle): "
+        )
+        if connection == "1":
+            connection = "Cable"
+        elif connection == "2":
+            connection = "Bluetooth"
+        elif connection == "3":
+            connection = "Dongle"
+        else:
+            print("Invalid choice. Defaulting to Cable.")
+            connection = "Unset"
 
-            # Add connection and gamepad name to the data
-            data['connection'] = connection
-            data['name'] = gamepad_name
+        # Add connection and gamepad name to the data
+        data["connection"] = connection
+        data["name"] = gamepad_name
 
-            # Send test results to the server
-            response = requests.post('https://gamepadla.com/scripts/poster.php', data=data)
-            if response.status_code == 200:
-                print("Test results successfully sent to the server.")
-                webbrowser.open(f'https://gamepadla.com/result/{test_key}/')
-            else:
-                print("Failed to send test results to the server.")
+        # Send test results to the server
+        response = requests.post("https://gamepadla.com/scripts/poster.php", data=data)
+        if response.status_code == 200:
+            print("[green]Test results successfully sent to the server.[/green]")
+            webbrowser.open(f"https://gamepadla.com/result/{stamp}/")
+        else:
+            print("[red]Failed to send test results to the server.[/red]")
 
-        # Clean up unused data
-        del data['test_key']
-        del data['os_version']
-        del data['url']
 
-        # Ask if the user wants to run the test again
-        if input("Run again? (Y/N): ").lower() != "y":
-            break
+def run():
+    app()
+
+
+if __name__ == "__main__":
+    app()
