@@ -16,6 +16,15 @@ Gamepadla works with most popular gamepads and supports DInput and XInput protoc
 [![asciicast](https://asciinema.org/a/hKo16PKdPbNBaS0Z4RotMQBXc.svg)](https://asciinema.org/a/hKo16PKdPbNBaS0Z4RotMQBXc)
 
 
+## Installation
+
+### [`pipx`](https://github.com/pypa/pipx)
+
+```
+pipx install gamepadla-plus
+```
+
+
 ## Usage
 
 ```
