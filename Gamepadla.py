@@ -1,4 +1,4 @@
-ver = "1.1.6"
+ver = "1.1.7"
 
 from colorama import Fore, Style
 import time
