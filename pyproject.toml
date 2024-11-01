@@ -10,13 +10,13 @@ source = "versioningit"
 
 
 [project]
-name = "Gamepadla"
+name = "gamepadla-plus"
 description = "Gamepads latency and polling rate tester "
 authors = [
   { name="John Punch" },
 ]
 maintainers = [
-  { name="John Punch" },
+  { name="Adam McKellar <dev@mckellar.eu>" },
 ]
 readme = "README.md"
 license = {text = "MIT License"}
@@ -40,11 +40,10 @@ dependencies = [
 
 
 [project.urls]
-Homepage = "https://gamepadla.com/"
-Repository = "https://github.com/cakama3a/Gamepadla"
-Issues = "https://github.com/pypa/sampleproject/issues"
+Repository = "https://github.com/WyvernIXTL/gamepadla-plus"
+Issues = "https://github.com/WyvernIXTL/gamepadla-plus/issues"
 
 
 [project.scripts]
-Gamepadla = "Gamepadla:main"
+gamepadla = "gamepadla:main"
 
