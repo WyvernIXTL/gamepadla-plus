@@ -1,4 +1,4 @@
-ver = "1.1.7"
+ver = "1.2.0"
 
 from typing_extensions import Annotated
 import os
@@ -73,6 +73,10 @@ def test(
         help="Controller id. Check possible controllers with list command.", default=0
     ),
 ):
+    """
+    Test controller with id.
+    """
+
     pygame.init()
 
     def filter_outliers(array):

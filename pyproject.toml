@@ -14,7 +14,7 @@ packages = ["gamepadla.py"]
 
 [project]
 name = "gamepadla-plus"
-description = "Gamepad latency and polling rate tester."
+description = "Gamepad polling rate and synthetic latency tester."
 authors = [
   { name="John Punch" },
 ]
