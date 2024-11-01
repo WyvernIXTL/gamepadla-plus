@@ -17,9 +17,10 @@ name = "gamepadla-plus"
 description = "Gamepad polling rate and synthetic latency tester."
 authors = [
   { name="John Punch" },
+  { name="Adam McKellar", email="dev@mckellar.eu" },
 ]
 maintainers = [
-  { name="Adam McKellar <dev@mckellar.eu>" },
+  { name="Adam McKellar", email="dev@mckellar.eu" },
 ]
 readme = "README.md"
 license = {text = "MIT License"}
