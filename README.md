@@ -13,7 +13,7 @@ Gamepadla is an easy way to check the polling rate of your gamepad. This tool wi
 Gamepadla works with most popular gamepads and supports DInput and XInput protocols, making it a versatile solution for testing different types of controllers.  
 
 
-[![asciicast](https://asciinema.org/a/hKo16PKdPbNBaS0Z4RotMQBXc.svg)](https://asciinema.org/a/hKo16PKdPbNBaS0Z4RotMQBXc)
+[![asciicast](https://asciinema.org/a/686853.svg)](https://asciinema.org/a/686853)
 
 
 ## Installation
