@@ -18,10 +18,10 @@ Gamepadla works with most popular gamepads and supports DInput and XInput protoc
 
 ## Installation
 
-### [`uvx`](https://github.com/astral-sh/uv)
+### [`uv`](https://github.com/astral-sh/uv)
 
 ```
-uvx install gamepadla-plus
+uv tool install gamepadla-plus
 ```
 
 ### [`pipx`](https://github.com/pypa/pipx)
