@@ -544,6 +544,9 @@ def gui():
                 f"{i}. {j.get_name()}" for (i, j) in enumerate(new_joysticks)
             ]
             window["-GAMEPAD-LIST-"].update(joystick_names)
+        else:
+            joysticks = []
+            window["-GAMEPAD-LIST-"].update([])
 
     update_joysticks()
 
