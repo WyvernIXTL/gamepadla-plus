@@ -9,7 +9,7 @@ build-backend = "hatchling.build"
 source = "versioningit"
 
 [tool.hatch.build.targets.wheel]
-packages = ["gamepadla_plus"]
+packages = ["gamepadla_plus", "LICENSE.txt"]
 
 
 [project]
