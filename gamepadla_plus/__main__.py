@@ -34,6 +34,8 @@ class FailedTest(Exception):
 def get_joysticks() -> list[JoystickType] | None:
     """
     Returns a list of gamepads...
+
+    Pygame NEEDS to be initalized firstm.
     """
     pygame.joystick.init()
     joysticks = [
@@ -46,7 +48,7 @@ def get_joysticks() -> list[JoystickType] | None:
         return None
 
 
-def get_polling_rate_max(actual_rate):
+def get_polling_rate_max(actual_rate: int) -> int:
     """
     Function to determine max polling rate based on actual polling rate
     """
@@ -60,7 +62,7 @@ def get_polling_rate_max(actual_rate):
     return max_rate
 
 
-def filter_outliers(array):
+def filter_outliers(array: list[float]) -> list[float]:
     """
     Function to filter out outliers in latency data.
     """
@@ -72,6 +74,15 @@ def filter_outliers(array):
     upper_index = int(len(sorted_array) * upper_quantile)
 
     return sorted_array[lower_index : upper_index + 1]
+
+
+def test_execution(samples: int, stick: StickSelector, id: int) -> dict:
+    """
+    Executes the testing algorithm.
+
+    Pygame NEEDS to be initalized firstm.
+    """
+    pass
 
 
 app = typer.Typer(
@@ -93,13 +104,6 @@ def list():
             rprint(f"[blue]{idx}.[/blue] [bold cyan]{joystick.get_name()}[/bold cyan]")
     else:
         rprint("[red]No controllers found.[/red]")
-
-
-def test_execution(samples: int, stick: StickSelector, id: int) -> dict:
-    """
-    Executes the testing algorithm.
-    """
-    pass
 
 
 @app.command()
@@ -142,10 +146,11 @@ def test(
         rprint("[red]Controller not connected[/red]")
         exit(1)
 
-    times = []
-    delay_list = []
-    start_time = time.time()
-    prev_x, prev_y = None, None
+    times: list[float] = []
+    delay_list: list[float] = []
+    start_time: float = time.time()
+    prev_x: float | None = None
+    prev_y: float | None = None
 
     # Main loop to gather latency data from joystick movements
     with tqdm(
