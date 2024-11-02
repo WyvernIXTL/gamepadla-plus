@@ -1,10 +1,8 @@
-from typing_extensions import Annotated
 import os
 from enum import Enum
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
-from colorama import Fore, Style
 import time
 import json
 from tqdm import tqdm
@@ -14,6 +12,7 @@ import requests
 import uuid
 import webbrowser
 import pygame
+from pygame.joystick import JoystickType
 import typer
 from rich import print as rprint
 from rich.markdown import Markdown
@@ -28,7 +27,11 @@ class StickSelector(str, Enum):
     right = "right"
 
 
-def get_joysticks() -> list | None:
+class FailedTest(Exception):
+    pass
+
+
+def get_joysticks() -> list[JoystickType] | None:
     """
     Returns a list of gamepads...
     """
@@ -36,7 +39,6 @@ def get_joysticks() -> list | None:
     joysticks = [
         pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())
     ]
-    delay_list = []
 
     if joysticks:
         return joysticks
@@ -91,6 +93,13 @@ def list():
             rprint(f"[blue]{idx}.[/blue] [bold cyan]{joystick.get_name()}[/bold cyan]")
     else:
         rprint("[red]No controllers found.[/red]")
+
+
+def test_execution(samples: int, stick: StickSelector, id: int) -> dict:
+    """
+    Executes the testing algorithm.
+    """
+    pass
 
 
 @app.command()
@@ -157,7 +166,6 @@ def test(
                     prev_x, prev_y = x, y
                 elif x != prev_x or y != prev_y:
                     end_time = time.time()
-                    duration = round((end_time - start_time) * 1000, 2)
                     start_time = end_time
                     prev_x, prev_y = x, y
 
