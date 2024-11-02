@@ -2,7 +2,7 @@
 
 # `gamepadla-plus`
 
-**Gamepad polling rate and synthetic latency tester.**
+**Gamepad polling rate and synthetic latency tester. (CLI and GUI)**
 
 [![PyPI - Version](https://img.shields.io/pypi/v/gamepadla-plus)](https://pypi.org/project/gamepadla-plus/)
 [![GitHub License](https://img.shields.io/github/license/WyvernIXTL/gamepadla-plus)](https://github.com/WyvernIXTL/gamepadla-plus/blob/main/LICENSE)
@@ -12,6 +12,7 @@
 Gamepadla is an easy way to check the polling rate of your gamepad. This tool will help you get accurate data about your controller's performance, which can be useful for gamers, game developers, and enthusiasts.  
 Gamepadla works with most popular gamepads and supports DInput and XInput protocols, making it a versatile solution for testing different types of controllers.  
 
+![GUI Demo](./img/gamepadla-plus-gui-demo.gif)
 
 [![asciicast](https://asciinema.org/a/686853.svg)](https://asciinema.org/a/686853)
 
@@ -30,8 +31,15 @@ uv tool install gamepadla-plus
 pipx install gamepadla-plus
 ```
 
+## Usage (GUI)
 
-## Usage
+1. Execute the program `gamepadla-gui`.
+2. If you haven't connected any controller do it now and click `Refresh`.
+3. Click `Test` and rotate the stick you chose slowly at the edge.
+4. Optionally save the result to a JSON file or upload the result to <gamepadla.com>.
+
+
+## Usage (CLI)
 
 ```
 # gamepadla.exe --help

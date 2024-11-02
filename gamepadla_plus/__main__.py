@@ -375,7 +375,7 @@ def license_popup():
 
 def upload_popup(data: dict):
     window = sg.Window(
-        "Error",
+        "Upload",
         [
             [sg.Text("Connection Type")],
             [
@@ -404,7 +404,7 @@ def upload_popup(data: dict):
             ],
             [sg.Text("Gamepad Name")],
             [sg.Input(key="-CONTROLLER-NAME-INPUT-")],
-            [sg.Button("Cancel"), sg.Button("Upload")],
+            [sg.Push(), sg.Button("Cancel"), sg.Button("Upload")],
         ],
         finalize=True,
     )
