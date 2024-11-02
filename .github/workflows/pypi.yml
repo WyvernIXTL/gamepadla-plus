@@ -18,10 +18,13 @@ jobs:
       with:
         fetch-depth: 0
 
-    - uses: actions/setup-python@v5
-      name: Install Python
+    - name: Install uv
+        uses: astral-sh/setup-uv@v3
 
-    - name: Build SDist
-      run: pipx run build --sdist
+    - name: Set up Python
+      run: uv python install
+
+    - name: Build Wheel
+      run: uv build
 
     - uses: pypa/gh-action-pypi-publish@v1.10.1

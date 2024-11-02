@@ -1,5 +1,3 @@
-ver = "1.2.0"
-
 from typing_extensions import Annotated
 import os
 from enum import Enum
@@ -17,13 +15,12 @@ import uuid
 import webbrowser
 import pygame
 import typer
-from rich import print
+from rich import print as rprint
 from rich.markdown import Markdown
 
-app = typer.Typer(
-    no_args_is_help=True,
-    help="Gamepad latency and polling rate tester.",
-)
+from .__init__ import __version__
+
+LICENSE_FILE_NAME = "LICENSE.txt"
 
 
 class StickSelector(str, Enum):
@@ -32,6 +29,9 @@ class StickSelector(str, Enum):
 
 
 def get_joysticks() -> list | None:
+    """
+    Returns a list of gamepads...
+    """
     pygame.joystick.init()
     joysticks = [
         pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())
@@ -44,6 +44,40 @@ def get_joysticks() -> list | None:
         return None
 
 
+def get_polling_rate_max(actual_rate):
+    """
+    Function to determine max polling rate based on actual polling rate
+    """
+    max_rate = 125
+    if actual_rate > 150:
+        max_rate = 250
+    if actual_rate > 320:
+        max_rate = 500
+    if actual_rate > 600:
+        max_rate = 1000
+    return max_rate
+
+
+def filter_outliers(array):
+    """
+    Function to filter out outliers in latency data.
+    """
+    lower_quantile = 0.02
+    upper_quantile = 0.995
+
+    sorted_array = sorted(array)
+    lower_index = int(len(sorted_array) * lower_quantile)
+    upper_index = int(len(sorted_array) * upper_quantile)
+
+    return sorted_array[lower_index : upper_index + 1]
+
+
+app = typer.Typer(
+    no_args_is_help=True,
+    help="Gamepad latency and polling rate tester.",
+)
+
+
 @app.command()
 def list():
     """
@@ -51,12 +85,12 @@ def list():
     """
     pygame.init()
     if joysticks := get_joysticks():
-        print(f"[green]Found {len(joysticks)} controllers[/green]")
+        rprint(f"[green]Found {len(joysticks)} controllers[/green]")
 
         for idx, joystick in enumerate(joysticks):
-            print(f"[blue]{idx}.[/blue] [bold cyan]{joystick.get_name()}[/bold cyan]")
+            rprint(f"[blue]{idx}.[/blue] [bold cyan]{joystick.get_name()}[/bold cyan]")
     else:
-        print("[red]No controllers found.[/red]")
+        rprint("[red]No controllers found.[/red]")
 
 
 @app.command()
@@ -79,22 +113,9 @@ def test(
 
     pygame.init()
 
-    def filter_outliers(array):
-        """
-        Function to filter out outliers in latency data.
-        """
-        lower_quantile = 0.02
-        upper_quantile = 0.995
-
-        sorted_array = sorted(array)
-        lower_index = int(len(sorted_array) * lower_quantile)
-        upper_index = int(len(sorted_array) * upper_quantile)
-
-        return sorted_array[lower_index : upper_index + 1]
-
     joysticks = get_joysticks()
     if not joysticks:
-        print("[red]No controllers where found.[/red]")
+        rprint("[red]No controllers found.[/red]")
         exit(1)
     joystick = joysticks[id]
 
@@ -109,7 +130,7 @@ def test(
         axis_y = 3
 
     if not joystick.get_init():
-        print("[red]Controller not connected[/red]")
+        rprint("[red]Controller not connected[/red]")
         exit(1)
 
     times = []
@@ -174,22 +195,11 @@ def test(
     polling_rate = round(1000 / filteredAverage, 2)
     jitter = round(np.std(delay_list), 2)
 
-    # Function to determine max polling rate based on actual polling rate
-    def get_polling_rate_max(actual_rate):
-        max_rate = 125
-        if actual_rate > 150:
-            max_rate = 250
-        if actual_rate > 320:
-            max_rate = 500
-        if actual_rate > 600:
-            max_rate = 1000
-        return max_rate
-
     os_name = platform.system()
     max_polling_rate = get_polling_rate_max(polling_rate)
     stablility = round((polling_rate / max_polling_rate) * 100, 2)
 
-    print(
+    rprint(
         Markdown(
             f"""
 | Parameter           | Value                         |
@@ -214,7 +224,7 @@ def test(
 
     data = {
         "test_key": str(stamp),
-        "version": ver,
+        "version": __version__,
         "url": "https://gamepadla.com",
         "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
         "driver": joystick_name,
@@ -232,7 +242,7 @@ def test(
     if out != "":
         with open(out, "w") as outfile:
             json.dump(data, outfile, indent=4)
-        print(f"[green]Wrote result to file {out}[/green]")
+        rprint(f"[green]Wrote result to file {out}[/green]")
 
     if upload:
         gamepad_name = input("Please enter the name of your gamepad: ")
@@ -246,7 +256,7 @@ def test(
         elif connection == "3":
             connection = "Dongle"
         else:
-            print("Invalid choice. Defaulting to Cable.")
+            rprint("Invalid choice. Defaulting to Cable.")
             connection = "Unset"
 
         # Add connection and gamepad name to the data
@@ -256,10 +266,24 @@ def test(
         # Send test results to the server
         response = requests.post("https://gamepadla.com/scripts/poster.php", data=data)
         if response.status_code == 200:
-            print("[green]Test results successfully sent to the server.[/green]")
+            rprint("[green]Test results successfully sent to the server.[/green]")
             webbrowser.open(f"https://gamepadla.com/result/{stamp}/")
         else:
-            print("[red]Failed to send test results to the server.[/red]")
+            rprint("[red]Failed to send test results to the server.[/red]")
+
+
+@app.command()
+def version():
+    rprint(f"gamepadla-plus {__version__}")
+
+
+@app.command()
+def license():
+    src_path = os.path.dirname(os.path.realpath(__file__))
+    license_path = src_path + "/../" + LICENSE_FILE_NAME
+    with open(license_path, "r") as license_file:
+        license_text = license_file.read()
+    print(license_text)
 
 
 def run():

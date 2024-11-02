@@ -9,7 +9,7 @@ build-backend = "hatchling.build"
 source = "versioningit"
 
 [tool.hatch.build.targets.wheel]
-packages = ["gamepadla.py"]
+packages = ["gamepadla_plus"]
 
 
 [project]
@@ -51,5 +51,5 @@ Issues = "https://github.com/WyvernIXTL/gamepadla-plus/issues"
 
 
 [project.scripts]
-gamepadla = "gamepadla:run"
+gamepadla = "gamepadla_plus.__main__:run"
 
