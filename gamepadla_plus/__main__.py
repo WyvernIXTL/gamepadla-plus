@@ -363,7 +363,6 @@ def error_popup(msg: str):
 
 
 def upload_popup(data: dict):
-    data_compatible = wrap_data_for_server(data)
     window = sg.Window(
         "Error",
         [
@@ -419,11 +418,11 @@ def upload_popup(data: dict):
             connection_type = get_connection_type()
             controller_name = window["-CONTROLLER-NAME-INPUT-"].get()
             if upload_data(
-                data=data_compatible,
+                data=data,
                 name=controller_name,
                 connection=connection_type,
             ):
-                stamp = data_compatible["test_key"]
+                stamp = data["test_key"]
                 webbrowser.open(f"https://gamepadla.com/result/{stamp}/")
                 break
             else:
@@ -501,14 +500,25 @@ def gui():
                 max_col_width=100,
                 num_rows=10,
                 hide_vertical_scroll=True,
+                justification="left",
             )
         ],
         [
             sg.Button("Upload Result", disabled=True, key="-UPLOAD-BUTTON-", size=200),
         ],
+        [
+            sg.FileSaveAs(
+                "Save to File",
+                disabled=True,
+                key="-SAVE-BUTTON-",
+                size=200,
+                default_extension="json",
+                enable_events=True,
+            ),
+        ],
     ]
 
-    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 500))
+    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 530))
 
     def update_joysticks():
         nonlocal joysticks
@@ -576,6 +586,7 @@ def gui():
     while True:
         window["-START-TEST-BUTTON-"].update(disabled=False)
         event, values = window.read()
+        rprint(event, values)
         if event == sg.WIN_CLOSED:
             break
 
@@ -601,7 +612,7 @@ def gui():
             toggle_progress_bar(True)
             window.refresh()
 
-            data = test_execution(
+            result = test_execution(
                 samples=samples,
                 stick=stick,
                 joystick=joysticks[selected_joystick],
@@ -610,12 +621,18 @@ def gui():
 
             toggle_progress_bar(False)
 
-            update_result_table(data=data)
+            update_result_table(data=result)
+
+            data = wrap_data_for_server(result=result)
 
             window["-UPLOAD-BUTTON-"].update(disabled=False)
+            window["-SAVE-BUTTON-"].update(disabled=False)
 
         elif event == "-UPLOAD-BUTTON-":
             upload_popup(data=data)
+
+        elif event == "-SAVE-BUTTON-":
+            write_to_file(data=data, path=values["-SAVE-BUTTON-"])
 
     window.close()
 
