@@ -23,6 +23,7 @@ import FreeSimpleGUI as sg
 from .__init__ import __version__
 
 LICENSE_FILE_NAME = "LICENSE.txt"
+VERSION = f"gamepadla-plus {__version__}"
 
 
 class StickSelector(str, Enum):
@@ -340,16 +341,20 @@ def test(
 
 @app.command()
 def version():
-    rprint(f"gamepadla-plus {__version__}")
+    rprint(VERSION)
 
 
-@app.command()
-def license():
+def read_license() -> str:
     src_path = os.path.dirname(os.path.realpath(__file__))
     license_path = src_path + "/../" + LICENSE_FILE_NAME
     with open(license_path, "r") as license_file:
         license_text = license_file.read()
-    print(license_text)
+    return license_text
+
+
+@app.command()
+def license():
+    print(read_license())
 
 
 def run():
@@ -357,9 +362,15 @@ def run():
 
 
 def error_popup(msg: str):
-    event, values = sg.Window("Error", [[sg.Text(msg)], [sg.Button("Continue")]]).read(
+    sg.Window("Error", [[sg.Text(msg)], [sg.Push(), sg.Button("Continue")]]).read(
         close=True
     )
+
+
+def license_popup():
+    sg.Window(
+        "Error", [[sg.Text(read_license())], [sg.Push(), sg.Button("Continue")]]
+    ).read(close=True)
 
 
 def upload_popup(data: dict):
@@ -441,6 +452,10 @@ def gui():
 
     layout = [
         [
+            sg.Push(),
+            sg.Button("Licenses", key="-SHOW-LICENSES-BUTTON-"),
+        ],
+        [
             sg.Listbox(
                 [],
                 key="-GAMEPAD-LIST-",
@@ -490,6 +505,7 @@ def gui():
             ),
             sg.Text("", key="-DELAY-OUTPUT-", visible=False),
         ],
+        [sg.VPush()],
         [
             sg.Table(
                 ["", ""],
@@ -518,7 +534,7 @@ def gui():
         ],
     ]
 
-    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 530))
+    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 560))
 
     def update_joysticks():
         nonlocal joysticks
@@ -586,7 +602,7 @@ def gui():
     while True:
         window["-START-TEST-BUTTON-"].update(disabled=False)
         event, values = window.read()
-        rprint(event, values)
+
         if event == sg.WIN_CLOSED:
             break
 
@@ -633,6 +649,9 @@ def gui():
 
         elif event == "-SAVE-BUTTON-":
             write_to_file(data=data, path=values["-SAVE-BUTTON-"])
+
+        elif event == "-SHOW-LICENSES-BUTTON-":
+            license_popup()
 
     window.close()
 
