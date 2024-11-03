@@ -10,9 +10,6 @@ the development environment.
 ```
 uv run gamepadla
 ```
-```
-uv run gamepadla-gui
-```
 
 
 ## Code Formatting
