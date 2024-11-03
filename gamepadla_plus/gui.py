@@ -269,9 +269,10 @@ def gui():
             update_joysticks()
 
         elif event == "-GAMEPAD-LIST-":
-            clicked_string = values["-GAMEPAD-LIST-"][0]
-            if clicked_string != "":
-                selected_joystick = int(clicked_string.split(".")[0])
+            if len(values["-GAMEPAD-LIST-"]) > 0:
+                clicked_string = values["-GAMEPAD-LIST-"][0]
+                if clicked_string != "":
+                    selected_joystick = int(clicked_string.split(".")[0])
 
         elif event == "-START-TEST-BUTTON-":
             if len(joysticks) == 0:
