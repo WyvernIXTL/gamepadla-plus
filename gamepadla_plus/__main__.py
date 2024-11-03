@@ -229,9 +229,13 @@ def write_to_file(data: dict, path: str):
 
 
 app = typer.Typer(
-    no_args_is_help=True,
     help="Gamepad latency and polling rate tester.",
 )
+
+
+@app.callback(invoke_without_command=True)
+def start_gui():
+    gui()
 
 
 @app.command()

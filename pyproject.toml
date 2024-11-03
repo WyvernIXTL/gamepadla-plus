@@ -53,4 +53,3 @@ Issues = "https://github.com/WyvernIXTL/gamepadla-plus/issues"
 
 [project.scripts]
 gamepadla = "gamepadla_plus.__main__:run"
-gamepadla-gui = "gamepadla_plus.__main__:gui"
