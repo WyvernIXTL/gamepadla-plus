@@ -4,6 +4,7 @@ from pygame.joystick import JoystickType
 from rich.traceback import install as traceback_install
 import FreeSimpleGUI as sg
 
+from .__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
 from .common import (
     get_joysticks,
     StickSelector,
@@ -23,10 +24,37 @@ def error_popup(msg: str):
     )
 
 
-def license_popup():
+def third_party_license_popup(licenses: str):
     sg.Window(
-        "Error", [[sg.Text(read_license())], [sg.Push(), sg.Button("Continue")]]
+        "Error",
+        [
+            [sg.Multiline(licenses, size=(100, 50), wrap_lines=True)],
+            [sg.Push(), sg.Button("Continue")],
+        ],
     ).read(close=True)
+
+
+def license_popup():
+    third_party_license = read_license(THIRD_PARTY_LICENSE_FILE_NAME)
+    event, _ = sg.Window(
+        "Error",
+        [
+            [sg.Text(read_license(LICENSE_FILE_NAME))],
+            [
+                sg.Push(),
+                sg.Button(
+                    "Third Party Licenses",
+                    visible=(third_party_license != ""),
+                    key="-THIRD-PARTY-LICENSES-BUTTON-",
+                ),
+                sg.Push(),
+            ],
+            [sg.Push(), sg.Button("Continue")],
+        ],
+    ).read(close=True)
+
+    if event == "-THIRD-PARTY-LICENSES-BUTTON-":
+        third_party_license_popup(third_party_license)
 
 
 def upload_popup(data: dict):

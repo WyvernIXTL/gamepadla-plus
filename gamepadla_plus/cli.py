@@ -5,7 +5,7 @@ import typer
 from rich import print as rprint
 from rich.markdown import Markdown
 
-from .__init__ import VERSION
+from .__init__ import VERSION, LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
 from .common import (
     get_joysticks,
     StickSelector,
@@ -129,9 +129,23 @@ def test(
 
 @app.command()
 def version():
+    """
+    Print version.
+    """
     rprint(VERSION)
 
 
 @app.command()
 def license():
-    print(read_license())
+    """
+    Print license of this project.
+    """
+    print(read_license(license_file_name=LICENSE_FILE_NAME))
+
+
+@app.command()
+def third_party_licenses():
+    """
+    Prints third party licenses.
+    """
+    print(read_license(THIRD_PARTY_LICENSE_FILE_NAME))

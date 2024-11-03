@@ -215,9 +215,12 @@ def write_to_file(data: dict, path: str):
         json.dump(data, outfile, indent=4)
 
 
-def read_license() -> str:
+def read_license(license_file_name: str) -> str:
     src_path = os.path.dirname(os.path.realpath(__file__))
-    license_path = src_path + "/../" + LICENSE_FILE_NAME
-    with open(license_path, "r") as license_file:
-        license_text = license_file.read()
-    return license_text
+    license_path = src_path + "/../" + license_file_name
+    if os.path.exists(license_path):
+        with open(license_path, "r", errors="ignore") as license_file:
+            license_text = license_file.read()
+        return license_text
+    else:
+        return ""
