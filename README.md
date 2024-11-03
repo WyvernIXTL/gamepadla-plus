@@ -33,6 +33,13 @@ uv tool install gamepadla-plus
 pipx install gamepadla-plus
 ```
 
+### `pip`
+
+```
+pip install gamepadla-plus
+```
+
+
 ## Usage (GUI)
 
 1. Execute the program `gamepadla` without any arguments.
