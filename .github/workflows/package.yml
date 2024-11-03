@@ -19,6 +19,20 @@ jobs:
         run: uv python install 3.12
 
       - name: Fetch Licenses
-        run: uv run pip-licenses --with-system --from=all --format=plain-vertical --with-urls --with-authors --output-file THIRD-PARTY-LICENSES.txt
+        run: uv run --group license-fetching pip-licenses --with-system --from=all --format=plain-vertical --with-urls --with-authors --output-file THIRD-PARTY-LICENSES.txt
 
-      
+      - name: PyInstaller
+        run: uv run --group pyinstaller pyinstaller -D -y -n gamepadla --recursive-copy-metadata gamepadla_plus --collect-all gamepadla_plus .\gamepadla_plus\__main__.py
+
+      - name: Copy Docs
+        run: cp .\LICENSE.txt .\dist\gamepadla\ && cp .\README.md .\dist\gamepadla\ && cp .\THIRD-PARTY-LICENSES.txt .\dist\gamepadla\
+
+      - name: 7z
+        run: 7z a gamepadla-plus-windows-x64-portable.7z .\dist\gamepadla\
+
+      - name: Upload To Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            gamepadla-plus-windows-x64-portable.7z
+

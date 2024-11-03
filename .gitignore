@@ -8,3 +8,4 @@ data.json
 /venv
 __pycache__
 THIRD-PARTY-LICENSES.txt
+*.7z

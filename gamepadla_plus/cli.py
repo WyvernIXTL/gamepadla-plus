@@ -5,8 +5,12 @@ import typer
 from rich import print as rprint
 from rich.markdown import Markdown
 
-from .__init__ import VERSION, LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
-from .common import (
+from gamepadla_plus.__init__ import (
+    VERSION,
+    LICENSE_FILE_NAME,
+    THIRD_PARTY_LICENSE_FILE_NAME,
+)
+from gamepadla_plus.common import (
     get_joysticks,
     StickSelector,
     GamePadConnection,

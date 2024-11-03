@@ -4,8 +4,8 @@ from pygame.joystick import JoystickType
 from rich.traceback import install as traceback_install
 import FreeSimpleGUI as sg
 
-from .__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
-from .common import (
+from gamepadla_plus.__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
+from gamepadla_plus.common import (
     get_joysticks,
     StickSelector,
     GamePadConnection,

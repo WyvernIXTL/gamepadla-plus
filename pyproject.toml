@@ -43,7 +43,6 @@ dependencies = [
     "typer",
     "rich",
     "freesimplegui>=5.1.1",
-    "pip-licenses>=5.0.0",
 ]
 
 
@@ -54,3 +53,11 @@ Issues = "https://github.com/WyvernIXTL/gamepadla-plus/issues"
 
 [project.scripts]
 gamepadla = "gamepadla_plus.__main__:run"
+
+[dependency-groups]
+license-fetching = [
+    "pip-licenses>=5.0.0",
+]
+pyinstaller = [
+    "pyinstaller>=6.11.0",
+]

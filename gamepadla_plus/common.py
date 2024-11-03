@@ -10,7 +10,7 @@ import uuid
 import pygame
 from pygame.joystick import JoystickType
 
-from .__init__ import __version__, LICENSE_FILE_NAME
+from gamepadla_plus.__init__ import __version__
 
 
 class StickSelector(str, Enum):

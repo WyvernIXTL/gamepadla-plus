@@ -1,7 +1,7 @@
 import typer
 
-from .cli import app
-from .gui import gui
+from gamepadla_plus.cli import app
+from gamepadla_plus.gui import gui
 
 
 @app.callback(invoke_without_command=True)
