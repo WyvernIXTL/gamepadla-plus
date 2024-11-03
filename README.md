@@ -12,6 +12,8 @@
 Gamepadla is an easy way to check the polling rate of your gamepad. This tool will help you get accurate data about your controller's performance, which can be useful for gamers, game developers, and enthusiasts.  
 Gamepadla works with most popular gamepads and supports DInput and XInput protocols, making it a versatile solution for testing different types of controllers.  
 
+*Gamepadla+ or gamepadla-plus is a hard fork of [Gamepadla](https://github.com/cakama3a/Polling/tree/71a53424d4faad0edc90577c149f543696a4b947).*
+
 ![GUI Demo](./img/gamepadla-plus-gui-demo.gif)
 
 [![asciicast](https://asciinema.org/a/686853.svg)](https://asciinema.org/a/686853)
@@ -141,3 +143,18 @@ Based on the method of Christian P.: <https://github.com/chrizonix/XInputTest>.
 ## License
 
 Licensed under MIT.
+
+
+## Contributing
+
+Please have a look at [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
+
+## Why this is a Hard Fork
+
+* `cakama3a/Polling` (formerly known as `Gamepadla`) has 200MB git history. 
+  Sadly many build artifacts and release binaries are in said git history. 
+  Cloning that repo is not fun. And removing those directories from my history essentialy made my repo a hard fork.
+* `cakama3a` (aka John Punch) is very unresponsive regarding the addition of pip support for the software. A simple `pyproject.toml` was sitting ducks in the PR while he still happily adds more release artifacts to the git history.
+* Major additions like the GUI and the CLI.
+
