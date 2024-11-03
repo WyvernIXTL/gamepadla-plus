@@ -156,5 +156,5 @@ Please have a look at [`CONTRIBUTING.md`](./CONTRIBUTING.md).
   Sadly many build artifacts and release binaries are in said git history. 
   Cloning that repo is not fun. And removing those directories from my history essentialy made my repo a hard fork.
 * `cakama3a` (aka John Punch) is very unresponsive regarding the addition of pip support for the software. A simple `pyproject.toml` was sitting ducks in the PR while he still happily adds more release artifacts to the git history.
-* Major additions like the GUI and the CLI.
+* I made major additions like the GUI and the CLI to my fork.
 
