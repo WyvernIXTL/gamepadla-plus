@@ -6,7 +6,7 @@ from .gui import gui
 
 @app.callback(invoke_without_command=True)
 def start_gui(ctx: typer.Context):
-    if ctx.invoked_subcommand == None:
+    if ctx.invoked_subcommand is None:
         gui()
 
 
