@@ -120,7 +120,7 @@ wheels = [
 
 [[package]]
 name = "gamepadla-plus"
-version = "1.5.0.post2+g151f29f.d20241103"
+version = "1.5.0.post4+g88b819d.d20241104"
 source = { editable = "." }
 dependencies = [
     { name = "colorama" },
@@ -143,19 +143,19 @@ pyinstaller = [
 
 [package.metadata]
 requires-dist = [
-    { name = "colorama" },
-    { name = "freesimplegui", specifier = ">=5.1.1" },
-    { name = "numpy" },
-    { name = "pygame" },
-    { name = "requests" },
-    { name = "rich" },
-    { name = "tqdm" },
-    { name = "typer" },
+    { name = "colorama", specifier = ">=0.4.6,<0.5" },
+    { name = "freesimplegui", specifier = ">=5.1.1,<6" },
+    { name = "numpy", specifier = ">=2.1.2,<3" },
+    { name = "pygame", specifier = ">=2.6.1,<3" },
+    { name = "requests", specifier = ">=2.32.3,<3" },
+    { name = "rich", specifier = ">=13.9.4,<14" },
+    { name = "tqdm", specifier = ">=4.66.6,<5" },
+    { name = "typer", specifier = ">=0.12.5,<0.13" },
 ]
 
 [package.metadata.requires-dev]
-license-fetching = [{ name = "pip-licenses", specifier = ">=5.0.0" }]
-pyinstaller = [{ name = "pyinstaller", specifier = ">=6.11.0" }]
+license-fetching = [{ name = "pip-licenses", specifier = ">=5.0.0,<6" }]
+pyinstaller = [{ name = "pyinstaller", specifier = ">=6.11.0,<7" }]
 
 [[package]]
 name = "idna"
