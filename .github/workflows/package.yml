@@ -30,9 +30,9 @@ jobs:
           --with-urls 
           --with-authors 
           --with-license-file 
-          --output-file THIRD-PARTY-LICENSES.txt
+          --output-file THIRD-PARTY-LICENSES.txt          
 
-      - name: Write Seperator for Python License
+      - name: Fetch Python Interpreter License
         shell: pwsh
         run: |
           $content = "-----------------------------------
@@ -41,10 +41,7 @@ jobs:
 
           " 
           $content >> .\THIRD-PARTY-LICENSES.txt
-
-      - name: Fetch Python Interpreter License
-        shell: pwsh
-        run: Get-Content (Join-Path (Split-Path (get-command python).Source) "LICENSE.txt") >> .\THIRD-PARTY-LICENSES.txt
+          Get-Content (Join-Path (Split-Path (get-command python).Source) "LICENSE.txt") >> .\THIRD-PARTY-LICENSES.txt
 
       - name: PyInstaller
         run: >
@@ -57,6 +54,12 @@ jobs:
           --noupx 
           .\gamepadla_plus\__main__.py
 
+      - name: Inno Setup Build
+        shell: pwsh
+        run: |
+          $ver = uv run .\helper\version.py
+          iscc /DMyAppVersion=$ver .\inno-setup.iss
+
       - name: Copy Docs
         run: cp .\LICENSE.txt .\dist\gamepadla\ && cp .\README.md .\dist\gamepadla\ && cp .\THIRD-PARTY-LICENSES.txt .\dist\gamepadla\
 
@@ -68,4 +71,5 @@ jobs:
         with:
           files: |
             gamepadla-plus-windows-x64-portable.7z
+            gamepadla-plus-windows-x64-installer.exe
 
