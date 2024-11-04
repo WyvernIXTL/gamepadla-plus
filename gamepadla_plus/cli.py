@@ -144,7 +144,12 @@ def license():
     """
     Print license of this project.
     """
-    print(read_license(license_file_name=LICENSE_FILE_NAME))
+    license = read_license(license_file_name=LICENSE_FILE_NAME)
+    if license != "":
+        print(license)
+    else:
+        rprint("[red]Failed to fetch license.[/red]")
+        exit(1)
 
 
 @app.command()
@@ -152,4 +157,9 @@ def third_party_licenses():
     """
     Prints third party licenses.
     """
-    print(read_license(THIRD_PARTY_LICENSE_FILE_NAME))
+    licenses = read_license(license_file_name=THIRD_PARTY_LICENSE_FILE_NAME)
+    if licenses != "":
+        print(licenses)
+    else:
+        rprint("[red]Failed to fetch licenses.[/red]")
+        exit(1)

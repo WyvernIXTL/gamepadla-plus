@@ -137,7 +137,11 @@ def gui():
     layout = [
         [
             sg.Push(),
-            sg.Button("Licenses", key="-SHOW-LICENSES-BUTTON-"),
+            sg.Button(
+                "Licenses",
+                key="-SHOW-LICENSES-BUTTON-",
+                disabled=(read_license(LICENSE_FILE_NAME) == ""),
+            ),
         ],
         [
             sg.Listbox(
