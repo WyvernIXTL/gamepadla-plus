@@ -32,6 +32,16 @@ jobs:
           --with-license-file 
           --output-file THIRD-PARTY-LICENSES.txt
 
+      - name: Write Seperator for Python License
+        shell: pwsh
+        run: |
+          $content = "-----------------------------------
+          
+          Python License
+
+          " 
+          $content >> .\THIRD-PARTY-LICENSES.txt
+
       - name: Fetch Python Interpreter License
         shell: pwsh
         run: Get-Content (Join-Path (Split-Path (get-command python).Source) "LICENSE.txt") >> .\THIRD-PARTY-LICENSES.txt
