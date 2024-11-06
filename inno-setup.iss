@@ -12,7 +12,7 @@
 AppId={{6868D9F7-4102-4A54-9A06-A8CD2148BCD2}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-;AppVerName={#MyAppName} {#MyAppVersion}
+AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
@@ -33,8 +33,9 @@ PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=commandline
 OutputDir=.
 OutputBaseFilename=gamepadla-plus-windows-x64-installer
-Compression=lzma2/ultra64
-SolidCompression=yes
+Compression=lzma/ultra64
+LZMANumBlockThreads=4
+SolidCompression=true
 WizardStyle=modern
 
 [Languages]
