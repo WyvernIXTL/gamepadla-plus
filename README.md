@@ -1,6 +1,7 @@
 <div align="center">
 
-![Gamepadla+ Icon](./icon/gamepadla-plus-icon-round-white.svg)
+<img src="./icon/gamepadla-plus-icon-round-white.svg" alt="Gamepadla+ Icon"  width="200"/>
+
 
 # Gamepadla+
 
