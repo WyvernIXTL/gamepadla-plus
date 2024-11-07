@@ -74,7 +74,7 @@ jobs:
         run: 7z a gamepadla-plus-windows-x64-portable.7z .\dist\gamepadla\
 
       - name: Upload To Release
-        if: ${{ inputs.release == null || inputs.release }}
+        if: ${{ github.event_name == 'release' || inputs.release == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           files: |
