@@ -5,19 +5,24 @@
 
 # Gamepadla+
 
-**Gamepad polling rate and synthetic latency tester. (CLI and GUI)**
+**Gamepad Polling Rate and Latency Testing Tool (CLI & GUI)**
 
 [![PyPI - Version](https://img.shields.io/pypi/v/gamepadla-plus)](https://pypi.org/project/gamepadla-plus/)
 [![GitHub License](https://img.shields.io/github/license/WyvernIXTL/gamepadla-plus)](https://github.com/WyvernIXTL/gamepadla-plus/blob/main/LICENSE)
 
 </div>
 
-Gamepadla+ is an easy way to check the polling rate of your gamepad. This tool will help you get accurate data about your controller's performance, which can be useful for gamers, game developers, and enthusiasts.  
-Gamepadl+ works with most popular gamepads and supports DInput and XInput protocols, making it a versatile solution for testing different types of controllers.  
+Gamepadla+ is a tool designed to help you measure the polling rate and synthetic latency of your gamepad. 
+It provides accurate data on your controller’s performance, which can be valuable for gamers, developers, and anyone interested in input accuracy.
 
-*Gamepadla+ or gamepadla-plus is a hard fork of [Gamepadla](https://github.com/cakama3a/Polling/tree/71a53424d4faad0edc90577c149f543696a4b947).*
+* Supports DInput and XInput protocols
+* Available as both CLI and GUI for flexibility
+* Offers detailed metrics, including polling rate and latency values
 
-![GUI Demo](./img/gamepadla-plus-gui-demo.gif)
+Gamepadla+ is a simple, versatile solution for testing and understanding gamepad response times.
+
+
+![](https://raw.githubusercontent.com/WyvernIXTL/gamepadla-plus/refs/tags/v1.7.0/img/gamepadla-plus-gui-demo.gif)
 
 [![asciicast](https://asciinema.org/a/686853.svg)](https://asciinema.org/a/686853)
 
@@ -151,7 +156,9 @@ Therefore, although Gamepadla can give a general idea of the "response" of a gam
 
 ## Notable Mentions
 
-Based on the method of Christian P.: <https://github.com/chrizonix/XInputTest>.
+*Gamepadla+ or gamepadla-plus is a hard fork of [Gamepadla](https://github.com/cakama3a/Polling/tree/71a53424d4faad0edc90577c149f543696a4b947).*
+
+The testing is based on the method of Christian P.: <https://github.com/chrizonix/XInputTest>.
 
 
 ## License
@@ -162,13 +169,4 @@ Licensed under MIT.
 ## Contributing
 
 Please have a look at [`CONTRIBUTING.md`](./CONTRIBUTING.md).
-
-
-## Why this is a Hard Fork
-
-* `cakama3a/Polling` (formerly known as `Gamepadla`) has 200MB git history. 
-  Sadly many build artifacts and release binaries are in said git history. 
-  Cloning that repo is not fun. And removing those directories from my history essentialy made my repo a hard fork.
-* `cakama3a` (aka John Punch) is very unresponsive regarding the addition of pip support for the software. A simple `pyproject.toml` was sitting ducks in the PR while he still happily adds more release artifacts to the git history.
-* I made major additions like the GUI and the CLI to my fork.
 

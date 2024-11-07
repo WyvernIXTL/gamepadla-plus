@@ -22,7 +22,7 @@ from gamepadla_plus.common import (
 )
 
 app = typer.Typer(
-    help="Gamepad latency and polling rate tester.",
+    help="Gamepad Polling Rate and Latency Testing Tool (CLI & GUI)",
 )
 
 

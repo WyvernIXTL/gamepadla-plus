@@ -14,23 +14,54 @@ packages = ["gamepadla_plus", "*.txt"]
 
 [project]
 name = "gamepadla-plus"
-description = "Gamepad polling rate and synthetic latency tester."
+description = "Gamepad Polling Rate and Latency Testing Tool (CLI & GUI)"
 authors = [
-  { name="John Punch" },
-  { name="Adam McKellar", email="dev@mckellar.eu" },
+    { name="Adam McKellar", email="dev@mckellar.eu" },
+    { name="John Punch" },
 ]
 maintainers = [
   { name="Adam McKellar", email="dev@mckellar.eu" },
 ]
 readme = "README.md"
 license = {text = "MIT"}
-keywords = ["gamepad", "test", "latency"]
+keywords = [
+    "gamepad", 
+    "controller", 
+    "polling-rate",
+    "latency-tester",
+    "input-lag",
+    "DInput",
+    "XInput",
+    "controller-latency",
+    "gamepad-testing",
+    "gaming-performance",
+    "input-testing",
+    "windows-gaming",
+    "input-polling",
+    "gaming-utilities",
+    "input-response",
+    "controller-utilities",
+    "gaming-tools",
+    "real-time-input",
+    "latency-measurement",
+    "gamepad-performance"
+]
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Topic :: System :: Hardware :: Universal Serial Bus (USB) :: Wireless Controller",
+    "Topic :: Education :: Testing",
+    "Framework :: PySimpleGUI",
+    "Framework :: PySimpleGUI :: 5",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Terminals",
+    "Topic :: Utilities",
+    "Environment :: Console",
 ]
 
 dynamic = ["version"]
