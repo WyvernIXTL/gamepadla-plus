@@ -58,7 +58,8 @@ jobs:
           --add-data "LICENSE.txt;." 
           --add-data "THIRD-PARTY-LICENSES.txt;." 
           --hide-console hide-late 
-          --noupx 
+          --noupx
+          --icon .\icon\gamepadla-plus.ico
           .\gamepadla_plus\__main__.py
 
       - name: Inno Setup Build

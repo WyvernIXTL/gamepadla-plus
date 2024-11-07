@@ -37,6 +37,7 @@ Compression=lzma/ultra64
 LZMANumBlockThreads=4
 SolidCompression=true
 WizardStyle=modern
+SetupIconFile=.\icon\gamepadla-plus.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
