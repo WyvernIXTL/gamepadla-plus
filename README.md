@@ -1,6 +1,6 @@
 <div align="center">
 
-# `gamepadla-plus`
+# Gamepadla+
 
 **Gamepad polling rate and synthetic latency tester. (CLI and GUI)**
 
@@ -9,8 +9,8 @@
 
 </div>
 
-Gamepadla is an easy way to check the polling rate of your gamepad. This tool will help you get accurate data about your controller's performance, which can be useful for gamers, game developers, and enthusiasts.  
-Gamepadla works with most popular gamepads and supports DInput and XInput protocols, making it a versatile solution for testing different types of controllers.  
+Gamepadla+ is an easy way to check the polling rate of your gamepad. This tool will help you get accurate data about your controller's performance, which can be useful for gamers, game developers, and enthusiasts.  
+Gamepadl+ works with most popular gamepads and supports DInput and XInput protocols, making it a versatile solution for testing different types of controllers.  
 
 *Gamepadla+ or gamepadla-plus is a hard fork of [Gamepadla](https://github.com/cakama3a/Polling/tree/71a53424d4faad0edc90577c149f543696a4b947).*
 
