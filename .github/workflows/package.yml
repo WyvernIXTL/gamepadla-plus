@@ -4,6 +4,13 @@ on:
   release:
     types:
       - published
+  workflow_dispatch:
+    inputs:
+      release:
+        description: Upload to last release? (Used to test the workflow.)
+        type: boolean
+        default: false
+        required: true
 
 jobs:
   build-release:
@@ -67,6 +74,7 @@ jobs:
         run: 7z a gamepadla-plus-windows-x64-portable.7z .\dist\gamepadla\
 
       - name: Upload To Release
+        if: ${{ inputs.release == null || inputs.release }}
         uses: softprops/action-gh-release@v2
         with:
           files: |
