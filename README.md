@@ -39,6 +39,10 @@ pipx install gamepadla-plus
 pip install gamepadla-plus
 ```
 
+### Prebuild
+
+An installer and a portable release can be found on the [Release Page](https://github.com/WyvernIXTL/gamepadla-plus/releases).
+
 
 ## Usage (GUI)
 
