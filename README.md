@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./icon/gamepadla-plus-icon-round-white.svg" alt="Gamepadla+ Icon"  width="200"/>
+<img src="https://github.com/WyvernIXTL/gamepadla-plus/blob/e17852e16a02d095f564ba0caf6589466f7004e5/icon/gamepadla-plus-icon-round-white.svg" alt="Gamepadla+ Icon"  width="200"/>
 
 
 # Gamepadla+
