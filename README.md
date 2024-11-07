@@ -1,5 +1,7 @@
 <div align="center">
 
+![Gamepadla+ Icon](./icon/gamepadla-plus-icon-round-white.svg)
+
 # Gamepadla+
 
 **Gamepad polling rate and synthetic latency tester. (CLI and GUI)**
@@ -39,9 +41,9 @@ pipx install gamepadla-plus
 pip install gamepadla-plus
 ```
 
-### Prebuild
+### Prebuild (Windows)
 
-An installer and a portable release can be found on the [Release Page](https://github.com/WyvernIXTL/gamepadla-plus/releases).
+An installer and a portable release for Windows can be found on the [Release Page](https://github.com/WyvernIXTL/gamepadla-plus/releases).
 
 
 ## Usage (GUI)
