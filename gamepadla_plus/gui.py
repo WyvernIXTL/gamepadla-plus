@@ -16,15 +16,9 @@ from gamepadla_plus.common import (
     test_execution,
     wrap_data_for_server,
     read_license,
-    project_root_path,
 )
 
-
-def get_icon_path() -> str:
-    if platform == "win32":
-        return project_root_path() + "icon/gamepadla-plus.ico"
-    else:
-        return project_root_path() + "icon/gamepadla-plus.png"
+from gamepadla_plus.icon import ICON
 
 
 def error_popup(msg: str):
@@ -231,9 +225,7 @@ def gui():
         ],
     ]
 
-    window = sg.Window(
-        "Gamepadla+", layout, finalize=True, size=(400, 560), icon=get_icon_path()
-    )
+    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 560), icon=ICON)
 
     def update_joysticks():
         nonlocal joysticks

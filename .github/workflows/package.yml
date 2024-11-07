@@ -57,9 +57,7 @@ jobs:
           --collect-all gamepadla_plus 
           --add-data "LICENSE.txt;." 
           --add-data "THIRD-PARTY-LICENSES.txt;."
-          --add-data "icon/gamepadla-plus.ico;icon/."
-          --add-data "icon/gamepadla-plus.png;icon/."
-          --hide-console hide-late 
+          --hide-console hide-late
           --noupx
           --icon .\icon\gamepadla-plus.ico
           .\gamepadla_plus\__main__.py
