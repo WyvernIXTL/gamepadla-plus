@@ -3,7 +3,6 @@ import pygame
 from pygame.joystick import JoystickType
 from rich.traceback import install as traceback_install
 import FreeSimpleGUI as sg
-from sys import platform
 
 from gamepadla_plus.__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
 from gamepadla_plus.common import (

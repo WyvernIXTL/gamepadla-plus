@@ -9,6 +9,7 @@ data.json
 __pycache__
 THIRD-PARTY-LICENSES.txt
 *.7z
+*.exe
 
 
 # Byte-compiled / optimized / DLL files
