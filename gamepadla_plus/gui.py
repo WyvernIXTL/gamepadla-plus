@@ -3,6 +3,7 @@ import pygame
 from pygame.joystick import JoystickType
 from rich.traceback import install as traceback_install
 import FreeSimpleGUI as sg
+from sys import platform
 
 from gamepadla_plus.__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
 from gamepadla_plus.common import (
@@ -15,7 +16,15 @@ from gamepadla_plus.common import (
     test_execution,
     wrap_data_for_server,
     read_license,
+    project_root_path,
 )
+
+
+def get_icon_path() -> str:
+    if platform == "win32":
+        return project_root_path() + "icon/gamepadla-plus.ico"
+    else:
+        return project_root_path() + "icon/gamepadla-plus.png"
 
 
 def error_popup(msg: str):
@@ -26,7 +35,7 @@ def error_popup(msg: str):
 
 def third_party_license_popup(licenses: str):
     sg.Window(
-        "Error",
+        "3rd Party Licenses",
         [
             [sg.Multiline(licenses, size=(100, 50), wrap_lines=True)],
             [sg.Push(), sg.Button("Continue")],
@@ -37,7 +46,7 @@ def third_party_license_popup(licenses: str):
 def license_popup():
     third_party_license = read_license(THIRD_PARTY_LICENSE_FILE_NAME)
     event, _ = sg.Window(
-        "Error",
+        "License",
         [
             [sg.Text(read_license(LICENSE_FILE_NAME))],
             [
@@ -59,7 +68,7 @@ def license_popup():
 
 def upload_popup(data: dict):
     window = sg.Window(
-        "Upload",
+        "Upload Results",
         [
             [sg.Text("Connection Type")],
             [
@@ -222,7 +231,9 @@ def gui():
         ],
     ]
 
-    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 560))
+    window = sg.Window(
+        "Gamepadla+", layout, finalize=True, size=(400, 560), icon=get_icon_path()
+    )
 
     def update_joysticks():
         nonlocal joysticks
