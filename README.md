@@ -12,14 +12,11 @@
 
 </div>
 
-Gamepadla+ is a tool designed to help you measure the polling rate and synthetic latency of your gamepad. 
-It provides accurate data on your controller’s performance, which can be valuable for gamers, developers, and anyone interested in input accuracy.
+Gamepadla+ is a program for measuring the polling rate and synthetic latency of gamepads aka. controllers.
 
-* Supports DInput and XInput protocols
-* Available as both CLI and GUI for flexibility
-* Offers detailed metrics, including polling rate and latency values
-
-Gamepadla+ is a simple, versatile solution for testing and understanding gamepad response times.
+* Supports DInput and XInput
+* Provides CLI and GUI
+* Shows polling rate and latency metrics
 
 
 ![](https://raw.githubusercontent.com/WyvernIXTL/gamepadla-plus/refs/tags/v1.7.0/img/gamepadla-plus-gui-demo.gif)
@@ -47,7 +44,7 @@ pipx install gamepadla-plus
 pip install gamepadla-plus
 ```
 
-### Prebuild (Windows)
+### Prebuilt Binaries (Windows)
 
 An installer and a portable release for Windows can be found on the [Release Page](https://github.com/WyvernIXTL/gamepadla-plus/releases).
 
@@ -156,7 +153,7 @@ Therefore, although Gamepadla can give a general idea of the "response" of a gam
 
 ## Notable Mentions
 
-*Gamepadla+ or gamepadla-plus is a hard fork of [Gamepadla](https://github.com/cakama3a/Polling/tree/71a53424d4faad0edc90577c149f543696a4b947).*
+Gamepadla+ or gamepadla-plus is a hard fork of [Gamepadla](https://github.com/cakama3a/Polling/tree/71a53424d4faad0edc90577c149f543696a4b947).
 
 The testing is based on the method of Christian P.: <https://github.com/chrizonix/XInputTest>.
 
