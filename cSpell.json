@@ -1,8 +1,17 @@
 {
     "words": [
+        "colorama",
+        "freesimplegui",
+        "gamepad",
+        "Gamepad",
         "gamepadla",
         "gamepads",
         "Kellar",
-        "Pygame"
+        "numpy",
+        "pygame",
+        "Pygame",
+        "pyinstaller",
+        "tqdm",
+        "typer"
     ]
 }

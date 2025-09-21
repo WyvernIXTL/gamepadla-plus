@@ -1,12 +1,8 @@
 [build-system]
 requires = [
-    "hatchling", 
-    "versioningit",
+    "hatchling"
 ]
 build-backend = "hatchling.build"
-
-[tool.hatch.version]
-source = "versioningit"
 
 [tool.hatch.build.targets.wheel]
 packages = ["gamepadla_plus", "*.txt"]
@@ -14,6 +10,7 @@ packages = ["gamepadla_plus", "*.txt"]
 
 [project]
 name = "gamepadla-plus"
+version = "1.7.1"
 description = "Gamepad Polling Rate and Latency Testing Tool (CLI & GUI)"
 authors = [
     { name="Adam McKellar", email="dev@mckellar.eu" },
@@ -63,8 +60,6 @@ classifiers = [
     "Topic :: Utilities",
     "Environment :: Console",
 ]
-
-dynamic = ["version"]
 
 dependencies = [
     "colorama >=0.4.6,<0.5",
