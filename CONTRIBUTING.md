@@ -16,3 +16,7 @@ uv run gamepadla
 
 [ruff](https://github.com/astral-sh/ruff) should be used for formatting the code before it is pushed.
 
+
+## Version
+
+Bump versions via `hatch version`.
