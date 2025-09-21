@@ -34,7 +34,7 @@ uv tool install --python 3.13 --managed-python gamepadla-plus
 
 ### Prebuilt Binaries (Windows)
 
-[![Download for Windows](https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/WyvernIXTL/gamepadla-plus/releases/latest)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/WyvernIXTL/gamepadla-plus/releases/latest/download/gamepadla-plus-windows-x64-installer.exe)
 
 
 ## Usage (GUI)
