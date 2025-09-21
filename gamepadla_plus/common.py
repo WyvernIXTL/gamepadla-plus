@@ -32,7 +32,7 @@ def get_joysticks() -> list[JoystickType] | None:
     """
     Returns a list of gamepads...
 
-    Pygame NEEDS to be initalized firstm.
+    Pygame NEEDS to be initialized first.
     """
     pygame.joystick.init()
     joysticks = [
@@ -82,7 +82,7 @@ def test_execution(
     """
     Executes the testing algorithm.
 
-    Pygame NEEDS to be initalized firstm.
+    Pygame NEEDS to be initialized first.
     """
     joystick.init()  # Initialize the selected joystick
     joystick_name = joystick.get_name()
@@ -151,14 +151,14 @@ def test_execution(
 
     os_name = platform.system()
     max_polling_rate = get_polling_rate_max(polling_rate)
-    stablility = round((polling_rate / max_polling_rate) * 100, 2)
+    stability = round((polling_rate / max_polling_rate) * 100, 2)
 
     return {
         "joystick_name": joystick_name,
         "os_name": os_name,
         "max_polling_rate": max_polling_rate,
         "polling_rate": polling_rate,
-        "stablility": stablility,
+        "stability": stability,
         "filteredMin": filteredMin,
         "filteredAverage_rounded": filteredAverage_rounded,
         "filteredMax": filteredMax,
@@ -169,7 +169,7 @@ def test_execution(
 
 def wrap_data_for_server(result: dict) -> dict:
     """
-    Wraps the test result struct into another struct for compatiblity.
+    Wraps the test result struct into another struct for compatibility.
     """
     stamp = uuid.uuid4()
     uname = platform.uname()

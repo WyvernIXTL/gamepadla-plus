@@ -103,7 +103,7 @@ def upload_popup(data: dict):
         elif window["-RADIO-CONNECTION-BLUETOOTH-"].get():
             return GamePadConnection.BLUETOOTH
         else:
-            raise GamepadlaError("No valid connection choosen.")
+            raise GamepadlaError("No valid connection chosen.")
 
     while True:
         event, values = window.read()
@@ -283,7 +283,7 @@ def gui():
                 ["Operating System", data["os_name"]],
                 ["Polling Rate Max.", f"{data['max_polling_rate']} Hz"],
                 ["Polling Rate Avg.", f"{data['polling_rate']} Hz"],
-                ["Stability", f"{data['stablility']}%"],
+                ["Stability", f"{data['stability']}%"],
                 ["", ""],
                 ["Minimal latency", f"{data['filteredMin']} ms"],
                 ["Average latency", f"{data['filteredAverage_rounded']} ms"],
