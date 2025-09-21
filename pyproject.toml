@@ -4,13 +4,15 @@ requires = [
 ]
 build-backend = "hatchling.build"
 
+[tool.hatch.version]
+path = "gamepadla_plus/__about__.py"
+
 [tool.hatch.build.targets.wheel]
 packages = ["gamepadla_plus", "*.txt"]
 
 
 [project]
 name = "gamepadla-plus"
-version = "1.7.1"
 description = "Gamepad Polling Rate and Latency Testing Tool (CLI & GUI)"
 authors = [
     { name="Adam McKellar", email="dev@mckellar.eu" },
@@ -72,6 +74,7 @@ dependencies = [
     "freesimplegui >=5.1.1,<6",
 ]
 
+dynamic = ["version"]
 
 [project.urls]
 Repository = "https://github.com/WyvernIXTL/gamepadla-plus"

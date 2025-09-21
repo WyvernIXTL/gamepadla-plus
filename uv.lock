@@ -121,7 +121,6 @@ wheels = [
 
 [[package]]
 name = "gamepadla-plus"
-version = "1.7.1"
 source = { editable = "." }
 dependencies = [
     { name = "colorama" },

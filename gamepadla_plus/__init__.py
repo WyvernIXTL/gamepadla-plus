@@ -1,10 +1,6 @@
 from importlib import metadata
 from os import environ
-
-try:
-    __version__ = metadata.version(__package__)
-except:  # noqa: E722
-    __version__ = "NONE"
+from gamepadla_plus.__about__ import __version__
 
 environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 
