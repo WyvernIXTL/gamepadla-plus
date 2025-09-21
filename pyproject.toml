@@ -7,8 +7,14 @@ build-backend = "hatchling.build"
 [tool.hatch.version]
 path = "gamepadla_plus/__about__.py"
 
+[tool.hatch.build]
+include = [
+    "LICENSE.txt",
+    "THIRD-PARTY-LICENSES.txt",
+]
+
 [tool.hatch.build.targets.wheel]
-packages = ["gamepadla_plus", "*.txt"]
+packages = ["gamepadla_plus"]
 
 
 [project]

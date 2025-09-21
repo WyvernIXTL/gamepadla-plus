@@ -11,6 +11,8 @@
         "pygame",
         "Pygame",
         "pyinstaller",
+        "pypa",
+        "pypi",
         "rprint",
         "tqdm",
         "typer"

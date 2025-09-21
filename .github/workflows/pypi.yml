@@ -24,7 +24,14 @@ jobs:
     - name: Set up Python
       run: uv python install
 
+    - name: Clean dist directory
+      run: rm -rf dist
+
     - name: Build Wheel
       run: uv build
 
-    - uses: pypa/gh-action-pypi-publish@v1.10.1
+    - name: Show built artifacts
+      run: ls -la dist
+
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
