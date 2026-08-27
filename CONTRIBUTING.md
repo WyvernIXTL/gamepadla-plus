@@ -2,21 +2,18 @@
 
 ## Dev Environment
 
-For a uniformat develepment environment lock files are a necessary.
-For python using the same interpreter is important as well.
-[uv](https://github.com/astral-sh/uv) fits this goal perfectly and thus is the preffered tool for 
-the development environment.
+Please use [`uv`](https://github.com/astral-sh/uv) with Python version 3.13.
 
 ```
-uv run gamepadla
+uv run --python 3.13 gamepadla
 ```
 
 
 ## Code Formatting
 
-[ruff](https://github.com/astral-sh/ruff) should be used for formatting the code before it is pushed.
+Code should be formatted by [`ruff`](https://github.com/astral-sh/ruff).
 
 
 ## Version
 
-Bump versions via `hatch version`.
+Versions can be bumped via `hatch version`.
