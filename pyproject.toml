@@ -91,6 +91,10 @@ Issues = "https://github.com/WyvernIXTL/gamepadla-plus/issues"
 gamepadla = "gamepadla_plus.__main__:run"
 
 [dependency-groups]
+dev = [
+    "ruff>=0.16.4",
+    "ty>=0.0.75",
+]
 license-fetching = [
     "pip-licenses>=5.0.0,<6",
 ]
