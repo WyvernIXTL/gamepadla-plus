@@ -1,0 +1,8 @@
+version: "3"
+
+tasks:
+  fix:
+    desc: Lint and format project.
+    cmds:
+      - uv run ruff check ./gamepadla_plus
+      - uv run ty --fix ./gamepadla_plus
