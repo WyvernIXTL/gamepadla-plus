@@ -170,8 +170,8 @@ def gui():
                 sg.Text("Samples:"),
                 sg.Push(),
                 sg.Radio("2000", group_id=1, default=True, key="-SAMPLE-RADIO-2000-"),
-                sg.Radio("3000", group_id=1, default=False, key="-SAMPLE-RADIO-3000-"),
                 sg.Radio("4000", group_id=1, default=False, key="-SAMPLE-RADIO-4000-"),
+                sg.Radio("8000", group_id=1, default=False, key="-SAMPLE-RADIO-8000-"),
             ],
         ],
         [
@@ -251,10 +251,10 @@ def gui():
     def get_sample_count() -> int:
         if window["-SAMPLE-RADIO-2000-"].get():
             return 2000
-        if window["-SAMPLE-RADIO-3000-"].get():
-            return 3000
         if window["-SAMPLE-RADIO-4000-"].get():
             return 4000
+        if window["-SAMPLE-RADIO-8000-"].get():
+            return 8000
 
         raise GuiError("sample selection radio read out")
 
@@ -282,8 +282,8 @@ def gui():
         count += 1
         factor = {
             2000: 6,
-            3000: 4,
             4000: 3,
+            8000: 1.5,
         }
         window["-PROGRESS-BAR-"].update(current_count=(count * factor[samples]))
         window["-DELAY-OUTPUT-"].update(f"{delay:05.2f} ms")
