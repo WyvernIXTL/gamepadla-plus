@@ -155,5 +155,4 @@ Licensed under MIT.
 
 ## Contributing
 
-Please have a look at [`CONTRIBUTING.md`](./CONTRIBUTING.md).
-
+Please have a look at [`DEVELOPMENT.md`](./DEVELOPMENT.md).

@@ -1,23 +1,31 @@
 import webbrowser
+
+import FreeSimpleGUI as sg
 import pygame
 from pygame.joystick import JoystickType
 from rich.traceback import install as traceback_install
-import FreeSimpleGUI as sg
 
 from gamepadla_plus.__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
 from gamepadla_plus.common import (
-    get_joysticks,
-    StickSelector,
     GamePadConnection,
     GamepadlaError,
-    write_to_file,
-    upload_data,
-    test_execution,
-    wrap_data_for_server,
+    StickSelector,
+    get_joysticks,
     read_license,
+    test_execution,
+    upload_data,
+    wrap_data_for_server,
+    write_to_file,
 )
-
 from gamepadla_plus.icon import ICON
+
+
+class GuiError(Exception):
+    """Exception raised for fatal GUI error."""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 
 def error_popup(msg: str):
@@ -106,7 +114,7 @@ def upload_popup(data: dict):
             raise GamepadlaError("No valid connection chosen.")
 
     while True:
-        event, values = window.read()
+        event, _values = window.read()
 
         if event == sg.WIN_CLOSED or event == "Cancel":
             break
@@ -248,11 +256,15 @@ def gui():
         if window["-SAMPLE-RADIO-4000-"].get():
             return 4000
 
+        raise GuiError("sample selection radio read out")
+
     def get_stick() -> StickSelector:
         if window["-STICK-RADIO-LEFT-"].get():
             return StickSelector.LEFT
         if window["-STICK-RADIO-RIGHT-"].get():
             return StickSelector.RIGHT
+
+        raise GuiError("stick selection radio read out")
 
     def toggle_progress_bar(on: bool):
         window["-PROGRESS-BAR-"].update(visible=on)
@@ -274,7 +286,7 @@ def gui():
             4000: 3,
         }
         window["-PROGRESS-BAR-"].update(current_count=(count * factor[samples]))
-        window["-DELAY-OUTPUT-"].update("{:05.2f} ms".format(delay))
+        window["-DELAY-OUTPUT-"].update(f"{delay:05.2f} ms")
 
     def update_result_table(data: dict):
         window["-RESULT-TABLE-"].update(

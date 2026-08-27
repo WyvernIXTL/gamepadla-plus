@@ -1,16 +1,17 @@
-from typing import Callable
-import os
-from enum import Enum
-import time
 import json
-import numpy as np
+import os
 import platform
-import requests
+import time
 import uuid
+from collections.abc import Callable
+from enum import Enum
+
+import numpy as np
 import pygame
+import requests
 from pygame.joystick import JoystickType
 
-from gamepadla_plus.__init__ import __version__
+from gamepadla_plus.__about__ import __version__
 
 
 class StickSelector(str, Enum):
@@ -150,7 +151,7 @@ def test_execution(
     jitter = round(np.std(delay_list), 2)
 
     os_name = platform.system()
-    max_polling_rate = get_polling_rate_max(polling_rate)
+    max_polling_rate = get_polling_rate_max(int(polling_rate))
     stability = round((polling_rate / max_polling_rate) * 100, 2)
 
     return {

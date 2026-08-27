@@ -1,8 +1,23 @@
 version: "3"
 
 tasks:
-  fix:
+  run:
+    desc: Run GUI
+    aliases:
+      - r
+    cmds:
+      - uv run ./gamepadla_plus
+
+  check:
+    desc: Lint and format project.
+    aliases:
+      - c
+    cmds:
+      - uv run ruff check
+      - uv run ty check
+
+  try-fix:
     desc: Lint and format project.
     cmds:
-      - uv run ruff check --fix ./gamepadla_plus
-      - uv run ty --fix ./gamepadla_plus
+      - uv run ruff check --fix
+      - uv run ty check --fix
