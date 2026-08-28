@@ -74,8 +74,8 @@ def filter_outliers(timings: list[float]) -> FilteringResult:
 
     timings_sorted = sorted(timings)
 
-    q1 = np.quantile(timings_sorted, 25)
-    q3 = np.quantile(timings_sorted, 75)
+    q1 = np.quantile(timings_sorted, 0.25)
+    q3 = np.quantile(timings_sorted, 0.75)
     range = q3 - q1
     lower_bound = q1 - 1.5 * range
     upper_bound = q3 + 1.5 * range
