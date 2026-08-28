@@ -187,7 +187,26 @@ def test_execution(
     )
 
 
-def wrap_data_for_server(result: dict) -> dict:
+class GamepadlaUploadData(TypedDict):
+    test_key: str
+    version: str
+    url: str
+    date: str
+    driver: str
+    os_name: str
+    os_version: str
+    min_latency: float
+    avg_latency: float
+    max_latency: float
+    polling_rate: float
+    jitter: float
+    mathod: str
+    delay_list: str
+    connection: str
+    name: str
+
+
+def wrap_data_for_server(result: TestResults) -> GamepadlaUploadData:
     """
     Wraps the test result struct into another struct for compatibility.
     """
@@ -195,22 +214,24 @@ def wrap_data_for_server(result: dict) -> dict:
     uname = platform.uname()
     os_version = uname.version
 
-    return {
-        "test_key": str(stamp),
-        "version": __version__,
-        "url": "https://gamepadla.com",
-        "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-        "driver": result["joystick_name"],
-        "os_name": result["os_name"],
-        "os_version": os_version,
-        "min_latency": result["filteredMin"],
-        "avg_latency": result["filteredAverage_rounded"],
-        "max_latency": result["filteredMax"],
-        "polling_rate": result["polling_rate"],
-        "jitter": result["jitter"],
-        "mathod": "GP",
-        "delay_list": ", ".join(map(str, result["delay_clear"])),
-    }
+    return GamepadlaUploadData(
+        test_key=str(stamp),
+        version=f"gamepadla-plus@{__version__}",
+        url="https://gamepadla.com",
+        date=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+        driver=result["joystick_name"],
+        os_name=result["os_name"],
+        os_version=os_version,
+        min_latency=round(result["timings_filtered_min"], 2),
+        avg_latency=round(result["timings_filtered_avg"], 2),
+        max_latency=round(result["timings_filtered_max"], 2),
+        polling_rate=round(result["polling_rate"], 2),
+        jitter=round(result["jitter"], 2),
+        mathod="GP",
+        delay_list=", ".join([f"{x:.2f}" for x in result["timings"]]),
+        connection="",
+        name="",
+    )
 
 
 def upload_data(data: dict, connection: GamePadConnection, name: str) -> bool:
