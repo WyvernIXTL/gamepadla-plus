@@ -234,7 +234,9 @@ def wrap_data_for_server(result: TestResults) -> GamepadlaUploadData:
     )
 
 
-def upload_data(data: dict, connection: GamePadConnection, name: str) -> bool:
+def upload_data(
+    data: GamepadlaUploadData, connection: GamePadConnection, name: str
+) -> bool:
     """
     Uploads results to server.
     """
@@ -248,7 +250,7 @@ def upload_data(data: dict, connection: GamePadConnection, name: str) -> bool:
     return response.status_code == 200
 
 
-def write_to_file(data: dict, path: str):
+def write_to_file(data: GamepadlaUploadData, path: str):
     """
     Writes result to file.
     """
