@@ -30,19 +30,6 @@ class GamepadlaError(Exception):
     pass
 
 
-class TestResults(TypedDict):
-    os_name: str
-    joystick_name: str
-    polling_rate: float
-    timings: list[float]
-    timings_filtered_avg: float
-    timings_filtered_min: float
-    timings_filtered_max: float
-    jitter: float
-    outlier_percent: float
-    outlier_avg: float
-
-
 def get_joysticks() -> list[JoystickType] | None:
     """
     Returns a list of gamepads...
@@ -74,18 +61,47 @@ def get_polling_rate_max(actual_rate: int) -> int:
     return max_rate
 
 
-def filter_outliers(array: list[float]) -> list[float]:
+class FilteringResult(TypedDict):
+    timings_filtered: list[float]
+    outliers_upper: list[float]
+    outliers_lower: list[float]
+
+
+def filter_outliers(timings: list[float]) -> FilteringResult:
     """
     Function to filter out outliers in latency data.
     """
-    lower_quantile = 0.02
-    upper_quantile = 0.995
 
-    sorted_array = sorted(array)
-    lower_index = int(len(sorted_array) * lower_quantile)
-    upper_index = int(len(sorted_array) * upper_quantile)
+    timings_sorted = sorted(timings)
 
-    return sorted_array[lower_index : upper_index + 1]
+    q1 = np.quantile(timings_sorted, 25)
+    q3 = np.quantile(timings_sorted, 75)
+    range = q3 - q1
+    lower_bound = q1 - 1.5 * range
+    upper_bound = q3 + 1.5 * range
+
+    return FilteringResult(
+        timings_filtered=[
+            delta for delta in timings if lower_bound <= delta <= upper_bound
+        ],
+        outliers_upper=[delta for delta in timings if upper_bound < delta],
+        outliers_lower=[delta for delta in timings if delta < lower_bound],
+    )
+
+
+class TestResults(TypedDict):
+    os_name: str
+    joystick_name: str
+    polling_rate: float
+    timings: list[float]
+    timings_filtered_avg: float
+    timings_filtered_min: float
+    timings_filtered_max: float
+    jitter: float
+    outlier_lower_ratio: float
+    outlier_lower_avg: float
+    outlier_upper_ratio: float
+    outlier_upper_avg: float
 
 
 def test_execution(
@@ -150,22 +166,10 @@ def test_execution(
                 timings.append(delay)
                 tick(delay)
 
-    timings_filtered = filter_outliers(timings)
+    filter_result = filter_outliers(timings)
 
-    timings_filtered_avg = np.mean(timings_filtered)
+    timings_filtered_avg = np.mean(filter_result["timings_filtered"])
     polling_rate = 1000 / timings_filtered_avg
-
-    # class TestResults(TypedDict):
-    #     os_name: str
-    #     joystick_name: str
-    #     polling_rate: float
-    #     timings: list[float]
-    #     timings_filtered_avg: float
-    #     timings_filtered_min: float
-    #     timings_filtered_max: float
-    #     jitter: float
-    #     outlier_percent: float
-    #     outlier_avg: float
 
     return TestResults(
         os_name=platform.system(),
@@ -173,9 +177,13 @@ def test_execution(
         polling_rate=float(polling_rate),
         timings=timings,
         timings_filtered_avg=float(timings_filtered_avg),
-        timings_filtered_min=min(timings_filtered),
-        timings_filtered_max=max(timings_filtered),
-        jitter=float(np.std(timings_filtered)),
+        timings_filtered_min=min(filter_result["timings_filtered"]),
+        timings_filtered_max=max(filter_result["timings_filtered"]),
+        jitter=float(np.std(filter_result["timings_filtered"])),
+        outlier_lower_avg=float(np.mean(filter_result["outliers_lower"])),
+        outlier_lower_ratio=float(len(filter_result["outliers_lower"]) / sample_count),
+        outlier_upper_avg=float(np.mean(filter_result["outliers_upper"])),
+        outlier_upper_ratio=float(len(filter_result["outliers_upper"]) / sample_count),
     )
 
 
