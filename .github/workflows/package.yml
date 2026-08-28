@@ -15,68 +15,32 @@ on:
 jobs:
   build-release:
     runs-on: windows-latest
+    permissions:
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     steps:
-      - uses: actions/checkout@v5
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
+      - name: Checkout Repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      - name: Install task
+        uses: go-task/setup-task@a00fbb05ce67b35648be3c78cbc9fd85354c757e # v2.2.0
 
-      - name: Fetch Licenses
-        run: >
-          uv run --group license-fetching pip-licenses 
-          --with-system 
-          --from=all 
-          --format=plain-vertical 
-          --with-urls 
-          --with-authors 
-          --with-license-file 
-          --output-file THIRD-PARTY-LICENSES.txt          
+      - name: Compile and Package App for Windows x64
+        run: task compile-and-package-windows-x64
 
-      - name: Fetch Python Interpreter License
-        shell: pwsh
-        run: |
-          $content = "-----------------------------------
-          
-          Python License
-
-          " 
-          $content >> .\THIRD-PARTY-LICENSES.txt
-          Get-Content (Join-Path (Split-Path (get-command python).Source) "LICENSE.txt") >> .\THIRD-PARTY-LICENSES.txt
-
-      - name: PyInstaller
-        run: >
-          uv run --group pyinstaller pyinstaller -D -y -n gamepadla 
-          --recursive-copy-metadata gamepadla_plus 
-          --collect-all gamepadla_plus 
-          --add-data "LICENSE.txt;." 
-          --add-data "THIRD-PARTY-LICENSES.txt;."
-          --hide-console hide-late
-          --noupx
-          --icon .\icon\gamepadla-plus.ico
-          .\gamepadla_plus\__main__.py
-
-      - name: Inno Setup Build
-        shell: pwsh
-        run: |
-          $ver = uv run .\helper\version.py
-          iscc /DMyAppVersion=$ver .\inno-setup.iss
-
-      - name: Copy Docs
-        run: cp .\LICENSE.txt .\dist\gamepadla\ && cp .\README.md .\dist\gamepadla\ && cp .\THIRD-PARTY-LICENSES.txt .\dist\gamepadla\
-
-      - name: 7z
-        run: 7z a gamepadla-plus-windows-x64-portable.7z .\dist\gamepadla\
+      - name: Attest packages
+        uses: actions/attest@v4
+        with:
+          subject-path: |
+            gamepadla-plus-windows-x64-installer.exe
+            gamepadla-plus-windows-x64-portable.7z
 
       - name: Upload To Release
         if: ${{ github.event_name == 'release' || inputs.release == 'true' }}
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           files: |
             gamepadla-plus-windows-x64-portable.7z
             gamepadla-plus-windows-x64-installer.exe
-
