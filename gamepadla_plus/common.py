@@ -99,9 +99,9 @@ class TestResults(TypedDict):
     timings_filtered_max: float
     jitter: float
     outlier_lower_ratio: float
-    outlier_lower_avg: float
+    outlier_lower_avg: float | None
     outlier_upper_ratio: float
-    outlier_upper_avg: float
+    outlier_upper_avg: float | None
 
 
 def test_execution(
@@ -180,9 +180,13 @@ def test_execution(
         timings_filtered_min=min(filter_result["timings_filtered"]),
         timings_filtered_max=max(filter_result["timings_filtered"]),
         jitter=float(np.std(filter_result["timings_filtered"])),
-        outlier_lower_avg=float(np.mean(filter_result["outliers_lower"])),
+        outlier_lower_avg=float(np.mean(filter_result["outliers_lower"]))
+        if len(filter_result["outliers_lower"]) > 0
+        else None,
         outlier_lower_ratio=float(len(filter_result["outliers_lower"]) / sample_count),
-        outlier_upper_avg=float(np.mean(filter_result["outliers_upper"])),
+        outlier_upper_avg=float(np.mean(filter_result["outliers_upper"]))
+        if len(filter_result["outliers_upper"]) > 0
+        else None,
         outlier_upper_ratio=float(len(filter_result["outliers_upper"]) / sample_count),
     )
 
@@ -202,8 +206,8 @@ class GamepadlaUploadData(TypedDict):
     jitter: float
     mathod: str
     delay_list: str
-    connection: str
-    name: str
+    connection: str | None
+    name: str | None
 
 
 def wrap_data_for_server(result: TestResults) -> GamepadlaUploadData:
@@ -229,8 +233,8 @@ def wrap_data_for_server(result: TestResults) -> GamepadlaUploadData:
         jitter=round(result["jitter"], 2),
         mathod="GP",
         delay_list=", ".join([f"{x:.2f}" for x in result["timings"]]),
-        connection="",
-        name="",
+        connection=None,
+        name=None,
     )
 
 

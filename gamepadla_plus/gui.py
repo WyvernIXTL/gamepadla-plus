@@ -9,7 +9,9 @@ from gamepadla_plus.__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_
 from gamepadla_plus.common import (
     GamePadConnection,
     GamepadlaError,
+    GamepadlaUploadData,
     StickSelector,
+    TestResults,
     get_joysticks,
     read_license,
     test_execution,
@@ -67,7 +69,7 @@ def license_popup():
         third_party_license_popup(third_party_license)
 
 
-def upload_popup(data: dict):
+def upload_popup(data: GamepadlaUploadData):
     window = sg.Window(
         "Upload Results",
         [
@@ -288,19 +290,32 @@ def gui():
         window["-PROGRESS-BAR-"].update(current_count=(count * factor[samples]))
         window["-DELAY-OUTPUT-"].update(f"{delay:05.2f} ms")
 
-    def update_result_table(data: dict):
+    def update_result_table(data: TestResults):
         window["-RESULT-TABLE-"].update(
             [
                 ["Gamepad mode", data["joystick_name"]],
                 ["Operating System", data["os_name"]],
-                ["Polling Rate Max.", f"{data['max_polling_rate']} Hz"],
-                ["Polling Rate Avg.", f"{data['polling_rate']} Hz"],
-                ["Stability", f"{data['stability']}%"],
+                ["Polling Rate Avg.", f"{data['polling_rate']:.3f} Hz"],
                 ["", ""],
-                ["Minimal latency", f"{data['filteredMin']} ms"],
-                ["Average latency", f"{data['filteredAverage_rounded']} ms"],
-                ["Maximum latency", f"{data['filteredMax']} ms"],
-                ["Jitter", f"{data['jitter']} ms"],
+                ["Average latency", f"{data['timings_filtered_avg']:.3f} ms"],
+                ["Minimal latency", f"{data['timings_filtered_min']:.3f} ms"],
+                ["Maximum latency", f"{data['timings_filtered_max']:.3f} ms"],
+                ["Jitter", f"{data['jitter']:.3f} ms"],
+                ["", ""],
+                [
+                    "Outlier lower Avg.",
+                    f"{result['outlier_lower_avg']:.3f} ms"
+                    if result["outlier_lower_avg"] is not None
+                    else "no outliers",
+                ],
+                ["Outlier lower %", f"{result['outlier_lower_ratio'] * 100:.3f} %"],
+                [
+                    "Outlier upper Avg.",
+                    f"{result['outlier_upper_avg']:.3f} ms"
+                    if result["outlier_upper_avg"] is not None
+                    else "no outliers",
+                ],
+                ["Outlier upper %", f"{result['outlier_upper_ratio'] * 100:.3f} %"],
             ]
         )
 
@@ -350,10 +365,10 @@ def gui():
             window["-UPLOAD-BUTTON-"].update(disabled=False)
             window["-SAVE-BUTTON-"].update(disabled=False)
 
-        elif event == "-UPLOAD-BUTTON-":
+        elif event == "-UPLOAD-BUTTON-" and data is GamepadlaUploadData:
             upload_popup(data=data)
 
-        elif event == "-SAVE-BUTTON-":
+        elif event == "-SAVE-BUTTON-" and data is GamepadlaUploadData:
             write_to_file(data=data, path=values["-SAVE-BUTTON-"])
 
         elif event == "-SHOW-LICENSES-BUTTON-":
