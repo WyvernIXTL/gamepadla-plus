@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update measuring algorithm to match the accuracy improvements of [Polling 1.1.6-1.3.1.4](https://github.com/cakama3a/Polling/compare/1.1.6..1.3.1.4).
+- Update measuring algorithm to be more accurate.
+- Filter outliers more effectively.
 - Bumped sample numbers in GUI.
 - Improved code quality.
