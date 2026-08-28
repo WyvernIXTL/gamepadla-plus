@@ -24,5 +24,34 @@ tasks:
 
   compile-windows-current-arch:
     desc: Compile a standalone windows executable with nuitka.
-    cmds:
-      - uv run --only-group package nuitka --mode=standalone --windows-icon-from-ico=icon/gamepadla-plus.ico --enable-plugins=tk-inter --noinclude-default-mode=error --noinclude-unittest-mode=allow --nowarn-mnemonic=unwanted-module --assume-yes-for-downloads --windows-console-mode=hide --output-filename="Gamepadla+" --output-folder-name=Gamepadla+ --output-dir=dist gamepadla_plus
+    cmd: >
+      uv run --only-group package nuitka
+      --mode=standalone
+      --windows-icon-from-ico=icon/gamepadla-plus.ico
+      --enable-plugins=tk-inter
+      --noinclude-default-mode=error
+      --noinclude-unittest-mode=allow
+      --nowarn-mnemonic=unwanted-module
+      --assume-yes-for-downloads
+      --windows-console-mode=hide
+      --output-filename="Gamepadla+"
+      --output-folder-name=Gamepadla+
+      --output-dir=dist
+      gamepadla_plus
+
+  fetch-third-party-licenses:
+    cmd: >
+      uv run --only-group license-fetching pip-licenses
+      --with-system
+      --from=all
+      --format=plain-vertical
+      --with-urls
+      --with-authors
+      --with-license-file
+      --output-file THIRD-PARTY-LICENSES.txt
+
+  attach-python-license-to-third-party-licenses:
+    cmd: pwsh helper/Add-PythonInfoToThirdPartyLicenses.ps1
+
+  copy-docs-and-licenses-into-distribution:
+    cmd: pwsh helper/Copy-DocsIntoDist.ps1

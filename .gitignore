@@ -177,3 +177,5 @@ cython_debug/
 
 #Nuitka Dist
 /gamepadla_plus.dist
+
+/THIRD-PARTY-LICENSES.txt
