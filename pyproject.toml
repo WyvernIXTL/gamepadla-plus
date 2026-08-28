@@ -88,7 +88,7 @@ Issues = "https://github.com/WyvernIXTL/gamepadla-plus/issues"
 
 
 [project.scripts]
-gamepadla = "gamepadla_plus.__main__:run"
+"Gamepadla+" = "gamepadla_plus.__main__:run"
 
 [dependency-groups]
 dev = [

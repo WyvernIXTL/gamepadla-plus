@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filter outliers more effectively.
 - Bumped sample numbers in GUI.
 - Improved code quality.
+- Renamed script entry point and executable from `gamepadla` to `Gamepadla+`.
 
 ### Fixed
 

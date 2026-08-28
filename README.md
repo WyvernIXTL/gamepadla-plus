@@ -29,7 +29,7 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 ### [`uv`](https://github.com/astral-sh/uv) (Windows / Linux / MacOS)
 
 ```sh
-uv tool install --python 3.13 --managed-python gamepadla-plus
+uv tool install --python 3.11 gamepadla-plus
 ```
 
 ### Prebuilt Binaries (Windows)
@@ -41,7 +41,7 @@ uv tool install --python 3.13 --managed-python gamepadla-plus
 
 ## Usage (GUI)
 
-1. Execute the program `gamepadla` without any arguments.
+1. Execute the program `Gamepadla+` without any arguments.
 2. If you haven't connected any controller do it now and click `Refresh`.
 3. Click `Test` and rotate the stick you chose slowly at the edge.
 4. Optionally save the result to a JSON file or upload the result to <gamepadla.com>.
@@ -50,9 +50,9 @@ uv tool install --python 3.13 --managed-python gamepadla-plus
 ## Usage (CLI)
 
 ```
-# gamepadla.exe --help
+# Gamepadla+ --help
 
- Usage: gamepadla [OPTIONS] COMMAND [ARGS]...
+ Usage: Gamepadla+ [OPTIONS] COMMAND [ARGS]...
 
  Gamepad latency and polling rate tester.
 
@@ -71,24 +71,24 @@ uv tool install --python 3.13 --managed-python gamepadla-plus
 
 1. List all controllers connected with:
 ```
-gamepadla list
+Gamepadla+ list
 ```
 ```
-# gamepadla list
+# Gamepadla+ list
 Found 1 controllers
 0. Xbox 360 Controller
 ```
 
 2. Test the controller with the id from step one (`test` defaults to id 0):
 ```
-gamepadla test 0
+Gamepadla+ test 0
 ```
 equals here
 ```
-gamepadla test
+Gamepadla+ test
 ```
 ```
-# gamepadla test
+# Gamepadla+ test
 100%|████████████████████████████████████████████████████████████ | 01.00 ms
 
 
@@ -112,27 +112,27 @@ gamepadla test
 #### Test Right Stick
 
 ```
-gamepadla test --stick right
+Gamepadla+ test --stick right
 ```
 
 #### Write Result to JSON File
 
 ```
-gamepadla test --out data.json
+Gamepadla+ test --out data.json
 ```
 
 ### Upload Result to <gamepadla.com>
 
 ```
-gamepadla test --upload
+Gamepadla+ test --upload
 ```
 
 
 ## Disclaimer
 
-Gamepadla measures the delay between successive changes in the position of the analog stick on the gamepad, rather than the traditional input latency, which measures the time between pressing a button on the gamepad and a response in a program or game.  
+Gamepadla+ measures the delay between successive changes in the position of the analog stick on the gamepad, rather than the traditional input latency, which measures the time between pressing a button on the gamepad and a response in a program or game.  
 This method of measurement can be affected by various factors, including the quality of the gamepad, the speed of the computer's processor, the speed of event processing in the Pygame library, and so on.  
-Therefore, although Gamepadla can give a general idea of the "response" of a gamepad, it cannot accurately measure input latency in the traditional sense. The results obtained from Gamepadla should be used as a guide, not as an exact measurement of input latency.
+Therefore, although Gamepadla+ can give a general idea of the "response" of a gamepad, it cannot accurately measure input latency in the traditional sense. The results obtained from Gamepadla+ should be used as a guide, not as an exact measurement of input latency.
 
 
 ## Contributors
@@ -143,7 +143,7 @@ Therefore, although Gamepadla can give a general idea of the "response" of a gam
 
 ## Notable Mentions
 
-Gamepadla+ or gamepadla-plus is a hard fork of [Gamepadla](https://github.com/cakama3a/Polling/tree/71a53424d4faad0edc90577c149f543696a4b947).
+Gamepadla+ or gamepadla-plus is a hard fork of [Gamepadla](https://github.com/cakama3a/Polling/tree/71a53424d4faad0edc90577c149f543696a4b947) (known as Polling now).
 
 The testing is based on the method of Christian P.: <https://github.com/chrizonix/XInputTest>.
 
