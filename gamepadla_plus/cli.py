@@ -106,18 +106,21 @@ def test(
     rprint(
         Markdown(
             f"""
-| Parameter           | Value                         |
-|---------------------|-------------------------------|
-| Gamepad mode        | {result["joystick_name"]}     |
-| Operating System    | {result["os_name"]}                     |
-| Polling Rate Max.   | {result["max_polling_rate"]} Hz         |
-| Polling Rate Avg.   | {result["polling_rate"]} Hz             |
-| Stability           | {result["stablility"]}%                 |
-|                     |                               |
-| Minimal latency     | {result["filteredMin"]} ms              |
-| Average latency     | {result["filteredAverage_rounded"]} ms  |
-| Maximum latency     | {result["filteredMax"]} ms              |
-| Jitter              | {result["jitter"]} ms                   |
+| Parameter           | Value                               |
+|---------------------|-------------------------------------|
+| Gamepad mode        | {result["joystick_name"]}           |
+| Operating System    | {result["os_name"]}                 |
+| Polling Rate Avg.   | {result["polling_rate"]:.3f} Hz         |
+|                     |                                     |
+| Average latency     | {result["timings_filtered_avg"]:.3f} ms |
+| Minimal latency     | {result["timings_filtered_min"]:.3f} ms |
+| Maximum latency     | {result["timings_filtered_max"]:.3f} ms |
+| Jitter              | {result["jitter"]:.3f} ms               |
+|                     |                                     |
+| Outlier lower Avg.  | {result["outlier_lower_avg"]:.3f} ms    |
+| Outlier lower %     | {result["outlier_lower_ratio"] * 100:.3f} % |
+| Outlier upper Avg.  | {result["outlier_upper_avg"]:.3f} ms    |
+| Outlier upper %     | {result["outlier_upper_ratio"] * 100:.3f} % |
 """
         )
     )
