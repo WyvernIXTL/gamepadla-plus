@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.8.0 -- 2026-08-28
+
 ### Added
 
 - Copy markdown button in GUI.
@@ -18,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped sample numbers in GUI.
 - Improved code quality.
 - Renamed script entry point and executable from `gamepadla` to `Gamepadla+`.
+- Use Nuitka for compiling app instead of PyInstaller. This means that Gamepadla+ starts faster and should feel smoother.
 
 ### Fixed
 
