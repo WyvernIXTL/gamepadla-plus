@@ -45,7 +45,7 @@ def list():
         rprint("[red]No controllers found.[/red]")
 
 
-def markdown_from_result(result: TestResults) -> Markdown:
+def markdown_str_from_result(result: TestResults) -> str:
     outlier_lower_avg_string = (
         f"{result['outlier_lower_avg']:.3f} ms"
         if result["outlier_lower_avg"] is not None
@@ -57,8 +57,7 @@ def markdown_from_result(result: TestResults) -> Markdown:
         else "no outliers"
     )
 
-    return Markdown(
-        f"""
+    return f"""
 | Parameter           | Value                                       |
 |---------------------|---------------------------------------------|
 | Gamepad mode        | {result["joystick_name"]}                   |
@@ -75,7 +74,6 @@ def markdown_from_result(result: TestResults) -> Markdown:
 | Outlier upper Avg.  | {outlier_upper_avg_string}                  |
 | Outlier upper %     | {result["outlier_upper_ratio"] * 100:.3f} % |
 """
-    )
 
 
 @app.command()
@@ -137,7 +135,7 @@ def test(
             tick=progress_bar_update,
         )
 
-    rprint(markdown_from_result(result))
+    rprint(Markdown(markdown_str_from_result(result)))
 
     data = wrap_data_for_server(result=result)
 

@@ -6,6 +6,7 @@ from pygame.joystick import JoystickType
 from rich.traceback import install as traceback_install
 
 from gamepadla_plus.__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
+from gamepadla_plus.cli import markdown_str_from_result
 from gamepadla_plus.common import (
     GamePadConnection,
     GamepadlaError,
@@ -143,6 +144,7 @@ def gui():
     pygame.init()
     joysticks: list[JoystickType] = []
     selected_joystick = 0
+    result: TestResults | None = None
     data: GamepadlaUploadData | None = None
     count = 0
 
@@ -233,9 +235,17 @@ def gui():
                 enable_events=True,
             ),
         ],
+        [
+            sg.Button(
+                "Copy as Markdown",
+                disabled=True,
+                key="-COPY-MARKDOWN-BUTTON-",
+                size=200,
+            ),
+        ],
     ]
 
-    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 600), icon=ICON)
+    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 640), icon=ICON)
 
     def update_joysticks():
         nonlocal joysticks
@@ -291,17 +301,17 @@ def gui():
         window["-PROGRESS-BAR-"].update(current_count=(count * factor[samples]))
         window["-DELAY-OUTPUT-"].update(f"{delay:05.2f} ms")
 
-    def update_result_table(data: TestResults):
+    def update_result_table(result: TestResults):
         window["-RESULT-TABLE-"].update(
             [
-                ["Gamepad mode", data["joystick_name"]],
-                ["Operating System", data["os_name"]],
-                ["Polling Rate Avg.", f"{data['polling_rate']:.3f} Hz"],
+                ["Gamepad mode", result["joystick_name"]],
+                ["Operating System", result["os_name"]],
+                ["Polling Rate Avg.", f"{result['polling_rate']:.3f} Hz"],
                 ["", ""],
-                ["Average latency", f"{data['timings_filtered_avg']:.3f} ms"],
-                ["Minimal latency", f"{data['timings_filtered_min']:.3f} ms"],
-                ["Maximum latency", f"{data['timings_filtered_max']:.3f} ms"],
-                ["Jitter", f"{data['jitter']:.3f} ms"],
+                ["Average latency", f"{result['timings_filtered_avg']:.3f} ms"],
+                ["Minimal latency", f"{result['timings_filtered_min']:.3f} ms"],
+                ["Maximum latency", f"{result['timings_filtered_max']:.3f} ms"],
+                ["Jitter", f"{result['jitter']:.3f} ms"],
                 ["", ""],
                 [
                     "Outlier lower Avg.",
@@ -359,18 +369,23 @@ def gui():
 
             toggle_progress_bar(False)
 
-            update_result_table(data=result)
+            update_result_table(result=result)
 
             data = wrap_data_for_server(result=result)
 
             window["-UPLOAD-BUTTON-"].update(disabled=False)
             window["-SAVE-BUTTON-"].update(disabled=False)
+            window["-COPY-MARKDOWN-BUTTON-"].update(disabled=False)
 
         elif event == "-UPLOAD-BUTTON-" and data is not None:
             upload_popup(data=data)
 
         elif event == "-SAVE-BUTTON-" and data is not None:
             write_to_file(data=data, path=values["-SAVE-BUTTON-"])
+
+        elif event == "-COPY-MARKDOWN-BUTTON-" and result is not None:
+            result_md = markdown_str_from_result(result)
+            sg.clipboard_set(str(result_md))
 
         elif event == "-SHOW-LICENSES-BUTTON-":
             license_popup()

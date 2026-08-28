@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Copy markdown button in GUI.
+
 ### Changed
 
 - Update measuring algorithm to be more accurate.
