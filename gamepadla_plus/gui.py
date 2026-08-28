@@ -335,9 +335,9 @@ def gui():
             window.refresh()
 
             result = test_execution(
-                samples=samples,
-                stick=stick,
-                joystick=joysticks[selected_joystick],
+                sample_count=samples,
+                stick_selected=stick,
+                pygame_joystick=joysticks[selected_joystick],
                 tick=update_progress_bar,
             )
 

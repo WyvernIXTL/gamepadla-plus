@@ -97,7 +97,10 @@ def test(
             pbar.postfix[0] = f"{delay:05.2f} ms"
 
         result = test_execution(
-            samples=samples, stick=stick, joystick=joystick, tick=progress_bar_update
+            sample_count=samples,
+            stick_selected=stick,
+            pygame_joystick=joystick,
+            tick=progress_bar_update,
         )
 
     rprint(

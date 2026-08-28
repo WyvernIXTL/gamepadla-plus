@@ -6,7 +6,7 @@ tasks:
     aliases:
       - r
     cmds:
-      - uv run ./gamepadla_plus
+      - uv run ./gamepadla_plus {{.CLI_ARGS}}
 
   check:
     desc: Lint and format project.
