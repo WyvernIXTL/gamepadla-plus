@@ -16,6 +16,7 @@ from gamepadla_plus.__init__ import (
 from gamepadla_plus.common import (
     GamePadConnection,
     StickSelector,
+    TestResults,
     get_joysticks,
     read_license,
     test_execution,
@@ -42,6 +43,39 @@ def list():
             rprint(f"[blue]{idx}.[/blue] [bold cyan]{joystick.get_name()}[/bold cyan]")
     else:
         rprint("[red]No controllers found.[/red]")
+
+
+def markdown_from_result(result: TestResults) -> Markdown:
+    outlier_lower_avg_string = (
+        f"{result['outlier_lower_avg']:.3f} ms"
+        if result["outlier_lower_avg"] is not None
+        else "no outliers"
+    )
+    outlier_upper_avg_string = (
+        f"{result['outlier_upper_avg']:.3f} ms"
+        if result["outlier_upper_avg"] is not None
+        else "no outliers"
+    )
+
+    return Markdown(
+        f"""
+| Parameter           | Value                                       |
+|---------------------|---------------------------------------------|
+| Gamepad mode        | {result["joystick_name"]}                   |
+| Operating System    | {result["os_name"]}                         |
+| Polling Rate Avg.   | {result["polling_rate"]:.3f} Hz             |
+|                     |                                             |
+| Average latency     | {result["timings_filtered_avg"]:.3f} ms     |
+| Minimal latency     | {result["timings_filtered_min"]:.3f} ms     |
+| Maximum latency     | {result["timings_filtered_max"]:.3f} ms     |
+| Jitter              | {result["jitter"]:.3f} ms                   |
+|                     |                                             |
+| Outlier lower Avg.  | {outlier_lower_avg_string}                  |
+| Outlier lower %     | {result["outlier_lower_ratio"] * 100:.3f} % |
+| Outlier upper Avg.  | {outlier_upper_avg_string}                  |
+| Outlier upper %     | {result["outlier_upper_ratio"] * 100:.3f} % |
+"""
+    )
 
 
 @app.command()
@@ -103,38 +137,7 @@ def test(
             tick=progress_bar_update,
         )
 
-    outlier_lower_avg_string = (
-        f"{result['outlier_lower_avg']:.3f} ms"
-        if result["outlier_lower_avg"] is not None
-        else "no outliers"
-    )
-    outlier_upper_avg_string = (
-        f"{result['outlier_upper_avg']:.3f} ms"
-        if result["outlier_upper_avg"] is not None
-        else "no outliers"
-    )
-
-    rprint(
-        Markdown(
-            f"""
-| Parameter           | Value                                       |
-|---------------------|---------------------------------------------|
-| Gamepad mode        | {result["joystick_name"]}                   |
-| Operating System    | {result["os_name"]}                         |
-| Polling Rate Avg.   | {result["polling_rate"]:.3f} Hz             |
-|                     |                                             |
-| Average latency     | {result["timings_filtered_avg"]:.3f} ms     |
-| Minimal latency     | {result["timings_filtered_min"]:.3f} ms     |
-| Maximum latency     | {result["timings_filtered_max"]:.3f} ms     |
-| Jitter              | {result["jitter"]:.3f} ms                   |
-|                     |                                             |
-| Outlier lower Avg.  | {outlier_lower_avg_string}                  |
-| Outlier lower %     | {result["outlier_lower_ratio"] * 100:.3f} % |
-| Outlier upper Avg.  | {outlier_upper_avg_string}                  |
-| Outlier upper %     | {result["outlier_upper_ratio"] * 100:.3f} % |
-"""
-        )
-    )
+    rprint(markdown_from_result(result))
 
     data = wrap_data_for_server(result=result)
 
