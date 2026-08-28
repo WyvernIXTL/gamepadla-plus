@@ -98,6 +98,9 @@ dev = [
 license-fetching = [
     "pip-licenses>=5.0.0,<6",
 ]
+package = [
+    "nuitka>=4.2",
+]
 pyinstaller = [
     "pyinstaller>=6.11.0,<7",
 ]

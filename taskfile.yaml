@@ -21,3 +21,8 @@ tasks:
     cmds:
       - uv run ruff check --fix
       - uv run ty check --fix
+
+  compile-windows-current-arch:
+    desc: Compile a standalone windows executable with nuitka.
+    cmds:
+      - uv run --only-group package license-fetching  nuitka --mode=standalone --windows-icon-from-ico=icon/gamepadla-plus.ico --enable-plugins=tk-inter --noinclude-default-mode=error --noinclude-unittest-mode=allow --nowarn-mnemonic=unwanted-module --assume-yes-for-downloads --windows-console-mode=hide gamepadla_plus
