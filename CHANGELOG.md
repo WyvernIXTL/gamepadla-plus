@@ -13,3 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filter outliers more effectively.
 - Bumped sample numbers in GUI.
 - Improved code quality.
+
+### Fixed
+
+- Wrong file type in save dialog.
