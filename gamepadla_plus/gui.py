@@ -143,7 +143,7 @@ def gui():
     pygame.init()
     joysticks: list[JoystickType] = []
     selected_joystick = 0
-    data = {}
+    data: GamepadlaUploadData | None = None
     count = 0
 
     layout = [
@@ -365,10 +365,10 @@ def gui():
             window["-UPLOAD-BUTTON-"].update(disabled=False)
             window["-SAVE-BUTTON-"].update(disabled=False)
 
-        elif event == "-UPLOAD-BUTTON-" and data is GamepadlaUploadData:
+        elif event == "-UPLOAD-BUTTON-" and data is not None:
             upload_popup(data=data)
 
-        elif event == "-SAVE-BUTTON-" and data is GamepadlaUploadData:
+        elif event == "-SAVE-BUTTON-" and data is not None:
             write_to_file(data=data, path=values["-SAVE-BUTTON-"])
 
         elif event == "-SHOW-LICENSES-BUTTON-":
