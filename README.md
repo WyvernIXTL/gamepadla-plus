@@ -137,7 +137,7 @@ Therefore, although Gamepadla can give a general idea of the "response" of a gam
 
 ## Contributors
 
-* [John Punch](https://www.reddit.com/user/JohnnyPunch/)
+* [John Punch](https://github.com/cakama3a) [![John Punch](https://badgen.net/static/icon/John%20Punch?icon=reddit&label&color=orange)](https://www.reddit.com/user/JohnnyPunch/)
 * [Adam McKellar](https://github.com/WyvernIXTL)
 
 
