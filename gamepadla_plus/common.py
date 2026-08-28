@@ -98,14 +98,13 @@ def test_execution(
     if not joystick.get_init():
         raise GamepadlaError("Controller not connected")
 
-    times: list[float] = []
     delay_list: list[float] = []
-    start_time: float = time.time()
+    start_time: float = time.perf_counter_ns()
     prev_x: float | None = None
     prev_y: float | None = None
 
     # Main loop to gather latency data from joystick movements
-    while len(times) < samples:
+    while len(delay_list) < samples:
         pygame.event.pump()
         x = joystick.get_axis(axis_x)
         y = joystick.get_axis(axis_y)
@@ -115,27 +114,16 @@ def test_execution(
         if not ("0.0" in str(x) and "0.0" in str(y)):
             if prev_x is None and prev_y is None:
                 prev_x, prev_y = x, y
+                prev_time = start_time
             elif x != prev_x or y != prev_y:
-                end_time = time.time()
-                start_time = end_time
+                end_time = time.perf_counter_ns()
+                delay = round((end_time - prev_time) / 1_000_000, 3)
+                prev_time = end_time
                 prev_x, prev_y = x, y
 
-                while True:
-                    pygame.event.pump()
-                    new_x = joystick.get_axis(axis_x)
-                    new_y = joystick.get_axis(axis_y)
-                    pygame.event.clear()
-
-                    # If stick moved again, calculate delay
-                    if new_x != x or new_y != y:
-                        end = time.time()
-                        delay = round((end - start_time) * 1000, 2)
-                        if delay != 0.0 and delay > 0.2 and delay < 150:
-                            times.append(delay * 1.057)  # Adjust for a 5% offset
-                            tick(delay)
-                            delay_list.append(delay)
-
-                        break
+                if delay > 0.1 and delay < 150:
+                    delay_list.append(delay)
+                    tick(delay)
 
     # Filter outliers from delay list
     delay_clear = delay_list
