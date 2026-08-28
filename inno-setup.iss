@@ -4,7 +4,7 @@
 #define MyAppName "Gamepadla+"
 #define MyAppPublisher "Adam McKellar"
 #define MyAppURL "https://github.com/WyvernIXTL/gamepadla-plus"
-#define MyAppExeName "gamepadla.exe"
+#define MyAppExeName "Gamepadla+.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -33,8 +33,8 @@ PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=commandline
 OutputDir=.
 OutputBaseFilename=gamepadla-plus-windows-x64-installer
-Compression=lzma/ultra64
-LZMANumBlockThreads=4
+Compression=lzma2/ultra64
+LZMANumBlockThreads=6
 SolidCompression=true
 WizardStyle=modern
 SetupIconFile=.\icon\gamepadla-plus.ico
@@ -47,8 +47,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "dist\gamepadla\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "dist\gamepadla\_internal\*"; DestDir: "{app}\_internal\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "dist\Gamepadla+\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "THIRD-PARTY-LICENSES.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.md"; DestDir: "{app}"; Flags: ignoreversion

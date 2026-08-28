@@ -55,3 +55,31 @@ tasks:
 
   copy-docs-and-licenses-into-distribution:
     cmd: pwsh helper/Copy-DocsIntoDist.ps1
+
+  rename-dist-folder:
+    cmd: pwsh helper/Rename-DistFolder.ps1
+
+  package-windows-portable-x64-build:
+    cmd: 7z a -mmt=6 -mx=9 -ms=on gamepadla-plus-windows-x64-portable.7z ./dist/Gamepadla+
+
+  package-x64-installer:
+    cmd: pwsh helper/Package-x64Installer.ps1
+
+  compile-and-package-windows-x64:
+    desc: Produces gamepadla-plus-windows-x64-installer.exe and gamepadla-plus-windows-x64-portable.7z
+    cmds:
+      - task: compile-windows-current-arch
+      - task: fetch-third-party-licenses
+      - task: attach-python-license-to-third-party-licenses
+      - task: copy-docs-and-licenses-into-distribution
+      - task: rename-dist-folder
+      - task: package-windows-portable-x64-build
+      - task: package-x64-installer
+
+  clean-windows-x64-compilation-and-packaging:
+    cmds:
+      - trash gamepadla-plus-windows-x64-portable.7z
+      - trash gamepadla-plus-windows-x64-installer.exe
+      - trash dist/Gamepadla+
+      - trash dist/Gamepadla+.build
+      - trash THIRD-PARTY-LICENSES.txt
