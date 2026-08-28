@@ -214,7 +214,7 @@ def gui():
                 def_col_width=20,
                 auto_size_columns=False,
                 max_col_width=100,
-                num_rows=10,
+                num_rows=13,
                 hide_vertical_scroll=True,
                 justification="left",
             )
@@ -234,7 +234,7 @@ def gui():
         ],
     ]
 
-    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 560), icon=ICON)
+    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 600), icon=ICON)
 
     def update_joysticks():
         nonlocal joysticks
