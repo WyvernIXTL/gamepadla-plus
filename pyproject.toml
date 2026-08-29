@@ -101,6 +101,3 @@ license-fetching = [
 package = [
     "nuitka>=4.2",
 ]
-pyinstaller = [
-    "pyinstaller>=6.11.0,<7",
-]
