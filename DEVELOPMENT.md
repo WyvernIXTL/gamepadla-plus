@@ -29,3 +29,9 @@ ffmpeg -f gdigrab -framerate 8 -i title="Gamepadla+" -vf fps=8 frames/frame_%06d
 cd frames
 magick -delay 12.5 -loop 0 -quality 75 frame_*.png gamepadla-plus-gui-demo-v1.8.0.webp
 ```
+
+### CLI
+
+Via `asciinema`:
+- Unix: <https://docs.asciinema.org/getting-started/>
+- Windows: <https://github.com/Watfaq/PowerSession-rs>
