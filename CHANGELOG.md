@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.8.1 -- 2026-08-29
+
+### Changed
+
+- Changed the script entry point from `Gamepadla+` to `gamepadla-plus`.
+
+### Fixed
+
+- CI package publishing failing due to name of script entry point. 
+
+
 ## v1.8.0 -- 2026-08-29
 
 ### Added

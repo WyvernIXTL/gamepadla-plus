@@ -56,9 +56,9 @@ uv tool install --python 3.11 gamepadla-plus
 ## Usage (CLI)
 
 ```
-# Gamepadla+ --help
+# gamepadla-plus --help
 
- Usage: Gamepadla+ [OPTIONS] COMMAND [ARGS]...
+ Usage: gamepadla-plus [OPTIONS] COMMAND [ARGS]...
 
  Gamepad latency and polling rate tester.
 
@@ -77,24 +77,24 @@ uv tool install --python 3.11 gamepadla-plus
 
 1. List all controllers connected with:
 ```
-Gamepadla+ list
+gamepadla-plus list
 ```
 ```
-# Gamepadla+ list
+# gamepadla-plus list
 Found 1 controllers
 0. Xbox 360 Controller
 ```
 
 2. Test the controller with the id from step one (`test` defaults to id 0):
 ```
-Gamepadla+ test 0
+gamepadla-plus test 0
 ```
 equals here
 ```
-Gamepadla+ test
+gamepadla-plus test
 ```
 ```
-# Gamepadla+ test
+# gamepadla-plus test
 100%|████████████████████████████████████████████████████████████ | 01.00 ms
 
 
@@ -118,19 +118,19 @@ Gamepadla+ test
 #### Test Right Stick
 
 ```
-Gamepadla+ test --stick right
+gamepadla-plus test --stick right
 ```
 
 #### Write Result to JSON File
 
 ```
-Gamepadla+ test --out data.json
+gamepadla-plus test --out data.json
 ```
 
 ### Upload Result to <gamepadla.com>
 
 ```
-Gamepadla+ test --upload
+gamepadla-plus test --upload
 ```
 
 
