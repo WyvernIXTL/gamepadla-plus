@@ -19,8 +19,6 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 * Shows polling rate and latency metrics
 
 
-![](https://raw.githubusercontent.com/WyvernIXTL/gamepadla-plus/refs/tags/v1.7.0/img/gamepadla-plus-gui-demo.gif)
-
 ![GUI preview](https://github.com/WyvernIXTL/gamepadla-plus/blob/cf529db1f42d04e9291f18344ebbfb4677a72f04/img/gamepadla-plus-gui-demo-v1.8.0.webp)
 
 [![asciicast](https://asciinema.org/a/686853.svg)](https://asciinema.org/a/686853)
