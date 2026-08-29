@@ -22,7 +22,7 @@ name = "gamepadla-plus"
 description = "Gamepad Polling Rate and Latency Testing Tool (CLI & GUI)"
 authors = [
     { name="Adam McKellar", email="dev@mckellar.eu" },
-    { name="John Punch" },
+    { name="John Punch", email="cakama3a@gmail.com" },
 ]
 maintainers = [
   { name="Adam McKellar", email="dev@mckellar.eu" },

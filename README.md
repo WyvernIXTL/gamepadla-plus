@@ -138,8 +138,8 @@ Therefore, although Gamepadla+ can give a general idea of the "response" of a ga
 
 ## Contributors
 
-* [John Punch](https://github.com/cakama3a) [![John Punch](https://badgen.net/static/icon/John%20Punch?icon=reddit&label&color=orange)](https://www.reddit.com/user/JohnnyPunch/)
-* [Adam McKellar](https://github.com/WyvernIXTL)
+* *2024-2026* [Adam McKellar](https://github.com/WyvernIXTL)
+* *2022-2024* [John Punch](https://github.com/cakama3a) [![John Punch](https://badgen.net/static/icon/John%20Punch?icon=reddit&label&color=orange)](https://www.reddit.com/user/JohnnyPunch/)
 
 
 ## Notable Mentions
