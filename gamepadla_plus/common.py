@@ -1,16 +1,18 @@
-from typing import Callable
-import os
-from enum import Enum
-import time
 import json
-import numpy as np
+import os
 import platform
-import requests
+import time
 import uuid
+from collections.abc import Callable
+from enum import Enum
+from typing import TypedDict
+
+import numpy as np
 import pygame
+import requests
 from pygame.joystick import JoystickType
 
-from gamepadla_plus.__init__ import __version__
+from gamepadla_plus.__about__ import __version__
 
 
 class StickSelector(str, Enum):
@@ -45,129 +47,156 @@ def get_joysticks() -> list[JoystickType] | None:
         return None
 
 
-def get_polling_rate_max(actual_rate: int) -> int:
-    """
-    Function to determine max polling rate based on actual polling rate
-    """
-    max_rate = 125
-    if actual_rate > 150:
-        max_rate = 250
-    if actual_rate > 320:
-        max_rate = 500
-    if actual_rate > 600:
-        max_rate = 1000
-    return max_rate
+class FilteringResult(TypedDict):
+    timings_filtered: list[float]
+    outliers_upper: list[float]
+    outliers_lower: list[float]
 
 
-def filter_outliers(array: list[float]) -> list[float]:
+def filter_outliers(timings: list[float]) -> FilteringResult:
     """
     Function to filter out outliers in latency data.
     """
-    lower_quantile = 0.02
-    upper_quantile = 0.995
 
-    sorted_array = sorted(array)
-    lower_index = int(len(sorted_array) * lower_quantile)
-    upper_index = int(len(sorted_array) * upper_quantile)
+    timings_sorted = sorted(timings)
 
-    return sorted_array[lower_index : upper_index + 1]
+    q1 = np.quantile(timings_sorted, 0.25)
+    q3 = np.quantile(timings_sorted, 0.75)
+    range = q3 - q1
+    lower_bound = q1 - 1.5 * range
+    upper_bound = q3 + 1.5 * range
+
+    return FilteringResult(
+        timings_filtered=[
+            delta for delta in timings if lower_bound <= delta <= upper_bound
+        ],
+        outliers_upper=[delta for delta in timings if upper_bound < delta],
+        outliers_lower=[delta for delta in timings if delta < lower_bound],
+    )
+
+
+class TestResults(TypedDict):
+    os_name: str
+    joystick_name: str
+    polling_rate: float
+    timings: list[float]
+    timings_filtered_avg: float
+    timings_filtered_min: float
+    timings_filtered_max: float
+    jitter: float
+    outlier_lower_ratio: float
+    outlier_lower_avg: float | None
+    outlier_upper_ratio: float
+    outlier_upper_avg: float | None
 
 
 def test_execution(
-    samples: int,
-    stick: StickSelector,
-    joystick: JoystickType,
+    sample_count: int,
+    stick_selected: StickSelector,
+    pygame_joystick: JoystickType,
     tick: Callable[[float], None],
-) -> dict:
+) -> TestResults:
     """
     Executes the testing algorithm.
 
     Pygame NEEDS to be initialized first.
     """
-    joystick.init()  # Initialize the selected joystick
-    joystick_name = joystick.get_name()
 
-    if stick == StickSelector.LEFT:
-        axis_x = 0  # Axis for the left stick
-        axis_y = 1
-    elif stick == StickSelector.RIGHT:
-        axis_x = 2  # Axis for the right stick
-        axis_y = 3
+    pygame_joystick.init()  # Initialize the selected joystick
 
-    if not joystick.get_init():
+    match stick_selected:
+        case StickSelector.LEFT:
+            axis_x = 0  # Axis for the left stick
+            axis_y = 1
+        case StickSelector.RIGHT:
+            axis_x = 2  # Axis for the right stick
+            axis_y = 3
+
+    if not pygame_joystick.get_init():
         raise GamepadlaError("Controller not connected")
 
-    times: list[float] = []
-    delay_list: list[float] = []
-    start_time: float = time.time()
-    prev_x: float | None = None
-    prev_y: float | None = None
+    timings: list[float] = []
+    start: int = 0
+    x_old: float = 0.0
+    y_old: float = 0.0
+
+    # initialize values
+    while True:
+        pygame.event.pump()
+        x = pygame_joystick.get_axis(axis_x)
+        y = pygame_joystick.get_axis(axis_y)
+        pygame.event.clear()
+
+        if not ("0.0" in str(x) and "0.0" in str(y)):
+            x_old = x
+            y_old = y
+            start = time.perf_counter_ns()
+            break
 
     # Main loop to gather latency data from joystick movements
-    while len(times) < samples:
+    while len(timings) < sample_count:
         pygame.event.pump()
-        x = joystick.get_axis(axis_x)
-        y = joystick.get_axis(axis_y)
+        x = pygame_joystick.get_axis(axis_x)
+        y = pygame_joystick.get_axis(axis_y)
         pygame.event.clear()
 
         # Ensure the stick has moved significantly (anti-drift)
-        if not ("0.0" in str(x) and "0.0" in str(y)):
-            if prev_x is None and prev_y is None:
-                prev_x, prev_y = x, y
-            elif x != prev_x or y != prev_y:
-                end_time = time.time()
-                start_time = end_time
-                prev_x, prev_y = x, y
+        if not ("0.0" in str(x) and "0.0" in str(y)) and (x != x_old or y != y_old):
+            end = time.perf_counter_ns()
+            delay = (end - start) / 1_000_000
+            start = end
+            x_old = x
+            y_old = y
 
-                while True:
-                    pygame.event.pump()
-                    new_x = joystick.get_axis(axis_x)
-                    new_y = joystick.get_axis(axis_y)
-                    pygame.event.clear()
+            if 0.1 < delay < 150:
+                timings.append(delay)
+                tick(delay)
 
-                    # If stick moved again, calculate delay
-                    if new_x != x or new_y != y:
-                        end = time.time()
-                        delay = round((end - start_time) * 1000, 2)
-                        if delay != 0.0 and delay > 0.2 and delay < 150:
-                            times.append(delay * 1.057)  # Adjust for a 5% offset
-                            tick(delay)
-                            delay_list.append(delay)
+    filter_result = filter_outliers(timings)
 
-                        break
+    timings_filtered_avg = np.mean(filter_result["timings_filtered"])
+    polling_rate = 1000 / timings_filtered_avg
 
-    # Filter outliers from delay list
-    delay_clear = delay_list
-    delay_list = filter_outliers(delay_list)
-
-    # Calculate statistical data
-    filteredMin = min(delay_list)
-    filteredMax = max(delay_list)
-    filteredAverage = np.mean(delay_list)
-    filteredAverage_rounded = round(filteredAverage, 2)
-
-    polling_rate = round(1000 / filteredAverage, 2)
-    jitter = round(np.std(delay_list), 2)
-
-    os_name = platform.system()
-    max_polling_rate = get_polling_rate_max(polling_rate)
-    stability = round((polling_rate / max_polling_rate) * 100, 2)
-
-    return {
-        "joystick_name": joystick_name,
-        "os_name": os_name,
-        "max_polling_rate": max_polling_rate,
-        "polling_rate": polling_rate,
-        "stability": stability,
-        "filteredMin": filteredMin,
-        "filteredAverage_rounded": filteredAverage_rounded,
-        "filteredMax": filteredMax,
-        "jitter": jitter,
-        "delay_clear": delay_clear,
-    }
+    return TestResults(
+        os_name=platform.system(),
+        joystick_name=pygame_joystick.get_name(),
+        polling_rate=float(polling_rate),
+        timings=timings,
+        timings_filtered_avg=float(timings_filtered_avg),
+        timings_filtered_min=min(filter_result["timings_filtered"]),
+        timings_filtered_max=max(filter_result["timings_filtered"]),
+        jitter=float(np.std(filter_result["timings_filtered"])),
+        outlier_lower_avg=float(np.mean(filter_result["outliers_lower"]))
+        if len(filter_result["outliers_lower"]) > 0
+        else None,
+        outlier_lower_ratio=float(len(filter_result["outliers_lower"]) / sample_count),
+        outlier_upper_avg=float(np.mean(filter_result["outliers_upper"]))
+        if len(filter_result["outliers_upper"]) > 0
+        else None,
+        outlier_upper_ratio=float(len(filter_result["outliers_upper"]) / sample_count),
+    )
 
 
-def wrap_data_for_server(result: dict) -> dict:
+class GamepadlaUploadData(TypedDict):
+    test_key: str
+    version: str
+    url: str
+    date: str
+    driver: str
+    os_name: str
+    os_version: str
+    min_latency: float
+    avg_latency: float
+    max_latency: float
+    polling_rate: float
+    jitter: float
+    mathod: str
+    delay_list: str
+    connection: str | None
+    name: str | None
+
+
+def wrap_data_for_server(result: TestResults) -> GamepadlaUploadData:
     """
     Wraps the test result struct into another struct for compatibility.
     """
@@ -175,25 +204,29 @@ def wrap_data_for_server(result: dict) -> dict:
     uname = platform.uname()
     os_version = uname.version
 
-    return {
-        "test_key": str(stamp),
-        "version": __version__,
-        "url": "https://gamepadla.com",
-        "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-        "driver": result["joystick_name"],
-        "os_name": result["os_name"],
-        "os_version": os_version,
-        "min_latency": result["filteredMin"],
-        "avg_latency": result["filteredAverage_rounded"],
-        "max_latency": result["filteredMax"],
-        "polling_rate": result["polling_rate"],
-        "jitter": result["jitter"],
-        "mathod": "GP",
-        "delay_list": ", ".join(map(str, result["delay_clear"])),
-    }
+    return GamepadlaUploadData(
+        test_key=str(stamp),
+        version=f"gamepadla-plus@{__version__}",
+        url="https://gamepadla.com",
+        date=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+        driver=result["joystick_name"],
+        os_name=result["os_name"],
+        os_version=os_version,
+        min_latency=round(result["timings_filtered_min"], 2),
+        avg_latency=round(result["timings_filtered_avg"], 2),
+        max_latency=round(result["timings_filtered_max"], 2),
+        polling_rate=round(result["polling_rate"], 2),
+        jitter=round(result["jitter"], 2),
+        mathod="GP",
+        delay_list=", ".join([f"{x:.2f}" for x in result["timings"]]),
+        connection=None,
+        name=None,
+    )
 
 
-def upload_data(data: dict, connection: GamePadConnection, name: str) -> bool:
+def upload_data(
+    data: GamepadlaUploadData, connection: GamePadConnection, name: str
+) -> bool:
     """
     Uploads results to server.
     """
@@ -207,7 +240,7 @@ def upload_data(data: dict, connection: GamePadConnection, name: str) -> bool:
     return response.status_code == 200
 
 
-def write_to_file(data: dict, path: str):
+def write_to_file(data: GamepadlaUploadData, path: str):
     """
     Writes result to file.
     """

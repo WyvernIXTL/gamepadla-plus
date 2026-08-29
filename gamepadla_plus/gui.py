@@ -1,23 +1,34 @@
 import webbrowser
+
+import FreeSimpleGUI as sg
 import pygame
 from pygame.joystick import JoystickType
 from rich.traceback import install as traceback_install
-import FreeSimpleGUI as sg
 
 from gamepadla_plus.__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
+from gamepadla_plus.cli import markdown_str_from_result
 from gamepadla_plus.common import (
-    get_joysticks,
-    StickSelector,
     GamePadConnection,
     GamepadlaError,
-    write_to_file,
-    upload_data,
-    test_execution,
-    wrap_data_for_server,
+    GamepadlaUploadData,
+    StickSelector,
+    TestResults,
+    get_joysticks,
     read_license,
+    test_execution,
+    upload_data,
+    wrap_data_for_server,
+    write_to_file,
 )
-
 from gamepadla_plus.icon import ICON
+
+
+class GuiError(Exception):
+    """Exception raised for fatal GUI error."""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 
 def error_popup(msg: str):
@@ -59,7 +70,7 @@ def license_popup():
         third_party_license_popup(third_party_license)
 
 
-def upload_popup(data: dict):
+def upload_popup(data: GamepadlaUploadData):
     window = sg.Window(
         "Upload Results",
         [
@@ -106,7 +117,7 @@ def upload_popup(data: dict):
             raise GamepadlaError("No valid connection chosen.")
 
     while True:
-        event, values = window.read()
+        event, _values = window.read()
 
         if event == sg.WIN_CLOSED or event == "Cancel":
             break
@@ -133,7 +144,8 @@ def gui():
     pygame.init()
     joysticks: list[JoystickType] = []
     selected_joystick = 0
-    data = {}
+    result: TestResults | None = None
+    data: GamepadlaUploadData | None = None
     count = 0
 
     layout = [
@@ -162,8 +174,8 @@ def gui():
                 sg.Text("Samples:"),
                 sg.Push(),
                 sg.Radio("2000", group_id=1, default=True, key="-SAMPLE-RADIO-2000-"),
-                sg.Radio("3000", group_id=1, default=False, key="-SAMPLE-RADIO-3000-"),
                 sg.Radio("4000", group_id=1, default=False, key="-SAMPLE-RADIO-4000-"),
+                sg.Radio("8000", group_id=1, default=False, key="-SAMPLE-RADIO-8000-"),
             ],
         ],
         [
@@ -204,7 +216,7 @@ def gui():
                 def_col_width=20,
                 auto_size_columns=False,
                 max_col_width=100,
-                num_rows=10,
+                num_rows=13,
                 hide_vertical_scroll=True,
                 justification="left",
             )
@@ -218,13 +230,22 @@ def gui():
                 disabled=True,
                 key="-SAVE-BUTTON-",
                 size=200,
-                default_extension="json",
+                default_extension=".json",
+                file_types=(("JSON", ".json"),),
                 enable_events=True,
+            ),
+        ],
+        [
+            sg.Button(
+                "Copy as Markdown",
+                disabled=True,
+                key="-COPY-MARKDOWN-BUTTON-",
+                size=200,
             ),
         ],
     ]
 
-    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 560), icon=ICON)
+    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 640), icon=ICON)
 
     def update_joysticks():
         nonlocal joysticks
@@ -243,16 +264,20 @@ def gui():
     def get_sample_count() -> int:
         if window["-SAMPLE-RADIO-2000-"].get():
             return 2000
-        if window["-SAMPLE-RADIO-3000-"].get():
-            return 3000
         if window["-SAMPLE-RADIO-4000-"].get():
             return 4000
+        if window["-SAMPLE-RADIO-8000-"].get():
+            return 8000
+
+        raise GuiError("sample selection radio read out")
 
     def get_stick() -> StickSelector:
         if window["-STICK-RADIO-LEFT-"].get():
             return StickSelector.LEFT
         if window["-STICK-RADIO-RIGHT-"].get():
             return StickSelector.RIGHT
+
+        raise GuiError("stick selection radio read out")
 
     def toggle_progress_bar(on: bool):
         window["-PROGRESS-BAR-"].update(visible=on)
@@ -270,25 +295,38 @@ def gui():
         count += 1
         factor = {
             2000: 6,
-            3000: 4,
             4000: 3,
+            8000: 1.5,
         }
         window["-PROGRESS-BAR-"].update(current_count=(count * factor[samples]))
-        window["-DELAY-OUTPUT-"].update("{:05.2f} ms".format(delay))
+        window["-DELAY-OUTPUT-"].update(f"{delay:05.2f} ms")
 
-    def update_result_table(data: dict):
+    def update_result_table(result: TestResults):
         window["-RESULT-TABLE-"].update(
             [
-                ["Gamepad mode", data["joystick_name"]],
-                ["Operating System", data["os_name"]],
-                ["Polling Rate Max.", f"{data['max_polling_rate']} Hz"],
-                ["Polling Rate Avg.", f"{data['polling_rate']} Hz"],
-                ["Stability", f"{data['stability']}%"],
+                ["Gamepad mode", result["joystick_name"]],
+                ["Operating System", result["os_name"]],
+                ["Polling Rate Avg.", f"{result['polling_rate']:.3f} Hz"],
                 ["", ""],
-                ["Minimal latency", f"{data['filteredMin']} ms"],
-                ["Average latency", f"{data['filteredAverage_rounded']} ms"],
-                ["Maximum latency", f"{data['filteredMax']} ms"],
-                ["Jitter", f"{data['jitter']} ms"],
+                ["Average latency", f"{result['timings_filtered_avg']:.3f} ms"],
+                ["Minimal latency", f"{result['timings_filtered_min']:.3f} ms"],
+                ["Maximum latency", f"{result['timings_filtered_max']:.3f} ms"],
+                ["Jitter", f"{result['jitter']:.3f} ms"],
+                ["", ""],
+                [
+                    "Outlier lower Avg.",
+                    f"{result['outlier_lower_avg']:.3f} ms"
+                    if result["outlier_lower_avg"] is not None
+                    else "no outliers",
+                ],
+                ["Outlier lower %", f"{result['outlier_lower_ratio'] * 100:.3f} %"],
+                [
+                    "Outlier upper Avg.",
+                    f"{result['outlier_upper_avg']:.3f} ms"
+                    if result["outlier_upper_avg"] is not None
+                    else "no outliers",
+                ],
+                ["Outlier upper %", f"{result['outlier_upper_ratio'] * 100:.3f} %"],
             ]
         )
 
@@ -323,26 +361,31 @@ def gui():
             window.refresh()
 
             result = test_execution(
-                samples=samples,
-                stick=stick,
-                joystick=joysticks[selected_joystick],
+                sample_count=samples,
+                stick_selected=stick,
+                pygame_joystick=joysticks[selected_joystick],
                 tick=update_progress_bar,
             )
 
             toggle_progress_bar(False)
 
-            update_result_table(data=result)
+            update_result_table(result=result)
 
             data = wrap_data_for_server(result=result)
 
             window["-UPLOAD-BUTTON-"].update(disabled=False)
             window["-SAVE-BUTTON-"].update(disabled=False)
+            window["-COPY-MARKDOWN-BUTTON-"].update(disabled=False)
 
-        elif event == "-UPLOAD-BUTTON-":
+        elif event == "-UPLOAD-BUTTON-" and data is not None:
             upload_popup(data=data)
 
-        elif event == "-SAVE-BUTTON-":
+        elif event == "-SAVE-BUTTON-" and data is not None:
             write_to_file(data=data, path=values["-SAVE-BUTTON-"])
+
+        elif event == "-COPY-MARKDOWN-BUTTON-" and result is not None:
+            result_md = markdown_str_from_result(result)
+            sg.clipboard_set(str(result_md))
 
         elif event == "-SHOW-LICENSES-BUTTON-":
             license_popup()

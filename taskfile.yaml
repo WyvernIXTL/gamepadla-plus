@@ -1,0 +1,110 @@
+version: "3"
+
+tasks:
+  run:
+    desc: Run GUI
+    aliases:
+      - r
+    cmds:
+      - uv run ./gamepadla_plus {{.CLI_ARGS}}
+
+  check:
+    desc: Lint and format project.
+    aliases:
+      - c
+    cmds:
+      - uv run ruff check
+      - uv run ty check
+
+  try-fix:
+    desc: Lint and format project.
+    cmds:
+      - uv run ruff check --fix
+      - uv run ty check --fix
+
+  compile-win64:step:compile:nuitka:
+    cmd: >
+      uv run --only-group package nuitka
+      --mode=standalone
+      --windows-icon-from-ico=icon/gamepadla-plus.ico
+      --enable-plugins=tk-inter
+      --noinclude-default-mode=error
+      --noinclude-unittest-mode=allow
+      --nowarn-mnemonic=unwanted-module
+      --assume-yes-for-downloads
+      --windows-console-mode=hide
+      --output-filename="Gamepadla+"
+      --output-folder-name=Gamepadla+
+      --output-dir=dist
+      --lto=yes
+      gamepadla_plus
+
+  compile-win64:step:compile:pip-licenses:
+    cmds:
+      - >
+        uv run --only-group license-fetching pip-licenses
+        --with-system
+        --from=all
+        --format=plain-vertical
+        --with-urls
+        --with-authors
+        --with-license-file
+        --output-file THIRD-PARTY-LICENSES.txt
+      - pwsh helper/Add-PythonInfoToThirdPartyLicenses.ps1
+
+  compile-win64:step:compile:
+    deps:
+      - compile-win64:step:compile:nuitka
+      - compile-win64:step:compile:pip-licenses
+
+  compile-win64:step:package:installer:
+    cmd: iscc /DMyAppVersion={{.VERSION}} ./inno-setup.iss
+    platforms:
+      - windows/amd64
+    vars:
+      VERSION:
+        sh: uv run ./helper/version.py
+
+  compile-win64:step:package:portable:
+    cmd: 7z a -mmt=6 -mx=9 -ms=on gamepadla-plus-windows-x64-portable.7z ./dist/Gamepadla+
+    platforms:
+      - windows/amd64
+
+  compile-win64:step:package:
+    deps:
+      - compile-win64:step:package:installer
+      - compile-win64:step:package:portable
+    platforms:
+      - windows/amd64
+
+  compile-win64:
+    desc: |
+      Compiles and packages Gamepadla+ for Windows x64.
+      Produces the files:
+        - gamepadla-plus-windows-x64-installer.exe
+        - gamepadla-plus-windows-x64-portable.7z
+    platforms:
+      - windows/amd64
+    cmds:
+      # compile & get licenses
+      - task: compile-win64:step:compile
+
+      # copy docs into dist
+      - cp ./LICENSE.txt ./dist/Gamepadla+.dist/
+      - cp ./README.md ./dist/Gamepadla+.dist/
+      - cp ./THIRD-PARTY-LICENSES.txt ./dist/Gamepadla+.dist/
+      - cp ./CHANGELOG.md ./dist/Gamepadla+.dist/
+
+      # rename dist
+      - mv ./dist/Gamepadla+.dist/ ./dist/Gamepadla+/
+
+      # package dist
+      - task: compile-win64:step:package
+
+  compile-win64:clean:
+    cmds:
+      - rm gamepadla-plus-windows-x64-portable.7z
+      - rm gamepadla-plus-windows-x64-installer.exe
+      - rm -rf dist/Gamepadla+
+      - rm -rf dist/Gamepadla+.build
+      - rm THIRD-PARTY-LICENSES.txt
