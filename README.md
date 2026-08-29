@@ -15,7 +15,7 @@
 Gamepadla+ is a program for measuring the polling rate and synthetic latency of gamepads aka. controllers.
 
 * Supports DInput and XInput
-* Provides CLI and GUI
+* Provides CLI *(Command Line Interface)* and GUI *(Graphical User Interface)*
 * Shows polling rate and latency metrics
 
 
@@ -29,8 +29,11 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 ### Prebuilt Binaries (Windows)
 
 <a href="https://github.com/WyvernIXTL/gamepadla-plus/releases/latest/download/gamepadla-plus-windows-x64-installer.exe">
-  <img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" height="60">
+  <img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" height="65">
 </a>
+
+> [!TIP]
+> Releases have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
 
 
 ### From Source with [`uv`](https://github.com/astral-sh/uv) (Windows / Linux / MacOS)
