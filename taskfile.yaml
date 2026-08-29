@@ -36,7 +36,6 @@ tasks:
       --output-filename="Gamepadla+"
       --output-folder-name=Gamepadla+
       --output-dir=dist
-      --lto=yes
       gamepadla_plus
 
   compile-win64:step:compile:pip-licenses:
