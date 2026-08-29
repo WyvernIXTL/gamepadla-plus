@@ -31,7 +31,7 @@ jobs:
         run: uv sync -p 3.11
 
       - name: Compile and Package App for Windows x64
-        run: task compile-and-package-windows-x64
+        run: task compile-win64
 
       - name: Attest packages
         uses: actions/attest@v4

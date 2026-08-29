@@ -22,8 +22,7 @@ tasks:
       - uv run ruff check --fix
       - uv run ty check --fix
 
-  compile-windows-current-arch:
-    desc: Compile a standalone windows executable with nuitka.
+  compile-win64:step:compile:nuitka:
     cmd: >
       uv run --only-group package nuitka
       --mode=standalone
@@ -37,49 +36,75 @@ tasks:
       --output-filename="Gamepadla+"
       --output-folder-name=Gamepadla+
       --output-dir=dist
+      --lto=yes
       gamepadla_plus
 
-  fetch-third-party-licenses:
-    cmd: >
-      uv run --only-group license-fetching pip-licenses
-      --with-system
-      --from=all
-      --format=plain-vertical
-      --with-urls
-      --with-authors
-      --with-license-file
-      --output-file THIRD-PARTY-LICENSES.txt
+  compile-win64:step:compile:pip-licenses:
+    cmds:
+      - >
+        uv run --only-group license-fetching pip-licenses
+        --with-system
+        --from=all
+        --format=plain-vertical
+        --with-urls
+        --with-authors
+        --with-license-file
+        --output-file THIRD-PARTY-LICENSES.txt
+      - pwsh helper/Add-PythonInfoToThirdPartyLicenses.ps1
 
-  attach-python-license-to-third-party-licenses:
-    cmd: pwsh helper/Add-PythonInfoToThirdPartyLicenses.ps1
+  compile-win64:step:compile:
+    deps:
+      - compile-win64:step:compile:nuitka
+      - compile-win64:step:compile:pip-licenses
 
-  copy-docs-and-licenses-into-distribution:
-    cmd: pwsh helper/Copy-DocsIntoDist.ps1
+  compile-win64:step:package:installer:
+    cmd: iscc /DMyAppVersion={{.VERSION}} ./inno-setup.iss
+    platforms:
+      - windows/amd64
+    vars:
+      VERSION:
+        sh: uv run ./helper/version.py
 
-  rename-dist-folder:
-    cmd: pwsh helper/Rename-DistFolder.ps1
-
-  package-windows-portable-x64-build:
+  compile-win64:step:package:portable:
     cmd: 7z a -mmt=6 -mx=9 -ms=on gamepadla-plus-windows-x64-portable.7z ./dist/Gamepadla+
+    platforms:
+      - windows/amd64
 
-  package-x64-installer:
-    cmd: pwsh helper/Package-x64Installer.ps1
+  compile-win64:step:package:
+    deps:
+      - compile-win64:step:package:installer
+      - compile-win64:step:package:portable
+    platforms:
+      - windows/amd64
 
-  compile-and-package-windows-x64:
-    desc: Produces gamepadla-plus-windows-x64-installer.exe and gamepadla-plus-windows-x64-portable.7z
+  compile-win64:
+    desc: |
+      Compiles and packages Gamepadla+ for Windows x64.
+      Produces the files:
+        - gamepadla-plus-windows-x64-installer.exe
+        - gamepadla-plus-windows-x64-portable.7z
+    platforms:
+      - windows/amd64
     cmds:
-      - task: compile-windows-current-arch
-      - task: fetch-third-party-licenses
-      - task: attach-python-license-to-third-party-licenses
-      - task: copy-docs-and-licenses-into-distribution
-      - task: rename-dist-folder
-      - task: package-windows-portable-x64-build
-      - task: package-x64-installer
+      # compile & get licenses
+      - task: compile-win64:step:compile
 
-  clean-windows-x64-compilation-and-packaging:
+      # copy docs into dist
+      - cp ./LICENSE.txt ./dist/Gamepadla+.dist/
+      - cp ./README.md ./dist/Gamepadla+.dist/
+      - cp ./THIRD-PARTY-LICENSES.txt ./dist/Gamepadla+.dist/
+      - cp ./CHANGELOG.md ./dist/Gamepadla+.dist/
+
+      # rename dist
+      - mv ./dist/Gamepadla+.dist/ ./dist/Gamepadla+/
+
+      # package dist
+      - task: compile-win64:step:package
+
+  compile-win64:clean:
     cmds:
-      - trash gamepadla-plus-windows-x64-portable.7z
-      - trash gamepadla-plus-windows-x64-installer.exe
-      - trash dist/Gamepadla+
-      - trash dist/Gamepadla+.build
-      - trash THIRD-PARTY-LICENSES.txt
+      - rm gamepadla-plus-windows-x64-portable.7z
+      - rm gamepadla-plus-windows-x64-installer.exe
+      - rm -rf dist/Gamepadla+
+      - rm -rf dist/Gamepadla+.build
+      - rm THIRD-PARTY-LICENSES.txt

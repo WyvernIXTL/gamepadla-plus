@@ -5,7 +5,7 @@
 Please use [`uv`](https://docs.astral.sh/uv/) to initialize the virtual environment.
 
 ```
-uv sync
+uv sync -p 3.11
 ```
 
 ## Code Formatting and Linting
