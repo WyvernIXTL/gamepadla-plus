@@ -18,3 +18,14 @@ I recommend using [Zed](https://zed.dev/) as it ships with support for both out 
 ## Version
 
 Versions can be bumped via `hatch version`.
+
+## Creating Demos / Previews
+
+### GUI
+
+```sh
+mkdir frames
+ffmpeg -f gdigrab -framerate 8 -i title="Gamepadla+" -vf fps=8 frames/frame_%06d.png
+cd frames
+magick -delay 12.5 -loop 0 -quality 75 frame_*.png gamepadla-plus-gui-demo-v1.8.0.webp
+```
