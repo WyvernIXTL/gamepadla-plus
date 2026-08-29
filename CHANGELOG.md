@@ -25,3 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Wrong file type in save dialog.
+
+### Removed
+
+- Max refresh rate display, as this metric appears to be inaccurate.
