@@ -47,20 +47,6 @@ def get_joysticks() -> list[JoystickType] | None:
         return None
 
 
-def get_polling_rate_max(actual_rate: int) -> int:
-    """
-    Function to determine max polling rate based on actual polling rate
-    """
-    max_rate = 125
-    if actual_rate > 150:
-        max_rate = 250
-    if actual_rate > 320:
-        max_rate = 500
-    if actual_rate > 600:
-        max_rate = 1000
-    return max_rate
-
-
 class FilteringResult(TypedDict):
     timings_filtered: list[float]
     outliers_upper: list[float]
