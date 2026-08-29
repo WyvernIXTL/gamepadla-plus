@@ -27,6 +27,9 @@ jobs:
       - name: Install task
         uses: go-task/setup-task@a00fbb05ce67b35648be3c78cbc9fd85354c757e # v2.2.0
 
+      - name: uv sync
+        run: uv sync -p 3.11
+
       - name: Compile and Package App for Windows x64
         run: task compile-and-package-windows-x64
 
