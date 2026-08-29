@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Failed execution after installation from source due to `typer v0.12.2` not pinning `click`.
 - Wrong file type in save dialog.
 
 ### Removed
