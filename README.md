@@ -26,17 +26,18 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 ## Installation
 
-### [`uv`](https://github.com/astral-sh/uv) (Windows / Linux / MacOS)
+### Prebuilt Binaries (Windows)
+
+<a href="https://github.com/WyvernIXTL/gamepadla-plus/releases/latest/download/gamepadla-plus-windows-x64-installer.exe">
+  <img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" height="60">
+</a>
+
+
+### From Source with [`uv`](https://github.com/astral-sh/uv) (Windows / Linux / MacOS)
 
 ```sh
 uv tool install --python 3.11 gamepadla-plus
 ```
-
-### Prebuilt Binaries (Windows)
-
-<a href="https://github.com/WyvernIXTL/gamepadla-plus/releases/latest/download/gamepadla-plus-windows-x64-installer.exe">
-  <img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" height="50">
-</a>
 
 
 ## Usage (GUI)
