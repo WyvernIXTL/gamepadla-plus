@@ -32,6 +32,8 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
   <img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" height="65">
 </a>
 
+   
+
 > [!TIP]
 > Releases have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
 
