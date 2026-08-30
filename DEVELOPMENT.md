@@ -35,3 +35,14 @@ magick -delay 12.5 -loop 0 -quality 75 frame_*.png gamepadla-plus-gui-demo-v1.8.
 Via `asciinema`:
 - Unix: <https://docs.asciinema.org/getting-started/>
 - Windows: <https://github.com/Watfaq/PowerSession-rs>
+
+
+### Trailer
+
+Use [OpenScreen](https://github.com/getopenscreen/openscreen) and export 16/9 1080p for Microsoft Store.
+
+To extract the hero image:
+
+```sh
+ffmpeg -sseof -3 -i .\gamepadla-plus-trailer2-v1.8.2.mp4 -q:v 31 -update true gamepadla-plus-heroimage-v1.8.2.png
+```
