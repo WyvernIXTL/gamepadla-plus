@@ -1,3 +1,4 @@
+import tkinter as tk
 import webbrowser
 
 import FreeSimpleGUI as sg
@@ -139,6 +140,22 @@ def upload_popup(data: GamepadlaUploadData):
     window.close()
 
 
+def display_scale() -> float:
+    """
+    Returns the scale factor of the display relative to a 96 DPI reference.
+
+    Tk scales fonts and character based element sizes with the display DPI,
+    but pixel based sizes like the window size are not scaled. The factor can
+    be used to scale those accordingly. On unscaled displays the factor is 1.
+    """
+    probe = tk.Tk()
+    probe.withdraw()
+    try:
+        return max(1.0, probe.winfo_fpixels("1i") / 96)
+    finally:
+        probe.destroy()
+
+
 def gui():
     traceback_install()
     pygame.init()
@@ -147,6 +164,7 @@ def gui():
     result: TestResults | None = None
     data: GamepadlaUploadData | None = None
     count = 0
+    scale = display_scale()
 
     layout = [
         [
@@ -163,11 +181,16 @@ def gui():
                 key="-GAMEPAD-LIST-",
                 enable_events=True,
                 select_mode="LISTBOX_SELECT_MODE_SINGLE",
-                size=(200, 4),
+                size=(None, 4),
+                expand_x=True,
             ),
         ],
         [
-            sg.Button("Refresh", key="-REFRESH-JOYSTICKS-BUTTON-", size=200),
+            sg.Button(
+                "Refresh",
+                key="-REFRESH-JOYSTICKS-BUTTON-",
+                expand_x=True,
+            ),
         ],
         [
             [
@@ -192,7 +215,7 @@ def gui():
             ],
         ],
         [
-            sg.Button("Test", key="-START-TEST-BUTTON-", size=200),
+            sg.Button("Test", key="-START-TEST-BUTTON-", expand_x=True),
         ],
         [
             sg.Text(
@@ -203,7 +226,10 @@ def gui():
         ],
         [
             sg.ProgressBar(
-                12000, key="-PROGRESS-BAR-", visible=False, size_px=(300, 3)
+                12000,
+                key="-PROGRESS-BAR-",
+                visible=False,
+                size_px=(round(300 * scale), round(3 * scale)),
             ),
             sg.Text("", key="-DELAY-OUTPUT-", visible=False),
         ],
@@ -219,17 +245,23 @@ def gui():
                 num_rows=13,
                 hide_vertical_scroll=True,
                 justification="left",
+                expand_x=True,
             )
         ],
         [
-            sg.Button("Upload Result", disabled=True, key="-UPLOAD-BUTTON-", size=200),
+            sg.Button(
+                "Upload Result",
+                disabled=True,
+                key="-UPLOAD-BUTTON-",
+                expand_x=True,
+            ),
         ],
         [
             sg.FileSaveAs(
                 "Save to File",
                 disabled=True,
                 key="-SAVE-BUTTON-",
-                size=200,
+                expand_x=True,
                 default_extension=".json",
                 file_types=(("JSON", ".json"),),
                 enable_events=True,
@@ -240,15 +272,21 @@ def gui():
                 "Copy as Markdown",
                 disabled=True,
                 key="-COPY-MARKDOWN-BUTTON-",
-                size=200,
+                expand_x=True,
             ),
         ],
     ]
 
-    window = sg.Window("Gamepadla+", layout, finalize=True, size=(400, 640), icon=ICON)
+    window = sg.Window(
+        "Gamepadla+",
+        layout,
+        finalize=True,
+        size=(round(400 * scale), round(640 * scale)),
+        icon=ICON,
+    )
 
     def update_joysticks():
-        nonlocal joysticks
+        nonlocal joysticks, selected_joystick
         if new_joysticks := get_joysticks():
             joysticks = new_joysticks
             joystick_names = [
@@ -258,6 +296,9 @@ def gui():
         else:
             joysticks = []
             window["-GAMEPAD-LIST-"].update([])
+
+        if selected_joystick >= len(joysticks):
+            selected_joystick = 0
 
     update_joysticks()
 

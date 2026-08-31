@@ -36,7 +36,12 @@ def get_joysticks() -> list[JoystickType] | None:
 
     Pygame NEEDS to be initialized first.
     """
+
+    # To detect new gamepads on all platforms, the joystick module needs to be reinitialized.
+    pygame.event.pump()
+    pygame.joystick.quit()
     pygame.joystick.init()
+
     joysticks = [
         pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())
     ]
