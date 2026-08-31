@@ -10,6 +10,7 @@ __pycache__
 THIRD-PARTY-LICENSES.txt
 *.7z
 *.exe
+*.snap
 
 
 # Byte-compiled / optimized / DLL files

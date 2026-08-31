@@ -38,6 +38,14 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 > Releases have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
 
 
+### Snap (Linux)
+
+```sh
+sudo snap install gamepadla-plus
+sudo snap connect gamepadla-plus:joystick
+sudo snap connect gamepadla-plus:hardware-observe
+```
+
 ### From Source with [`uv`](https://github.com/astral-sh/uv) (Windows / Linux / MacOS)
 
 ```sh

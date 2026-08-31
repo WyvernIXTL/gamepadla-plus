@@ -11,7 +11,7 @@ description: |
 
 source-code: https://github.com/WyvernIXTL/gamepadla-plus
 license: MIT
-base: core26
+base: core24
 contact: dev@mckellar.eu
 issues: https://github.com/WyvernIXTL/gamepadla-plus/issues
 website: https://github.com/WyvernIXTL/gamepadla-plus
@@ -45,8 +45,10 @@ apps:
     command: bin/gamepadla-plus
     plugs:
       - network
-      - raw-usb
-      - hardware-observe
       - home
+      - hardware-observe
+      - joystick
+      - x11
+      - desktop
     aliases:
      - gamepadla-plus
