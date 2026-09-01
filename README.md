@@ -26,28 +26,54 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 ## Installation
 
-### Prebuilt Binaries (Windows)
+### Windows
 
-<a href="https://github.com/WyvernIXTL/gamepadla-plus/releases/latest/download/gamepadla-plus-windows-x64-installer.exe">
-  <img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" height="65">
+#### Microsoft Store
+
+<a href="https://get.microsoft.com/installer/download/9nxr3b5txfph?referrer=appbadge" target="_self" >
+	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
 </a>
 
-   
+#### Installer
 
 > [!TIP]
 > Releases have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
 
+[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/latest/download/gamepadla-plus-windows-x64-installer.exe")
 
-### Snap (Linux)
+
+#### From Source
+
+Using [`uv`](https://github.com/astral-sh/uv):
+```sh
+uv tool install --python 3.11 gamepadla-plus
+```
+
+### Linux
+
+<!--#### Snap
 
 ```sh
 sudo snap install gamepadla-plus
 sudo snap connect gamepadla-plus:joystick
 sudo snap connect gamepadla-plus:hardware-observe
+```-->
+
+#### From Source
+
+Using [`uv`](https://github.com/astral-sh/uv):
+```sh
+uv tool install --python 3.11 gamepadla-plus
 ```
 
-### From Source with [`uv`](https://github.com/astral-sh/uv) (Windows / Linux / MacOS)
+### macOS
 
+> [!WARNING]
+> The app has not been tested with macOS.
+
+#### From Source
+
+Using [`uv`](https://github.com/astral-sh/uv):
 ```sh
 uv tool install --python 3.11 gamepadla-plus
 ```
