@@ -25,10 +25,16 @@ tasks:
   package:windows:compile:
     platforms:
       - windows
+    deps:
+      - package:fetch-third-party-licenses
     cmd: >
       uv run --only-group package nuitka
       --mode=standalone
       --enable-plugins=pyside6
+      --include-data-files=LICENSE.txt=LICENSE.txt
+      --include-data-files=THIRD-PARTY-LICENSES.txt=THIRD-PARTY-LICENSES.txt
+      --include-data-files=README.md=README.md
+      --include-data-files=CHANGELOG.md=CHANGELOG.md
       --noinclude-default-mode=error
       --noinclude-unittest-mode=allow
       --nowarn-mnemonic=unwanted-module
@@ -45,6 +51,8 @@ tasks:
   package:linux:compile:
     platforms:
       - linux
+    deps:
+      - package:fetch-third-party-licenses
     vars:
       APPIMAGE_NAME:
         sh: uv run ./helper/appimage-name.py
@@ -54,6 +62,10 @@ tasks:
       uv run --only-group package nuitka
       --mode=standalone
       --enable-plugins=pyside6
+      --include-data-files=LICENSE.txt=LICENSE.txt
+      --include-data-files=THIRD-PARTY-LICENSES.txt=THIRD-PARTY-LICENSES.txt
+      --include-data-files=README.md=README.md
+      --include-data-files=CHANGELOG.md=CHANGELOG.md
       --noinclude-default-mode=error
       --noinclude-unittest-mode=allow
       --nowarn-mnemonic=unwanted-module
@@ -136,18 +148,9 @@ tasks:
       - linux/amd64
       - linux/arm64
     cmds:
-      # fetch licenses
-      - task: package:fetch-third-party-licenses
-
       # compile
       - task: package:windows:compile
       - task: package:linux:compile
-
-      # copy docs into dist
-      - cp ./LICENSE.txt ./dist/Gamepadla+.dist/
-      - cp ./README.md ./dist/Gamepadla+.dist/
-      - cp ./THIRD-PARTY-LICENSES.txt ./dist/Gamepadla+.dist/
-      - cp ./CHANGELOG.md ./dist/Gamepadla+.dist/
 
       # rename dist
       - mv ./dist/Gamepadla+.dist/ ./dist/Gamepadla+/

@@ -1,6 +1,7 @@
 import json
 import os
 import platform
+import sys
 import time
 import uuid
 from collections.abc import Callable
@@ -253,7 +254,13 @@ def write_to_file(data: GamepadlaUploadData, path: str):
 
 def project_root_path() -> str:
     src_path = os.path.dirname(os.path.realpath(__file__))
-    return src_path + "/../"
+    root_path = os.path.abspath(os.path.join(src_path, os.pardir))
+    if not os.path.isdir(root_path):
+        # Compiled binaries resolve __file__ to a virtual path whose parent
+        # directories do not exist on disk. The data files are located next to
+        # the binary instead.
+        root_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+    return root_path + "/"
 
 
 def read_license(license_file_name: str) -> str:
