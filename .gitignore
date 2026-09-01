@@ -11,6 +11,8 @@ THIRD-PARTY-LICENSES.txt
 *.7z
 *.exe
 *.snap
+/SHA512SUMS
+/SHA256SUMS
 
 
 # Byte-compiled / optimized / DLL files

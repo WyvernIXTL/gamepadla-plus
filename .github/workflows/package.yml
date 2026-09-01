@@ -14,12 +14,14 @@ on:
 
 jobs:
   build-release:
-    runs-on: windows-latest
-    permissions:
-      id-token: write
-      attestations: write
-      artifact-metadata: write
-      contents: write
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-22.04-arm
+          - windows-latest
+          - windows-11-arm
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -32,19 +34,55 @@ jobs:
         run: uv sync -p 3.11
 
       - name: Compile and Package App for Windows x64
-        run: task compile-win64
+        run: task package
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: packaged-app-${{ matrix.os }}
+          path: |
+            *.7z
+            *.exe
+            *.AppImage
+            *.tar.xz
+          if-no-files-found: ignore
+          compression-level: 0
+
+  upload-release:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+      contents: write
+    steps:
+      - name: Install task
+        uses: go-task/setup-task@a00fbb05ce67b35648be3c78cbc9fd85354c757e # v2.2.0
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: packaged-app-*
+          merge-multiple: true
+
+      - name: Create SHA512SUM
+        run: task package:shasum
 
       - name: Attest packages
         uses: actions/attest@v4
         with:
           subject-path: |
-            gamepadla-plus-windows-x64-installer.exe
-            gamepadla-plus-windows-x64-portable.7z
+            *.7z
+            *.exe
+            *.AppImage
+            *.tar.xz
+            SHA512SUM
 
       - name: Upload To Release
         if: ${{ github.event_name == 'release' || inputs.release == 'true' }}
         uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           files: |
-            gamepadla-plus-windows-x64-portable.7z
-            gamepadla-plus-windows-x64-installer.exe
+            *.7z
+            *.exe
+            *.AppImage
+            *.tar.xz
+            SHA512SUM

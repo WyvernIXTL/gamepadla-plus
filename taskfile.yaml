@@ -22,23 +22,52 @@ tasks:
       - uv run ruff check --fix
       - uv run ty check --fix
 
-  compile-win64:step:compile:nuitka:
+  package:windows:compile:
+    platforms:
+      - windows
     cmd: >
       uv run --only-group package nuitka
       --mode=standalone
-      --windows-icon-from-ico=icon/gamepadla-plus.ico
       --enable-plugins=tk-inter
       --noinclude-default-mode=error
       --noinclude-unittest-mode=allow
       --nowarn-mnemonic=unwanted-module
       --assume-yes-for-downloads
+      --windows-icon-from-ico=icon/gamepadla-plus.ico
       --windows-console-mode=hide
       --output-filename="Gamepadla+"
       --output-folder-name=Gamepadla+
       --output-dir=dist
+      --lto=no
       gamepadla_plus
 
-  compile-win64:step:compile:pip-licenses:
+  # Not tested yet
+  package:linux:compile:
+    platforms:
+      - linux
+    vars:
+      APPIMAGE_NAME:
+        sh: uv run ./helper/appimage-name.py
+    cmd: >
+      uv run --only-group package nuitka
+      --mode=standalone
+      --enable-plugins=tk-inter
+      --noinclude-default-mode=error
+      --noinclude-unittest-mode=allow
+      --nowarn-mnemonic=unwanted-module
+      --assume-yes-for-downloads
+      --linux-app-icon=icon/gamepadla-plus-icon_export-solid.png
+      --linux-app-console-mode=disable
+      --linux-app-license=MIT
+      --output-filename="Gamepadla+"
+      --output-folder-name=Gamepadla+
+      --output-dir=dist
+      --linux-create-installer
+      --linux-installer-output={.APPIMAGE_NAME}
+      --lto=no
+      gamepadla_plus
+
+  package:fetch-third-party-licenses:
     cmds:
       - >
         uv run --only-group license-fetching pip-licenses
@@ -51,42 +80,62 @@ tasks:
         --output-file THIRD-PARTY-LICENSES.txt
       - pwsh helper/Add-PythonInfoToThirdPartyLicenses.ps1
 
-  compile-win64:step:compile:
-    deps:
-      - compile-win64:step:compile:nuitka
-      - compile-win64:step:compile:pip-licenses
-
-  compile-win64:step:package:installer:
-    cmd: iscc /DMyAppVersion={{.VERSION}} ./inno-setup.iss
+  package:package:windows-installer:
     platforms:
       - windows/amd64
     vars:
       VERSION:
         sh: uv run ./helper/version.py
+    cmd: iscc /DMyAppVersion={{.VERSION}} ./inno-setup.iss
 
-  compile-win64:step:package:portable:
-    cmd: 7z a -mmt=6 -mx=9 -ms=on gamepadla-plus-windows-x64-portable.7z ./dist/Gamepadla+
+  package:package:portable:
     platforms:
       - windows/amd64
-
-  compile-win64:step:package:
-    deps:
-      - compile-win64:step:package:installer
-      - compile-win64:step:package:portable
-    platforms:
-      - windows/amd64
-
-  compile-win64:
-    desc: |
-      Compiles and packages Gamepadla+ for Windows x64.
-      Produces the files:
-        - gamepadla-plus-windows-x64-installer.exe
-        - gamepadla-plus-windows-x64-portable.7z
-    platforms:
-      - windows/amd64
+      - windows/arm64
+      - linux/amd64
+      - linux/arm64
+    vars:
+      VERSION:
+        sh: uv run ./helper/version.py
     cmds:
-      # compile & get licenses
-      - task: compile-win64:step:compile
+      - cmd: 7z a -mmt=6 -mx=9 -ms=on gamepadla-plus-v{{.VERSION}}-windows-x64-portable.7z ./dist/Gamepadla+
+        platforms:
+          - windows/amd64
+      - cmd: 7z a -mmt=6 -mx=9 -ms=on gamepadla-plus-v{{.VERSION}}-windows-arm64-portable.7z ./dist/Gamepadla+
+        platforms:
+          - windows/arm64
+      - cmd: tar -cJf gamepadla-plus-v{{.VERSION}}-linux-x64-portable.tar.xz ./dist/Gamepadla+
+        platforms:
+          - linux/amd64
+      - cmd: tar -cJf gamepadla-plus-v{{.VERSION}}-linux-arm64-portable.tar.xz ./dist/Gamepadla+
+        platforms:
+          - linux/arm64
+
+  package:package:
+    deps:
+      - package:package:windows-installer
+      - package:package:portable
+    platforms:
+      - windows/amd64
+      - windows/arm64
+      - linux/amd64
+      - linux/arm64
+
+  package:
+    desc: |
+      Compiles and packages Gamepadla+.
+    platforms:
+      - windows/amd64
+      - windows/arm64
+      - linux/amd64
+      - linux/arm64
+    cmds:
+      # compile
+      - task: package:windows:compile
+      - task: package:linux:compile
+
+      # fetch licenses
+      - task: package:fetch-third-party-licenses
 
       # copy docs into dist
       - cp ./LICENSE.txt ./dist/Gamepadla+.dist/
@@ -98,12 +147,21 @@ tasks:
       - mv ./dist/Gamepadla+.dist/ ./dist/Gamepadla+/
 
       # package dist
-      - task: compile-win64:step:package
+      - task: package:package
 
-  compile-win64:clean:
+  package:clean:
     cmds:
-      - rm gamepadla-plus-windows-x64-portable.7z
-      - rm gamepadla-plus-windows-x64-installer.exe
+      - rm -f *.7z
+      - rm -f *.exe
+      - rm -f *.tar.xz
       - rm -rf dist/Gamepadla+
       - rm -rf dist/Gamepadla+.build
-      - rm THIRD-PARTY-LICENSES.txt
+      - rm -f THIRD-PARTY-LICENSES.txt
+
+  package:shasum:
+    ignore_error: true
+    cmds:
+      - shasum -a 512 *.exe >> SHA512SUMS
+      - shasum -a 512 *.tar.xz >> SHA512SUMS
+      - shasum -a 512 *.7z >> SHA512SUMS
+      - shasum -a 512 *.AppImage >> SHA512SUMS
