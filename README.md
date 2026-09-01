@@ -39,14 +39,22 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 > [!TIP]
 > Releases have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
 
-[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/latest/download/gamepadla-plus-windows-x64-installer.exe")
+[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/latest/download/gamepadla-plus-windows-x64-installer.exe)
+
+<!--[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.8.2/gamepadla-plus-v1.8.2-windows-x64-installer.exe)-->
+
+#### Portable Builds
+
+See the "Assets" section on the release page:
+
+[![Releases v1.8.2](https://badgen.net/#static/github/Releases%20v1.8.2/?icon=github&label&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.8.2)
 
 
 #### From Source
 
 Using [`uv`](https://github.com/astral-sh/uv):
 ```sh
-uv tool install --python 3.11 gamepadla-plus
+uv tool install --python 3.11 gamepadla-plus@1.8.2
 ```
 
 ### Linux
@@ -57,13 +65,20 @@ uv tool install --python 3.11 gamepadla-plus
 sudo snap install gamepadla-plus
 sudo snap connect gamepadla-plus:joystick
 sudo snap connect gamepadla-plus:hardware-observe
-```-->
+```
+
+#### AppImages and Portable Builds
+
+See the "Assets" section on the release page:
+
+[![Releases v1.8.2](https://badgen.net/#static/github/Releases%20v1.8.2/?icon=github&label&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.8.2)-->
+
 
 #### From Source
 
 Using [`uv`](https://github.com/astral-sh/uv):
 ```sh
-uv tool install --python 3.11 gamepadla-plus
+uv tool install --python 3.11 gamepadla-plus@1.8.2
 ```
 
 ### macOS
@@ -75,7 +90,7 @@ uv tool install --python 3.11 gamepadla-plus
 
 Using [`uv`](https://github.com/astral-sh/uv):
 ```sh
-uv tool install --python 3.11 gamepadla-plus
+uv tool install --python 3.11 gamepadla-plus@1.8.2
 ```
 
 
