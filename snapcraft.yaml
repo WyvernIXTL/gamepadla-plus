@@ -11,13 +11,13 @@ description: |
 
 source-code: https://github.com/WyvernIXTL/gamepadla-plus
 license: MIT
-base: core24
+base: core26
 contact: dev@mckellar.eu
 issues: https://github.com/WyvernIXTL/gamepadla-plus/issues
 website: https://github.com/WyvernIXTL/gamepadla-plus
 icon: icon/gamepadla-plus-icon.svg
 type: app
-grade: stable
+grade: devel # stable soonTM
 confinement: strict # or devmode
 compression: lzo
 
@@ -35,10 +35,8 @@ platforms:
 
 parts:
   gamepadla-plus:
-    plugin: python
-    source: .
-    # stage-packages:
-    #   - python3-usb
+    plugin: dump
+    source: dist/Gamepadla+
 
 apps:
   gamepadla-plus:
@@ -51,4 +49,4 @@ apps:
       - x11
       - desktop
     aliases:
-     - gamepadla-plus
+      - gamepadla-plus
