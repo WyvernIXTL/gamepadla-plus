@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- PyPi releases shipping without source files. 😅 Sorry!
 - GUI window not scaling with the display scale factor, which cut off parts of the GUI.
 - Controllers connected after startup not being detected by the refresh button in the GUI on Linux.
 - Starting test after unplugging and refreshing gamepads crashing the program.

@@ -9,8 +9,11 @@ path = "gamepadla_plus/__about__.py"
 
 [tool.hatch.build]
 include = [
+    "gamepadla_plus/**",
     "LICENSE.txt",
     "THIRD-PARTY-LICENSES.txt",
+    "CHANGELOG.md",
+    "README.md"
 ]
 
 [tool.hatch.build.targets.wheel]
