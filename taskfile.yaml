@@ -50,27 +50,27 @@ tasks:
         sh: uv run ./helper/appimage-name.py
       VERSION:
         sh: uv run ./helper/version.py
-      cmd: >
-        uv run --only-group package nuitka
-        --mode=standalone
-        --enable-plugins=pyside6
-        --noinclude-default-mode=error
-        --noinclude-unittest-mode=allow
-        --nowarn-mnemonic=unwanted-module
-        --assume-yes-for-downloads
-        --output-filename="Gamepadla+"
-        --output-folder-name=Gamepadla+
-        --output-dir=dist
-        --lto=no
-        --linux-app-icon=icon/gamepadla-plus-icon_export-solid.png
-        --linux-app-console-mode=disable
-        --linux-app-license=MIT
-        --linux-create-installer
-        --linux-installer-output={{.APPIMAGE_NAME}}
-        --product-name="Gamepadla+"
-        --product-version={{.VERSION}}
-        --company-name="Adam McKellar"
-        gamepadla_plus
+    cmd: >
+      uv run --only-group package nuitka
+      --mode=standalone
+      --enable-plugins=pyside6
+      --noinclude-default-mode=error
+      --noinclude-unittest-mode=allow
+      --nowarn-mnemonic=unwanted-module
+      --assume-yes-for-downloads
+      --output-filename="Gamepadla+"
+      --output-folder-name=Gamepadla+
+      --output-dir=dist
+      --lto=no
+      --linux-app-icon=icon/gamepadla-plus-icon_export-solid.png
+      --linux-app-console-mode=disable
+      --linux-app-license=MIT
+      --linux-create-installer
+      --linux-installer-output={{.APPIMAGE_NAME}}
+      --product-name="Gamepadla+"
+      --product-version={{.VERSION}}
+      --company-name="Adam McKellar"
+      gamepadla_plus
 
   package:fetch-third-party-licenses:
     cmds:
