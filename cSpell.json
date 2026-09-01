@@ -1,7 +1,7 @@
 {
     "words": [
         "colorama",
-        "freesimplegui",
+        "freesimpleguiqt",
         "gamepad",
         "Gamepad",
         "gamepadla",
@@ -19,6 +19,7 @@
         "pyinstaller",
         "pypa",
         "pypi",
+        "pyside",
         "rprint",
         "softprops",
         "tqdm",

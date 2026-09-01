@@ -1,9 +1,10 @@
-import tkinter as tk
 import webbrowser
 
-import FreeSimpleGUI as sg
+import FreeSimpleGUIQt as sg
 import pygame
 from pygame.joystick import JoystickType
+from PySide6.QtGui import QGuiApplication
+from PySide6.QtWidgets import QHeaderView
 from rich.traceback import install as traceback_install
 
 from gamepadla_plus.__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
@@ -23,6 +24,8 @@ from gamepadla_plus.common import (
 )
 from gamepadla_plus.icon import ICON
 
+TEST_INSTRUCTION = "Please rotate the stick of your gamepad slowly and steadily."
+
 
 class GuiError(Exception):
     """Exception raised for fatal GUI error."""
@@ -32,40 +35,70 @@ class GuiError(Exception):
         super().__init__(self.message)
 
 
-def error_popup(msg: str):
-    sg.Window("Error", [[sg.Text(msg)], [sg.Push(), sg.Button("Continue")]]).read(
-        close=True
+def pad_button(window, key, fit_window=False):
+    button = window[key]
+    button.set_stylesheet(
+        button.get_stylesheet() + " QPushButton { padding: 0px 12px; }"
     )
+    layout = window.QTWindow.layout()
+    layout.invalidate()
+    if fit_window:
+        window.QT_QMainWindow.adjustSize()
+    layout.activate()
+
+
+def fit_window_to_content(window, width):
+    qt_main_window = window.QT_QMainWindow
+    hint = qt_main_window.sizeHint()
+    qt_main_window.setMinimumSize(width, hint.height())
+    qt_main_window.resize(width, hint.height())
+
+
+def error_popup(msg: str):
+    window = sg.Window(
+        "Error",
+        [[sg.Text(msg)], [sg.Stretch(), sg.Button("Continue")]],
+        finalize=True,
+    )
+    pad_button(window, "Continue", fit_window=True)
+    window.read(close=True)
 
 
 def third_party_license_popup(licenses: str):
-    sg.Window(
+    window = sg.Window(
         "3rd Party Licenses",
         [
-            [sg.Multiline(licenses, size=(100, 50), wrap_lines=True)],
-            [sg.Push(), sg.Button("Continue")],
+            [sg.Multiline(licenses, size_px=(560, 400))],
+            [sg.Stretch(), sg.Button("Continue")],
         ],
-    ).read(close=True)
+        finalize=True,
+    )
+    pad_button(window, "Continue", fit_window=True)
+    window.read(close=True)
 
 
 def license_popup():
     third_party_license = read_license(THIRD_PARTY_LICENSE_FILE_NAME)
-    event, _ = sg.Window(
+    window = sg.Window(
         "License",
         [
             [sg.Text(read_license(LICENSE_FILE_NAME))],
             [
-                sg.Push(),
+                sg.Stretch(),
                 sg.Button(
                     "Third Party Licenses",
                     visible=(third_party_license != ""),
                     key="-THIRD-PARTY-LICENSES-BUTTON-",
                 ),
-                sg.Push(),
+                sg.Stretch(),
             ],
-            [sg.Push(), sg.Button("Continue")],
+            [sg.Stretch(), sg.Button("Continue")],
         ],
-    ).read(close=True)
+        finalize=True,
+    )
+    pad_button(window, "-THIRD-PARTY-LICENSES-BUTTON-", fit_window=True)
+    pad_button(window, "Continue", fit_window=True)
+    event, _ = window.read(close=True)
 
     if event == "-THIRD-PARTY-LICENSES-BUTTON-":
         third_party_license_popup(third_party_license)
@@ -102,29 +135,29 @@ def upload_popup(data: GamepadlaUploadData):
             ],
             [sg.Text("Gamepad Name")],
             [sg.Input(key="-CONTROLLER-NAME-INPUT-")],
-            [sg.Push(), sg.Button("Cancel"), sg.Button("Upload")],
+            [sg.Stretch(), sg.Button("Cancel"), sg.Button("Upload")],
         ],
         finalize=True,
     )
 
-    def get_connection_type() -> GamePadConnection:
-        if window["-RADIO-CONNECTION-DONGLE-"].get():
+    def get_connection_type(values) -> GamePadConnection:
+        if values["-RADIO-CONNECTION-DONGLE-"]:
             return GamePadConnection.DONGLE
-        elif window["-RADIO-CONNECTION-CABLE-"].get():
+        elif values["-RADIO-CONNECTION-CABLE-"]:
             return GamePadConnection.CABLE
-        elif window["-RADIO-CONNECTION-BLUETOOTH-"].get():
+        elif values["-RADIO-CONNECTION-BLUETOOTH-"]:
             return GamePadConnection.BLUETOOTH
         else:
             raise GamepadlaError("No valid connection chosen.")
 
     while True:
-        event, _values = window.read()
+        event, values = window.read()
 
         if event == sg.WIN_CLOSED or event == "Cancel":
             break
 
         elif event == "Upload":
-            connection_type = get_connection_type()
+            connection_type = get_connection_type(values)
             controller_name = window["-CONTROLLER-NAME-INPUT-"].get()
             if upload_data(
                 data=data,
@@ -140,22 +173,6 @@ def upload_popup(data: GamepadlaUploadData):
     window.close()
 
 
-def display_scale() -> float:
-    """
-    Returns the scale factor of the display relative to a 96 DPI reference.
-
-    Tk scales fonts and character based element sizes with the display DPI,
-    but pixel based sizes like the window size are not scaled. The factor can
-    be used to scale those accordingly. On unscaled displays the factor is 1.
-    """
-    probe = tk.Tk()
-    probe.withdraw()
-    try:
-        return max(1.0, probe.winfo_fpixels("1i") / 96)
-    finally:
-        probe.destroy()
-
-
 def gui():
     traceback_install()
     pygame.init()
@@ -164,11 +181,10 @@ def gui():
     result: TestResults | None = None
     data: GamepadlaUploadData | None = None
     count = 0
-    scale = display_scale()
 
     layout = [
         [
-            sg.Push(),
+            sg.Stretch(),
             sg.Button(
                 "Licenses",
                 key="-SHOW-LICENSES-BUTTON-",
@@ -180,72 +196,61 @@ def gui():
                 [],
                 key="-GAMEPAD-LIST-",
                 enable_events=True,
-                select_mode="LISTBOX_SELECT_MODE_SINGLE",
-                size=(None, 4),
-                expand_x=True,
+                select_mode="single",
+                size_px=(None, 140),
             ),
         ],
         [
             sg.Button(
                 "Refresh",
                 key="-REFRESH-JOYSTICKS-BUTTON-",
-                expand_x=True,
             ),
         ],
         [
-            [
-                sg.Text("Samples:"),
-                sg.Push(),
-                sg.Radio("2000", group_id=1, default=True, key="-SAMPLE-RADIO-2000-"),
-                sg.Radio("4000", group_id=1, default=False, key="-SAMPLE-RADIO-4000-"),
-                sg.Radio("8000", group_id=1, default=False, key="-SAMPLE-RADIO-8000-"),
-            ],
+            sg.Text("Samples:"),
+            sg.Stretch(),
+            sg.Radio("2000", group_id=1, default=True, key="-SAMPLE-RADIO-2000-"),
+            sg.Radio("4000", group_id=1, default=False, key="-SAMPLE-RADIO-4000-"),
+            sg.Radio("8000", group_id=1, default=False, key="-SAMPLE-RADIO-8000-"),
         ],
         [
-            [
-                sg.Text("Stick:"),
-                sg.Push(),
-                sg.Radio("left", group_id=2, default=True, key="-STICK-RADIO-LEFT-"),
-                sg.Radio(
-                    "right",
-                    group_id=2,
-                    default=False,
-                    key="-STICK-RADIO-RIGHT-",
-                ),
-            ],
+            sg.Text("Stick:"),
+            sg.Stretch(),
+            sg.Radio("left", group_id=2, default=True, key="-STICK-RADIO-LEFT-"),
+            sg.Radio(
+                "right",
+                group_id=2,
+                default=False,
+                key="-STICK-RADIO-RIGHT-",
+            ),
         ],
         [
-            sg.Button("Test", key="-START-TEST-BUTTON-", expand_x=True),
+            sg.Button("Test", key="-START-TEST-BUTTON-"),
         ],
         [
             sg.Text(
-                "Please rotate the stick of your gamepad slowly and steadily.",
+                "",
                 key="-TEST-INSTRUCTION-",
-                visible=False,
             ),
         ],
         [
             sg.ProgressBar(
                 12000,
                 key="-PROGRESS-BAR-",
-                visible=False,
-                size_px=(round(300 * scale), round(3 * scale)),
+                size_px=(300, 3),
             ),
-            sg.Text("", key="-DELAY-OUTPUT-", visible=False),
+            sg.Text("", key="-DELAY-OUTPUT-"),
         ],
-        [sg.VPush()],
         [
             sg.Table(
-                ["", ""],
+                [["", ""]],
                 headings=["Parameter", "Value"],
                 key="-RESULT-TABLE-",
                 def_col_width=20,
                 auto_size_columns=False,
                 max_col_width=100,
                 num_rows=13,
-                hide_vertical_scroll=True,
                 justification="left",
-                expand_x=True,
             )
         ],
         [
@@ -253,7 +258,6 @@ def gui():
                 "Upload Result",
                 disabled=True,
                 key="-UPLOAD-BUTTON-",
-                expand_x=True,
             ),
         ],
         [
@@ -261,9 +265,7 @@ def gui():
                 "Save to File",
                 disabled=True,
                 key="-SAVE-BUTTON-",
-                expand_x=True,
-                default_extension=".json",
-                file_types=(("JSON", ".json"),),
+                file_types=(("JSON", "*.json"),),
                 enable_events=True,
             ),
         ],
@@ -272,7 +274,6 @@ def gui():
                 "Copy as Markdown",
                 disabled=True,
                 key="-COPY-MARKDOWN-BUTTON-",
-                expand_x=True,
             ),
         ],
     ]
@@ -281,9 +282,30 @@ def gui():
         "Gamepadla+",
         layout,
         finalize=True,
-        size=(round(400 * scale), round(640 * scale)),
+        size=(400, 820),
         icon=ICON,
     )
+    result_table_element = window["-RESULT-TABLE-"]
+    result_table = result_table_element.QT_TableWidget
+    result_table.verticalHeader().setVisible(False)
+    result_table.horizontalHeader().setSectionResizeMode(
+        QHeaderView.ResizeMode.Stretch
+    )
+    result_table.setFixedHeight(
+        result_table.horizontalHeader().height()
+        + result_table_element.NumRows
+        * result_table.verticalHeader().defaultSectionSize()
+        + 2 * result_table.frameWidth()
+    )
+    progress_bar_widget = window["-PROGRESS-BAR-"].Widget
+    progress_bar_stylesheet = progress_bar_widget.styleSheet()
+    hidden_progress_bar_stylesheet = (
+        "QProgressBar { background: transparent; border: none; }"
+        " QProgressBar::chunk { background: transparent; }"
+    )
+    progress_bar_widget.setStyleSheet(hidden_progress_bar_stylesheet)
+    pad_button(window, "-SHOW-LICENSES-BUTTON-")
+    fit_window_to_content(window, 400)
 
     def update_joysticks():
         nonlocal joysticks, selected_joystick
@@ -302,32 +324,37 @@ def gui():
 
     update_joysticks()
 
-    def get_sample_count() -> int:
-        if window["-SAMPLE-RADIO-2000-"].get():
+    def get_sample_count(values) -> int:
+        if values["-SAMPLE-RADIO-2000-"]:
             return 2000
-        if window["-SAMPLE-RADIO-4000-"].get():
+        if values["-SAMPLE-RADIO-4000-"]:
             return 4000
-        if window["-SAMPLE-RADIO-8000-"].get():
+        if values["-SAMPLE-RADIO-8000-"]:
             return 8000
 
         raise GuiError("sample selection radio read out")
 
-    def get_stick() -> StickSelector:
-        if window["-STICK-RADIO-LEFT-"].get():
+    def get_stick(values) -> StickSelector:
+        if values["-STICK-RADIO-LEFT-"]:
             return StickSelector.LEFT
-        if window["-STICK-RADIO-RIGHT-"].get():
+        if values["-STICK-RADIO-RIGHT-"]:
             return StickSelector.RIGHT
 
         raise GuiError("stick selection radio read out")
 
     def toggle_progress_bar(on: bool):
-        window["-PROGRESS-BAR-"].update(visible=on)
-        window["-DELAY-OUTPUT-"].update(visible=on)
-        window["-TEST-INSTRUCTION-"].update(visible=on)
+        if on:
+            progress_bar_widget.setStyleSheet(progress_bar_stylesheet)
+            window["-TEST-INSTRUCTION-"].update(TEST_INSTRUCTION)
+        else:
+            progress_bar_widget.setStyleSheet(hidden_progress_bar_stylesheet)
+            window["-TEST-INSTRUCTION-"].update("")
+            window["-PROGRESS-BAR-"].update_bar(current_count=0)
+            window["-DELAY-OUTPUT-"].update("")
 
     def reset_progress_bar():
         nonlocal count
-        window["-PROGRESS-BAR-"].update(current_count=0)
+        window["-PROGRESS-BAR-"].update_bar(current_count=0)
         window["-DELAY-OUTPUT-"].update("")
         count = 0
 
@@ -339,7 +366,7 @@ def gui():
             4000: 3,
             8000: 1.5,
         }
-        window["-PROGRESS-BAR-"].update(current_count=(count * factor[samples]))
+        window["-PROGRESS-BAR-"].update_bar(current_count=(count * factor[samples]))
         window["-DELAY-OUTPUT-"].update(f"{delay:05.2f} ms")
 
     def update_result_table(result: TestResults):
@@ -394,8 +421,8 @@ def gui():
 
             window["-START-TEST-BUTTON-"].update(disabled=True)
 
-            samples = get_sample_count()
-            stick = get_stick()
+            samples = get_sample_count(values)
+            stick = get_stick(values)
 
             reset_progress_bar()
             toggle_progress_bar(True)
@@ -422,11 +449,15 @@ def gui():
             upload_popup(data=data)
 
         elif event == "-SAVE-BUTTON-" and data is not None:
-            write_to_file(data=data, path=values["-SAVE-BUTTON-"])
+            save_path = values["-SAVE-BUTTON-"]
+            if isinstance(save_path, tuple):
+                save_path = save_path[0]
+            if save_path:
+                write_to_file(data=data, path=save_path)
 
         elif event == "-COPY-MARKDOWN-BUTTON-" and result is not None:
             result_md = markdown_str_from_result(result)
-            sg.clipboard_set(str(result_md))
+            QGuiApplication.clipboard().setText(str(result_md))
 
         elif event == "-SHOW-LICENSES-BUTTON-":
             license_popup()

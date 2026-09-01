@@ -18,7 +18,7 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
-          - ubuntu-22.04-arm
+          - ubuntu-24.04-arm
           - windows-latest
           - windows-11-arm
     runs-on: ${{ matrix.os }}
@@ -29,6 +29,12 @@ jobs:
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
       - name: Install task
         uses: go-task/setup-task@a00fbb05ce67b35648be3c78cbc9fd85354c757e # v2.2.0
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
+        with:
+          version: "6.8.*"
+          cache: true
 
       - name: uv sync
         run: uv sync -p 3.11
