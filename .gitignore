@@ -13,6 +13,8 @@ THIRD-PARTY-LICENSES.txt
 *.snap
 /SHA512SUMS
 /SHA256SUMS
+*.AppImage
+*.tar.xz
 
 
 # Byte-compiled / optimized / DLL files
