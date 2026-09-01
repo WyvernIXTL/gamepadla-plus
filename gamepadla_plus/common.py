@@ -107,8 +107,6 @@ def test_execution(
     Pygame NEEDS to be initialized first.
     """
 
-    pygame_joystick.init()  # Initialize the selected joystick
-
     match stick_selected:
         case StickSelector.LEFT:
             axis_x = 0  # Axis for the left stick
