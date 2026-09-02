@@ -28,6 +28,39 @@ from gamepadla_plus.icon import ICON
 
 TEST_INSTRUCTION = "Please rotate the stick of your gamepad fast in a circle."
 
+# FreeSimpleGUIQt only styles text/background of QRadioButton, the indicator
+# (circle + dot) would fall back to a barely visible native rendering.
+DARK_RADIO_STYLESHEET = """
+QRadioButton::indicator {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #8b9fde;
+    border-radius: 7px;
+    background-color: #1c1e23;
+}
+QRadioButton::indicator:checked {
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 white, stop:0.45 white, stop:0.55 #1c1e23, stop:1 #1c1e23);
+}
+QRadioButton::indicator:hover {
+    background-color: #313641;
+}
+"""
+LIGHT_RADIO_STYLESHEET = """
+QRadioButton::indicator {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #063289;
+    border-radius: 7px;
+    background-color: #f9f8f4;
+}
+QRadioButton::indicator:checked {
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 black, stop:0.45 black, stop:0.55 #f9f8f4, stop:1 #f9f8f4);
+}
+QRadioButton::indicator:hover {
+    background-color: #e5dece;
+}
+"""
+
 
 class GuiError(Exception):
     """Exception raised for fatal GUI error."""
@@ -183,7 +216,11 @@ def upload_popup(data: GamepadlaUploadData):
 
 def check_dark_mode_enabled() -> bool:
     try:
-        return darkdetect.isDark() or True
+        is_dark_maybe: bool | None = darkdetect.isDark()
+        if is_dark_maybe is not None:
+            return is_dark_maybe
+        else:
+            return True
     except Exception:  # noqa: BLE001
         return True
 
@@ -312,6 +349,11 @@ def gui():
         finalize=True,
         size=(400, 820),
         icon=ICON,
+    )
+    qt_application = window.QTApplication
+    assert qt_application is not None
+    qt_application.setStyleSheet(
+        DARK_RADIO_STYLESHEET if dark_mode_is_enabled else LIGHT_RADIO_STYLESHEET
     )
     result_table_element = window["-RESULT-TABLE-"]
     result_table = result_table_element.QT_TableWidget
