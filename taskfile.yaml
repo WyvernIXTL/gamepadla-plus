@@ -22,6 +22,16 @@ tasks:
       - uv run ruff check --fix
       - uv run ty check --fix
 
+  version:bump:
+    desc: |
+      Bump release version everywhere (about, snapcraft, README, changelog).
+      Usage: task version:bump -- X.Y.Z
+    preconditions:
+      - sh: test -n "{{.CLI_ARGS}}"
+        msg: "Usage: task version:bump -- X.Y.Z"
+    cmds:
+      - uv run ./helper/bump_version.py {{.CLI_ARGS}}
+
   package:windows:compile:
     platforms:
       - windows
