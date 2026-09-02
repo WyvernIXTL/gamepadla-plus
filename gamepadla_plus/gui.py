@@ -229,7 +229,7 @@ def check_dark_mode_enabled() -> bool:
             if is_dark_maybe is not None:
                 return is_dark_maybe
             else:
-                return False
+                return True
 
 
 def gui():
