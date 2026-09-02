@@ -31,7 +31,7 @@ jobs:
         uses: go-task/setup-task@a00fbb05ce67b35648be3c78cbc9fd85354c757e # v2.2.0
 
       - name: Install Fuse (Nuitka downloads a very old version of appimage)
-        if: ${{ matrix.os == 'ubuntu-24.04-arm' }}
+        if: ${{ matrix.os == 'ubuntu-24.04-arm' || matrix.os == 'ubuntu-22.04' }}
         run: sudo add-apt-repository -y universe && sudo apt install -y libfuse2
 
       - name: uv sync
