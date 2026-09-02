@@ -17,9 +17,9 @@ issues: https://github.com/WyvernIXTL/gamepadla-plus/issues
 website: https://github.com/WyvernIXTL/gamepadla-plus
 icon: icon/gamepadla-plus-icon.svg
 type: app
-grade: devel # stable soonTM
+grade: stable
 confinement: strict # or devmode
-compression: lzo
+compression: xz
 
 platforms:
   amd64:
@@ -36,7 +36,51 @@ platforms:
 parts:
   gamepadla-plus:
     plugin: dump
-    source: dist/Gamepadla+
+    source: dist/gamepadla-plus-snap
+    organize:
+      com.adam_mckellar.gamepadla.desktop: meta/gui/gamepadla-plus.desktop
+    override-build: |
+      craftctl default
+      mkdir -p "$CRAFT_PART_INSTALL/bin"
+      cat > "$CRAFT_PART_INSTALL/bin/gamepadla-plus" <<'EOF'
+      #!/bin/sh
+      exec "$SNAP/gamepadla-plus" "$@"
+      EOF
+      chmod +x "$CRAFT_PART_INSTALL/bin/gamepadla-plus"
+    override-prime: |
+      craftctl default
+      sed -i \
+        -e 's|^Exec=.*|Exec=gamepadla-plus|' \
+        -e 's|^TryExec=.*|TryExec=gamepadla-plus|' \
+        -e 's|^Icon=.*|Icon=${SNAP}/meta/gui/icon.svg|' \
+        "$CRAFT_PRIME/meta/gui/gamepadla-plus.desktop"
+    stage-packages:
+      - libx11-6
+      - libx11-xcb1
+      - libxcb1
+      - libxcb-cursor0
+      - libxcb-glx0
+      - libxcb-icccm4
+      - libxcb-image0
+      - libxcb-keysyms1
+      - libxcb-randr0
+      - libxcb-render-util0
+      - libxcb-render0
+      - libxcb-shape0
+      - libxcb-shm0
+      - libxcb-sync1
+      - libxcb-util1
+      - libxcb-xfixes0
+      - libxcb-xkb1
+      - libxkbcommon0
+      - libxkbcommon-x11-0
+      - libfontconfig1
+      - libgl1
+      - libegl1
+      - libgbm1
+      - libwayland-client0
+      - libwayland-cursor0
+      - libwayland-egl1
 
 apps:
   gamepadla-plus:
@@ -47,6 +91,8 @@ apps:
       - hardware-observe
       - joystick
       - x11
+      - wayland
+      - audio-playback
       - desktop
     aliases:
       - gamepadla-plus

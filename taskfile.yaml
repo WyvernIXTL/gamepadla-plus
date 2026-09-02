@@ -158,14 +158,26 @@ tasks:
       # package dist
       - task: package:package
 
+  package:prepare-snap:
+    cmds:
+      - rm -rf dist/gamepadla-plus-snap
+      - cp -r dist/Gamepadla+ dist/gamepadla-plus-snap
+      - mv -f dist/gamepadla-plus-snap/Gamepadla+ dist/gamepadla-plus-snap/gamepadla-plus
+
+  package:package-snap:
+    cmd: snapcraft pack
+
   package:clean:
     cmds:
       - rm -f *.7z
       - rm -f *.exe
       - rm -f *.tar.xz
+      - rm -f *.snap
+      - rm -f *.AppImage
       - rm -rf dist/Gamepadla+
       - rm -rf dist/Gamepadla+.build
       - rm -rf dist/Gamepadla+.installer-build
+      - rm -rf dist/gamepadla-plus-snap
       - rm -f THIRD-PARTY-LICENSES.txt
 
   package:shasum:
@@ -175,3 +187,4 @@ tasks:
       - shasum -a 512 *.tar.xz >> SHA512SUMS
       - shasum -a 512 *.7z >> SHA512SUMS
       - shasum -a 512 *.AppImage >> SHA512SUMS
+      - shasum -a 512 *.snap >> SHA512SUMS

@@ -59,19 +59,18 @@ uv tool install --python 3.11 gamepadla-plus@1.8.2
 
 ### Linux
 
-<!--#### Snap
+#### Snap
 
 ```sh
 sudo snap install gamepadla-plus
 sudo snap connect gamepadla-plus:joystick
-sudo snap connect gamepadla-plus:hardware-observe
 ```
 
 #### AppImages and Portable Builds
 
 See the "Assets" section on the release page:
 
-[![Releases v1.8.2](https://badgen.net/#static/github/Releases%20v1.8.2/?icon=github&label&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.8.2)-->
+[![Releases v1.8.2](https://badgen.net/#static/github/Releases%20v1.8.2/?icon=github&label&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.8.2)
 
 
 #### From Source
