@@ -4,6 +4,7 @@ import darkdetect
 import FreeSimpleGUIQt as sg
 import pygame
 from pygame.joystick import JoystickType
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QHeaderView
 from rich.traceback import install as traceback_install
@@ -215,14 +216,20 @@ def upload_popup(data: GamepadlaUploadData):
 
 
 def check_dark_mode_enabled() -> bool:
-    try:
-        is_dark_maybe: bool | None = darkdetect.isDark()
-        if is_dark_maybe is not None:
-            return is_dark_maybe
-        else:
+    style_hints = QGuiApplication.styleHints()
+    color_scheme = style_hints.colorScheme()
+
+    match color_scheme:
+        case Qt.ColorScheme.Dark:
             return True
-    except Exception:  # noqa: BLE001
-        return True
+        case Qt.ColorScheme.Light:
+            return False
+        case Qt.ColorScheme.Unknown:
+            is_dark_maybe: bool | None = darkdetect.isDark()
+            if is_dark_maybe is not None:
+                return is_dark_maybe
+            else:
+                return False
 
 
 def gui():

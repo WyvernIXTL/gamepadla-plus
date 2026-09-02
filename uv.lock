@@ -149,7 +149,7 @@ package = [
 [package.metadata]
 requires-dist = [
     { name = "colorama", specifier = ">=0.4.6,<0.5" },
-    { name = "darkdetect", specifier = ">=0.8.0" },
+    { name = "darkdetect", specifier = ">=0.8.0,<0.9.0" },
     { name = "freesimpleguiqt", specifier = ">=2,<3" },
     { name = "numpy", specifier = ">=2.1.2,<3" },
     { name = "pygame", specifier = ">=2.6.1,<3" },
