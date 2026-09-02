@@ -81,15 +81,26 @@ def filter_outliers(timings: list[float]) -> FilteringResult:
     )
 
 
+def jitter_rating(jitter_pct: float) -> str:
+    if jitter_pct < 2:
+        return "excellent"
+    if jitter_pct < 10:
+        return "normal"
+    return "sloppy"
+
+
 class TestResults(TypedDict):
     os_name: str
     joystick_name: str
     polling_rate: float
+    polling_rate_avg: float
     timings: list[float]
     timings_filtered_avg: float
     timings_filtered_min: float
     timings_filtered_max: float
     jitter: float
+    jitter_pct: float
+    missed_report_ratio: float
     outlier_lower_ratio: float
     outlier_lower_avg: float | None
     outlier_upper_ratio: float
@@ -124,6 +135,8 @@ def test_execution(
     x_old: float = 0.0
     y_old: float = 0.0
 
+    STICK_ENGAGE_THRESHOLD = 0.1
+
     # initialize values
     while True:
         pygame.event.pump()
@@ -131,7 +144,7 @@ def test_execution(
         y = pygame_joystick.get_axis(axis_y)
         pygame.event.clear()
 
-        if not ("0.0" in str(x) and "0.0" in str(y)):
+        if not (abs(x) < STICK_ENGAGE_THRESHOLD and abs(y) < STICK_ENGAGE_THRESHOLD):
             x_old = x
             y_old = y
             start = time.perf_counter_ns()
@@ -145,7 +158,7 @@ def test_execution(
         pygame.event.clear()
 
         # Ensure the stick has moved significantly (anti-drift)
-        if not ("0.0" in str(x) and "0.0" in str(y)) and (x != x_old or y != y_old):
+        if not (abs(x) < STICK_ENGAGE_THRESHOLD and abs(y) < STICK_ENGAGE_THRESHOLD) and (x != x_old or y != y_old):
             end = time.perf_counter_ns()
             delay = (end - start) / 1_000_000
             start = end
@@ -159,17 +172,36 @@ def test_execution(
     filter_result = filter_outliers(timings)
 
     timings_filtered_avg = np.mean(filter_result["timings_filtered"])
-    polling_rate = 1000 / timings_filtered_avg
+    period_estimate = float(np.percentile(filter_result["timings_filtered"], 10))
+    polling_rate = 1000 / period_estimate
+
+    on_time = [
+        d
+        for d in filter_result["timings_filtered"]
+        if 0.5 * period_estimate <= d <= 1.5 * period_estimate
+    ]
+    if not on_time:
+        on_time = filter_result["timings_filtered"]
+
+    on_time_avg = float(np.mean(on_time))
+    jitter_pct = float(np.std(on_time)) / on_time_avg * 100
+    missed_report_ratio = float(
+        len([d for d in timings if d > 1.5 * period_estimate]) / sample_count
+    )
+    polling_rate_avg = 1000 / timings_filtered_avg
 
     return TestResults(
         os_name=platform.system(),
         joystick_name=pygame_joystick.get_name(),
         polling_rate=float(polling_rate),
+        polling_rate_avg=float(polling_rate_avg),
         timings=timings,
         timings_filtered_avg=float(timings_filtered_avg),
         timings_filtered_min=min(filter_result["timings_filtered"]),
         timings_filtered_max=max(filter_result["timings_filtered"]),
         jitter=float(np.std(filter_result["timings_filtered"])),
+        jitter_pct=jitter_pct,
+        missed_report_ratio=missed_report_ratio,
         outlier_lower_avg=float(np.mean(filter_result["outliers_lower"]))
         if len(filter_result["outliers_lower"]) > 0
         else None,
@@ -219,7 +251,7 @@ def wrap_data_for_server(result: TestResults) -> GamepadlaUploadData:
         min_latency=round(result["timings_filtered_min"], 2),
         avg_latency=round(result["timings_filtered_avg"], 2),
         max_latency=round(result["timings_filtered_max"], 2),
-        polling_rate=round(result["polling_rate"], 2),
+        polling_rate=round(result["polling_rate_avg"], 2),
         jitter=round(result["jitter"], 2),
         mathod="GP",
         delay_list=", ".join([f"{x:.2f}" for x in result["timings"]]),
@@ -244,12 +276,20 @@ def upload_data(
     return response.status_code == 200
 
 
-def write_to_file(data: GamepadlaUploadData, path: str):
+def write_to_file(
+    data: GamepadlaUploadData, path: str, result: TestResults | None = None
+):
     """
     Writes result to file.
     """
+    payload = dict(data)
+    if result is not None:
+        payload["polling_rate_p10"] = round(result["polling_rate"], 2)
+        payload["polling_rate_avg"] = round(result["polling_rate_avg"], 2)
+        payload["jitter_pct"] = round(result["jitter_pct"], 2)
+        payload["missed_report_ratio"] = round(result["missed_report_ratio"], 4)
     with open(path, "w") as outfile:
-        json.dump(data, outfile, indent=4)
+        json.dump(payload, outfile, indent=4)
 
 
 def project_root_path() -> str:

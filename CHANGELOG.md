@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Improved testing and metrics.
 - Switch to Qt backed renderer.
 - Changed theme for dark mode.
 

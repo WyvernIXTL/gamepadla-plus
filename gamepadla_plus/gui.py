@@ -17,6 +17,7 @@ from gamepadla_plus.common import (
     StickSelector,
     TestResults,
     get_joysticks,
+    jitter_rating,
     read_license,
     test_execution,
     upload_data,
@@ -25,7 +26,7 @@ from gamepadla_plus.common import (
 )
 from gamepadla_plus.icon import ICON
 
-TEST_INSTRUCTION = "Please rotate the stick of your gamepad slowly and steadily."
+TEST_INSTRUCTION = "Please rotate the stick of your gamepad fast in a circle."
 
 
 class GuiError(Exception):
@@ -268,7 +269,7 @@ def gui():
                 def_col_width=20,
                 auto_size_columns=False,
                 max_col_width=100,
-                num_rows=13,
+                num_rows=14,
                 justification="left",
                 text_color= None if dark_mode_is_enabled else "black"
             )
@@ -390,27 +391,31 @@ def gui():
             [
                 ["Gamepad mode", result["joystick_name"]],
                 ["Operating System", result["os_name"]],
-                ["Polling Rate Avg.", f"{result['polling_rate']:.3f} Hz"],
+                ["Polling Rate (p10)", f"{result['polling_rate']:.3f} Hz"],
                 ["", ""],
                 ["Average latency", f"{result['timings_filtered_avg']:.3f} ms"],
                 ["Minimal latency", f"{result['timings_filtered_min']:.3f} ms"],
                 ["Maximum latency", f"{result['timings_filtered_max']:.3f} ms"],
-                ["Jitter", f"{result['jitter']:.3f} ms"],
+                [
+                    "Jitter (CV)",
+                    f"{result['jitter_pct']:.2f} % ({jitter_rating(result['jitter_pct'])}), {result['jitter']:.3f} ms",
+                ],
+                ["Missed Reports", f"{result['missed_report_ratio'] * 100:.2f} %"],
                 ["", ""],
                 [
-                    "Outlier lower Avg.",
+                    "Outlier lower Avg. (IQR)",
                     f"{result['outlier_lower_avg']:.3f} ms"
                     if result["outlier_lower_avg"] is not None
                     else "no outliers",
                 ],
-                ["Outlier lower %", f"{result['outlier_lower_ratio'] * 100:.3f} %"],
+                ["Outlier lower % (IQR)", f"{result['outlier_lower_ratio'] * 100:.3f} %"],
                 [
-                    "Outlier upper Avg.",
+                    "Outlier upper Avg. (IQR)",
                     f"{result['outlier_upper_avg']:.3f} ms"
                     if result["outlier_upper_avg"] is not None
                     else "no outliers",
                 ],
-                ["Outlier upper %", f"{result['outlier_upper_ratio'] * 100:.3f} %"],
+                ["Outlier upper % (IQR)", f"{result['outlier_upper_ratio'] * 100:.3f} %"],
             ]
         )
 
@@ -469,7 +474,7 @@ def gui():
             if isinstance(save_path, tuple):
                 save_path = save_path[0]
             if save_path:
-                write_to_file(data=data, path=save_path)
+                write_to_file(data=data, path=save_path, result=result)
 
         elif event == "-COPY-MARKDOWN-BUTTON-" and result is not None:
             result_md = markdown_str_from_result(result)

@@ -98,7 +98,7 @@ uv tool install --python 3.11 gamepadla-plus@1.8.2
 
 1. Execute the program `Gamepadla+` without any arguments.
 2. If you haven't connected any controller do it now and click `Refresh`.
-3. Click `Test` and rotate the stick you chose slowly at the edge.
+3. Click `Test` and rotate the stick you chose fast in a circle.
 4. Optionally save the result to a JSON file or upload the result to <gamepadla.com>.
 
 
