@@ -42,6 +42,12 @@ jobs:
       - name: Compile and Package App for Windows x64
         run: task package
 
+      - name: Prepare Snap
+        run: task package:prepare-snap
+      - name: Package Snap
+        uses: snapcore/action-build@3bdaa03e1ba6bf59a65f84a751d943d549a54e79 # v1.3.0
+        id: build-snap
+
       - uses: actions/upload-artifact@v7
         with:
           name: packaged-app-${{ matrix.os }}
@@ -50,8 +56,18 @@ jobs:
             *.exe
             *.AppImage
             *.tar.xz
+            *.snap
           if-no-files-found: ignore
           compression-level: 0
+
+      - name: Release Snap
+        if: ${{ github.event_name == 'release' || inputs.release == 'true' }}
+        uses: snapcore/action-publish@214b86e5ca036ead1668c79afb81e550e6c54d40 # v1.2.0
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        with:
+          snap: ${{ steps.build-snap.outputs.snap }}
+          release: stable
 
   upload-release:
     runs-on: ubuntu-latest
@@ -80,6 +96,7 @@ jobs:
             *.exe
             *.AppImage
             *.tar.xz
+            *.snap
             SHA512SUM
 
       - name: Upload To Release
