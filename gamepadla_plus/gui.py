@@ -1,6 +1,6 @@
-import darkdetect
 import webbrowser
 
+import darkdetect
 import FreeSimpleGUIQt as sg
 import pygame
 from pygame.joystick import JoystickType
@@ -229,6 +229,7 @@ def gui():
             sg.Radio("2000", group_id=1, default=True, key="-SAMPLE-RADIO-2000-"),
             sg.Radio("4000", group_id=1, default=False, key="-SAMPLE-RADIO-4000-"),
             sg.Radio("8000", group_id=1, default=False, key="-SAMPLE-RADIO-8000-"),
+            sg.Radio("16000", group_id=1, default=False, key="-SAMPLE-RADIO-16000-"),
         ],
         [
             sg.Text("Stick:"),
@@ -348,6 +349,8 @@ def gui():
             return 4000
         if values["-SAMPLE-RADIO-8000-"]:
             return 8000
+        if values["-SAMPLE-RADIO-16000-"]:
+            return 16000
 
         raise GuiError("sample selection radio read out")
 
@@ -378,12 +381,8 @@ def gui():
     def update_progress_bar(delay: float):
         nonlocal count
         count += 1
-        factor = {
-            2000: 6,
-            4000: 3,
-            8000: 1.5,
-        }
-        window["-PROGRESS-BAR-"].update_bar(current_count=(count * factor[samples]))
+        factor = 12000 / samples
+        window["-PROGRESS-BAR-"].update_bar(current_count=(count * factor))
         window["-DELAY-OUTPUT-"].update(f"{delay:05.2f} ms")
 
     def update_result_table(result: TestResults):
