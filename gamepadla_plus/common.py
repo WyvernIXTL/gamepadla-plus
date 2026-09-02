@@ -240,9 +240,12 @@ def wrap_data_for_server(result: TestResults) -> GamepadlaUploadData:
     uname = platform.uname()
     os_version = uname.version
 
+    # Aimed compatibiliy with Polling v1.3.1.4
+    # which I just noticed is outdated, nice.
+    # Polling v2 is not open source, so compatibliy won't happen until that is released.
     return GamepadlaUploadData(
         test_key=str(stamp),
-        version=f"gamepadla-plus@{__version__}",
+        version="1.3.1.4",
         url="https://gamepadla.com",
         date=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
         driver=result["joystick_name"],
