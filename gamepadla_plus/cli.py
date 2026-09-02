@@ -66,7 +66,7 @@ def markdown_str_from_result(result: TestResults) -> str:
     return f"""
 | Parameter                  | Value                                       |
 |----------------------------|---------------------------------------------|
-| Gamepad mode               | {result["joystick_name"]}                   |
+| Gamepad Name               | {result["gamepad_name"]}                    |
 | Operating System           | {result["os_name"]}                         |
 | Polling Rate (p10)         | {result["polling_rate"]:.3f} Hz             |
 |                            |                                             |
@@ -93,7 +93,10 @@ def test(
         StickSelector, typer.Option(help="Choose which stick to test with.")
     ] = StickSelector.LEFT,
     upload: Annotated[
-        bool, typer.Option(help="Upload result to <gamepadla.com>?")
+        bool,
+        typer.Option(
+            help="Upload result to <gamepadla.com>? (legacy; result may not be counted)"
+        ),
     ] = False,
     gamepad_name: Annotated[
         str | None, typer.Option(help="Name of the game pad")
@@ -144,17 +147,17 @@ def test(
 
     rprint(Markdown(markdown_str_from_result(result)))
 
-    data = wrap_data_for_server(result=result)
-
     if out is not None:
         try:
-            write_to_file(data=data, path=out, result=result)
+            write_to_file(result=result, path=out)
             rprint(f"[green]Wrote result to file {out}[/green]")
         except Exception:
             rprint(f"[red]Failed to write result to path {out}.[/red]")
             raise
 
     if upload:
+        data = wrap_data_for_server(result=result)
+
         # Keeping ty happy. Though it does not actually make any sense...
         if gamepad_name is None or gamepad_connection is None:
             sys.exit(1)

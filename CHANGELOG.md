@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved testing and metrics.
 - Switch to Qt backed renderer.
 - Changed theme for dark mode.
+- Updated result file format to reflect better metrics.
+- Marked upload to gamepadla.com as legacy.
 
 ### Fixed
 

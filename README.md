@@ -202,6 +202,11 @@ Gamepadla+ or gamepadla-plus is a hard fork of [Gamepadla](https://github.com/ca
 
 The testing is based on the method of Christian P.: <https://github.com/chrizonix/XInputTest>.
 
+## Misc.
+
+### Result Upload Functionality to gamepadla.com
+
+The upload functionality to [gamepadla.com](https://gamepadla.com) is compatible with Polling v1.3.1.4.
 
 ## License
 

@@ -13,8 +13,6 @@ import pygame
 import requests
 from pygame.joystick import JoystickType
 
-from gamepadla_plus.__about__ import __version__
-
 
 class StickSelector(str, Enum):
     LEFT = "left"
@@ -91,7 +89,7 @@ def jitter_rating(jitter_pct: float) -> str:
 
 class TestResults(TypedDict):
     os_name: str
-    joystick_name: str
+    gamepad_name: str
     polling_rate: float
     polling_rate_avg: float
     timings: list[float]
@@ -192,7 +190,7 @@ def test_execution(
 
     return TestResults(
         os_name=platform.system(),
-        joystick_name=pygame_joystick.get_name(),
+        gamepad_name=pygame_joystick.get_name(),
         polling_rate=float(polling_rate),
         polling_rate_avg=float(polling_rate_avg),
         timings=timings,
@@ -248,7 +246,7 @@ def wrap_data_for_server(result: TestResults) -> GamepadlaUploadData:
         version="1.3.1.4",
         url="https://gamepadla.com",
         date=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-        driver=result["joystick_name"],
+        driver=result["gamepad_name"],
         os_name=result["os_name"],
         os_version=os_version,
         min_latency=round(result["timings_filtered_min"], 2),
@@ -279,20 +277,12 @@ def upload_data(
     return response.status_code == 200
 
 
-def write_to_file(
-    data: GamepadlaUploadData, path: str, result: TestResults | None = None
-):
+def write_to_file(result: TestResults, path: str):
     """
     Writes result to file.
     """
-    payload = dict(data)
-    if result is not None:
-        payload["polling_rate_p10"] = round(result["polling_rate"], 2)
-        payload["polling_rate_avg"] = round(result["polling_rate_avg"], 2)
-        payload["jitter_pct"] = round(result["jitter_pct"], 2)
-        payload["missed_report_ratio"] = round(result["missed_report_ratio"], 4)
     with open(path, "w") as outfile:
-        json.dump(payload, outfile, indent=4)
+        json.dump(result, outfile, indent=4)
 
 
 def project_root_path() -> str:

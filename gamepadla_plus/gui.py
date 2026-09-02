@@ -108,8 +108,14 @@ def license_popup():
 
 def upload_popup(data: GamepadlaUploadData):
     window = sg.Window(
-        "Upload Results",
+        "Upload Results (Legacy)",
         [
+            [
+                sg.Text(
+                    "Note: This versions upload functionality to gamepadla.com is compatible with Polling v1.3.1.4. "
+                    "gamepadla.com generates the result page, but may not count it as a submission."
+                )
+            ],
             [sg.Text("Connection Type")],
             [
                 sg.Radio(
@@ -276,7 +282,7 @@ def gui():
         ],
         [
             sg.Button(
-                "Upload Result",
+                "Upload Result (Legacy)",
                 disabled=True,
                 key="-UPLOAD-BUTTON-",
             ),
@@ -389,7 +395,7 @@ def gui():
     def update_result_table(result: TestResults):
         window["-RESULT-TABLE-"].update(
             [
-                ["Gamepad mode", result["joystick_name"]],
+                ["Gamepad Name", result["gamepad_name"]],
                 ["Operating System", result["os_name"]],
                 ["Polling Rate (p10)", f"{result['polling_rate']:.3f} Hz"],
                 ["", ""],
@@ -469,12 +475,12 @@ def gui():
         elif event == "-UPLOAD-BUTTON-" and data is not None:
             upload_popup(data=data)
 
-        elif event == "-SAVE-BUTTON-" and data is not None:
+        elif event == "-SAVE-BUTTON-" and result is not None:
             save_path = values["-SAVE-BUTTON-"]
             if isinstance(save_path, tuple):
                 save_path = save_path[0]
             if save_path:
-                write_to_file(data=data, path=save_path, result=result)
+                write_to_file(result=result, path=save_path)
 
         elif event == "-COPY-MARKDOWN-BUTTON-" and result is not None:
             result_md = markdown_str_from_result(result)
