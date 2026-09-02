@@ -180,11 +180,13 @@ def upload_popup(data: GamepadlaUploadData):
 
     window.close()
 
+
 def check_dark_mode_enabled() -> bool:
     try:
         return darkdetect.isDark() or True
     except Exception:  # noqa: BLE001
         return True
+
 
 def gui():
     traceback_install()
@@ -204,7 +206,6 @@ def gui():
         sg.theme("DarkGrey12")
     else:
         sg.theme("TanBlue")
-
 
     layout = [
         [
@@ -263,7 +264,7 @@ def gui():
                 12000,
                 key="-PROGRESS-BAR-",
                 size_px=(300, 3),
-                bar_color= ("red", "grey") if dark_mode_is_enabled else ("red", "white")
+                bar_color=("red", "grey") if dark_mode_is_enabled else ("red", "white"),
             ),
             sg.Text("", key="-DELAY-OUTPUT-"),
         ],
@@ -277,7 +278,7 @@ def gui():
                 max_col_width=100,
                 num_rows=14,
                 justification="left",
-                text_color= None if dark_mode_is_enabled else "black"
+                text_color=None if dark_mode_is_enabled else "black",
             )
         ],
         [
@@ -414,14 +415,20 @@ def gui():
                     if result["outlier_lower_avg"] is not None
                     else "no outliers",
                 ],
-                ["Outlier lower % (IQR)", f"{result['outlier_lower_ratio'] * 100:.3f} %"],
+                [
+                    "Outlier lower % (IQR)",
+                    f"{result['outlier_lower_ratio'] * 100:.3f} %",
+                ],
                 [
                     "Outlier upper Avg. (IQR)",
                     f"{result['outlier_upper_avg']:.3f} ms"
                     if result["outlier_upper_avg"] is not None
                     else "no outliers",
                 ],
-                ["Outlier upper % (IQR)", f"{result['outlier_upper_ratio'] * 100:.3f} %"],
+                [
+                    "Outlier upper % (IQR)",
+                    f"{result['outlier_upper_ratio'] * 100:.3f} %",
+                ],
             ]
         )
 

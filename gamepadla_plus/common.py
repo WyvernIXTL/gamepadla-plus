@@ -156,7 +156,9 @@ def test_execution(
         pygame.event.clear()
 
         # Ensure the stick has moved significantly (anti-drift)
-        if not (abs(x) < STICK_ENGAGE_THRESHOLD and abs(y) < STICK_ENGAGE_THRESHOLD) and (x != x_old or y != y_old):
+        if not (
+            abs(x) < STICK_ENGAGE_THRESHOLD and abs(y) < STICK_ENGAGE_THRESHOLD
+        ) and (x != x_old or y != y_old):
             end = time.perf_counter_ns()
             delay = (end - start) / 1_000_000
             start = end
