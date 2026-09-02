@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Automatically switch to white theme if detected.
+
 ### Changed
 
 - Switch to Qt backed renderer.
+- Changed theme for dark mode.
 
 ### Fixed
 

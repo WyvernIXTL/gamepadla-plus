@@ -1,3 +1,4 @@
+import darkdetect
 import webbrowser
 
 import FreeSimpleGUIQt as sg
@@ -172,6 +173,11 @@ def upload_popup(data: GamepadlaUploadData):
 
     window.close()
 
+def check_dark_mode_enabled() -> bool:
+    try:
+        return darkdetect.isDark() or True
+    except Exception:  # noqa: BLE001
+        return True
 
 def gui():
     traceback_install()
@@ -181,6 +187,17 @@ def gui():
     result: TestResults | None = None
     data: GamepadlaUploadData | None = None
     count = 0
+
+    dark_mode_is_enabled = check_dark_mode_enabled()
+
+    # https://freesimplegui.readthedocs.io/en/latest/#themes-automatic-coloring-of-your-windows
+    # sg.theme_previewer()
+
+    if dark_mode_is_enabled:
+        sg.theme("DarkGrey12")
+    else:
+        sg.theme("TanBlue")
+
 
     layout = [
         [
@@ -238,6 +255,7 @@ def gui():
                 12000,
                 key="-PROGRESS-BAR-",
                 size_px=(300, 3),
+                bar_color= ("red", "grey") if dark_mode_is_enabled else ("red", "white")
             ),
             sg.Text("", key="-DELAY-OUTPUT-"),
         ],
@@ -251,6 +269,7 @@ def gui():
                 max_col_width=100,
                 num_rows=13,
                 justification="left",
+                text_color= None if dark_mode_is_enabled else "black"
             )
         ],
         [
@@ -288,9 +307,7 @@ def gui():
     result_table_element = window["-RESULT-TABLE-"]
     result_table = result_table_element.QT_TableWidget
     result_table.verticalHeader().setVisible(False)
-    result_table.horizontalHeader().setSectionResizeMode(
-        QHeaderView.ResizeMode.Stretch
-    )
+    result_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
     result_table.setFixedHeight(
         result_table.horizontalHeader().height()
         + result_table_element.NumRows
