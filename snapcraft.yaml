@@ -1,7 +1,7 @@
 name: gamepadla-plus
 title: Gamepadla+
 summary: Gamepad Polling Rate and Latency Testing Tool (CLI & GUI)
-version: "1.8.2"
+version: "1.9.0"
 description: |
   Gamepadla+ is a program for measuring the polling rate and synthetic latency of gamepads aka. controllers.
 
