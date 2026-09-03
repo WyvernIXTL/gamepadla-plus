@@ -45,6 +45,12 @@ jobs:
       - name: Package Snap
         uses: snapcore/action-build@3bdaa03e1ba6bf59a65f84a751d943d549a54e79 # v1.3.0
         id: build-snap
+      - name: Log Snap Failure
+        if: failure()
+        uses: action/upload-artifact@v4
+        with:
+          name: snapcraft-logs
+          path: ~/.local/state/snapcraft/log/*.log
 
       - uses: actions/upload-artifact@v7
         with:
