@@ -63,3 +63,12 @@ oxipng -o max -Z --fast .\icon\gamepadla-plus-icon_export-transparent.png
 magick -background white -density 600 .\icon\gamepadla-plus-icon.svg -resize 512x512 .\icon\gamepadla-plus-icon_export-solid.png
 oxipng -o max -Z --fast .\icon\gamepadla-plus-icon_export-solid.png
 ```
+
+### Snap Store
+
+- Use the hero image as screenshot.
+- Use Vimeo for hosting the demo video.
+- Banner:
+  ```sh
+  magick .\gamepadla-plus-heroimage-v1.9.0.png -gravity north -crop '3:1' +repage .\gamepadla-plus-snap-store-banner-v1.9.0.png
+  ```
