@@ -21,6 +21,23 @@ grade: stable
 confinement: strict # or devmode
 compression: lzo
 
+lint:
+  ignore:
+    - missing-library:
+        - PySide6/qt-plugins/platformthemes/libqgtk3.so
+        - PySide6/qt-plugins/printsupport/libcupsprintersupport.so
+        - PySide6/qt-plugins/egldeviceintegrations/libqeglfs-kms-integration.so
+    - gpu:
+        - usr/lib/x86_64-linux-gnu/dri/*
+        - usr/lib/x86_64-linux-gnu/gbm/*
+        - usr/lib/x86_64-linux-gnu/libEGL_mesa*
+        - usr/lib/x86_64-linux-gnu/libGLX_mesa*
+        - usr/lib/x86_64-linux-gnu/libdrm_*
+    - unused-library:
+        - '*libEGL_mesa*'
+        - '*libGLX_mesa*'
+        - '*libvulkan*'
+
 platforms:
   amd64:
     build-on:
