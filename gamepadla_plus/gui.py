@@ -429,7 +429,7 @@ def gui():
             sg.ProgressBar(
                 12000,
                 key="-PROGRESS-BAR-",
-                size_px=(300, 3),dark mode detection
+                size_px=(300, 3),
                 bar_color=("red", "grey") if dark_mode_is_enabled else ("red", "white"),
             ),
             sg.Text("", key="-DELAY-OUTPUT-"),
