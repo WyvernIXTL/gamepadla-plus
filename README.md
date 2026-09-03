@@ -47,6 +47,12 @@ See the "Assets" section on the release page:
 
 [![Releases v1.9.0](https://badgen.net/static/github/Releases%20v1.9.0/?icon=github&label&scale=1.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0)
 
+#### [Scoop](https://scoop.sh/) *(Recommended)*
+
+```sh
+scoop bucket add stupid-bucket https://github.com/WyvernIXTL/stupid-bucket
+scoop install stupid-bucket/gamepadla-plus
+```
 
 #### From Source
 
