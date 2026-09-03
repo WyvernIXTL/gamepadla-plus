@@ -53,7 +53,9 @@ jobs:
         run: task package:prepare-snap
       - name: Install LXD 5.21 (LXD 6.x cannot create core26 containers, see canonical/lxd#17073)
         if: ${{ matrix.snap == 'yes' }}
-        run: sudo snap install lxd --channel=5.21/stable
+        run: |
+          sudo snap refresh lxd --channel=5.21/stable || sudo snap install lxd --channel=5.21/stable
+          snap list lxd
       - name: Package Snap
         if: ${{ matrix.snap == 'yes' }}
         uses: snapcore/action-build@3bdaa03e1ba6bf59a65f84a751d943d549a54e79 # v1.3.0
