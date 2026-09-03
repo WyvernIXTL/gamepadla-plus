@@ -39,7 +39,7 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 #### Installer
 
-[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-x64-installer.exe)
+[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=1.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-x64-installer.exe)
 
 #### Portable Builds
 
@@ -47,7 +47,7 @@ See the "Assets" section on the release page:
 
 [![Releases v1.9.0](https://badgen.net/static/github/Releases%20v1.9.0/?icon=github&label&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/tag/v1.9.0)
 
-#### [Scoop](https://scoop.sh/) *(Recommended)*
+#### [Scoop](https://scoop.sh/)
 
 ```sh
 scoop bucket add stupid-bucket https://github.com/WyvernIXTL/stupid-bucket
