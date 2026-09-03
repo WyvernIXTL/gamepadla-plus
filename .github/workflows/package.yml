@@ -45,7 +45,7 @@ jobs:
       - name: uv sync
         run: uv sync -p 3.11
 
-      - name: Compile and Package App for Windows x64
+      - name: Compile and Package App
         run: task package
 
       - name: Prepare Snap
