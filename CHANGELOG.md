@@ -9,8 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Compile prebuilds with LTO.
-
 
 ## v1.9.0 -- 2026-09-03
 
