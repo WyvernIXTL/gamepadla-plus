@@ -59,6 +59,9 @@ uv tool install --python 3.11 gamepadla-plus@1.9.0
 
 #### [Snap](https://snapcraft.io/) *(Recommended)*
 
+
+[![Get it from the Snap Store](https://snapcraft.io/en/dark/install.svg)](https://snapcraft.io/gamepadla-plus)
+
 If you are no using Ubuntu, Manjaro or Solus you'll likely have to install [`snapd`](https://snapcraft.io/docs/tutorials/install-the-daemon/) first.
 
 ```sh
