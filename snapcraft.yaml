@@ -19,7 +19,7 @@ icon: icon/gamepadla-plus-icon.svg
 type: app
 grade: stable
 confinement: strict # or devmode
-compression: xz
+compression: lzo
 
 platforms:
   amd64:
