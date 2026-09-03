@@ -31,7 +31,7 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 ### Windows
 
-#### Microsoft Store
+#### Microsoft Store *(Recommended)*
 
 <a href="https://get.microsoft.com/installer/download/9nxr3b5txfph?referrer=appbadge" target="_self" >
 	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
@@ -57,7 +57,9 @@ uv tool install --python 3.11 gamepadla-plus@1.8.2
 
 ### Linux
 
-#### [Snap](https://snapcraft.io/)
+#### [Snap](https://snapcraft.io/) *(Recommended)*
+
+If you are no using Ubuntu, Manjaro or Solus you'll likely have to install [`snapd`](https://snapcraft.io/docs/tutorials/install-the-daemon/) first.
 
 ```sh
 sudo snap install gamepadla-plus
