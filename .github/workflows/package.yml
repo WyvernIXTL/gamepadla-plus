@@ -120,7 +120,7 @@ jobs:
             *.AppImage
             *.tar.xz
             *.snap
-            SHA512SUM
+            SHA512SUMS
 
       - name: Upload To Release
         if: ${{ github.event_name == 'release' || inputs.release == 'true' }}
@@ -131,4 +131,5 @@ jobs:
             *.exe
             *.AppImage
             *.tar.xz
-            SHA512SUM
+            *.snap
+            SHA512SUMS
