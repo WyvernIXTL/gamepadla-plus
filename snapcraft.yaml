@@ -28,15 +28,17 @@ lint:
         - PySide6/qt-plugins/printsupport/libcupsprintersupport.so
         - PySide6/qt-plugins/egldeviceintegrations/libqeglfs-kms-integration.so
     - gpu:
-        - usr/lib/x86_64-linux-gnu/dri/*
-        - usr/lib/x86_64-linux-gnu/gbm/*
-        - usr/lib/x86_64-linux-gnu/libEGL_mesa*
-        - usr/lib/x86_64-linux-gnu/libGLX_mesa*
-        - usr/lib/x86_64-linux-gnu/libdrm_*
+        - usr/lib/*/dri/*
+        - usr/lib/*/gbm/*
+        - usr/lib/*/libEGL_mesa*
+        - usr/lib/*/libGLX_mesa*
+        - usr/lib/*/libdrm_*
     - unused-library:
         - '*libEGL_mesa*'
         - '*libGLX_mesa*'
         - '*libvulkan*'
+        - '*libICE*'
+        - '*libSM*'
 
 platforms:
   amd64:
@@ -74,6 +76,8 @@ parts:
     stage-packages:
       - libx11-6
       - libx11-xcb1
+      - libice6
+      - libsm6
       - libxcb1
       - libxcb-cursor0
       - libxcb-glx0
