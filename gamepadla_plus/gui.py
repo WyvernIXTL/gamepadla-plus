@@ -1,4 +1,5 @@
 import queue
+import sys
 import threading
 import traceback
 import webbrowser
@@ -9,7 +10,7 @@ import pygame
 from pygame.joystick import JoystickType
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QGuiApplication
-from PySide6.QtWidgets import QHeaderView
+from PySide6.QtWidgets import QApplication, QHeaderView
 from rich.traceback import install as traceback_install
 
 from gamepadla_plus.__init__ import LICENSE_FILE_NAME, THIRD_PARTY_LICENSE_FILE_NAME
@@ -335,20 +336,20 @@ def upload_popup(data: GamepadlaUploadData):
 
 
 def check_dark_mode_enabled() -> bool:
-    style_hints = QGuiApplication.styleHints()
-    color_scheme = style_hints.colorScheme()
+    app = QGuiApplication.instance()
+    if app is None:
+        app = QApplication(sys.argv)
+        # FreeSimpleGUIQt reuses this instance instead of creating a second one,
+        # which would raise a shiboken singleton RuntimeError.
+        sg.Window.QTApplication = app
+    assert isinstance(app, QGuiApplication)
+    color_scheme = app.styleHints().colorScheme()
 
-    match color_scheme:
-        case Qt.ColorScheme.Dark:
-            return True
-        case Qt.ColorScheme.Light:
-            return False
-        case Qt.ColorScheme.Unknown:
-            is_dark_maybe: bool | None = darkdetect.isDark()
-            if is_dark_maybe is not None:
-                return is_dark_maybe
-            else:
-                return True
+    if color_scheme == Qt.ColorScheme.Light:
+        return False
+    if color_scheme == Qt.ColorScheme.Dark:
+        return True
+    return bool(darkdetect.isDark())
 
 
 def gui():
@@ -428,7 +429,7 @@ def gui():
             sg.ProgressBar(
                 12000,
                 key="-PROGRESS-BAR-",
-                size_px=(300, 3),
+                size_px=(300, 3),dark mode detection
                 bar_color=("red", "grey") if dark_mode_is_enabled else ("red", "white"),
             ),
             sg.Text("", key="-DELAY-OUTPUT-"),
