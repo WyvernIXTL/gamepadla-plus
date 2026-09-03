@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed theme for dark mode.
 - Updated result file format to reflect better metrics.
 - Marked upload to gamepadla.com as legacy.
+- Buttons and radios are visibly disabled during testing.
+- GUI remains usable during upload.
 
 ### Fixed
 

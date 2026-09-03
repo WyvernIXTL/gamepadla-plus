@@ -1,3 +1,6 @@
+import queue
+import threading
+import traceback
 import webbrowser
 
 import darkdetect
@@ -5,7 +8,7 @@ import FreeSimpleGUIQt as sg
 import pygame
 from pygame.joystick import JoystickType
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QGuiApplication
+from PySide6.QtGui import QColor, QGuiApplication
 from PySide6.QtWidgets import QHeaderView
 from rich.traceback import install as traceback_install
 
@@ -28,6 +31,23 @@ from gamepadla_plus.common import (
 from gamepadla_plus.icon import ICON
 
 TEST_INSTRUCTION = "Please rotate the stick of your gamepad fast in a circle."
+
+SAMPLE_RADIO_KEYS = (
+    "-SAMPLE-RADIO-2000-",
+    "-SAMPLE-RADIO-4000-",
+    "-SAMPLE-RADIO-8000-",
+    "-SAMPLE-RADIO-16000-",
+)
+STICK_RADIO_KEYS = (
+    "-STICK-RADIO-LEFT-",
+    "-STICK-RADIO-RIGHT-",
+)
+OPTION_KEYS = (*SAMPLE_RADIO_KEYS, *STICK_RADIO_KEYS)
+CONNECTION_RADIO_KEYS = (
+    "-RADIO-CONNECTION-DONGLE-",
+    "-RADIO-CONNECTION-CABLE-",
+    "-RADIO-CONNECTION-BLUETOOTH-",
+)
 
 # FreeSimpleGUIQt only styles text/background of QRadioButton, the indicator
 # (circle + dot) would fall back to a barely visible native rendering.
@@ -71,16 +91,71 @@ class GuiError(Exception):
         super().__init__(self.message)
 
 
-def pad_button(window, key, fit_window=False):
+def _parse_color(color: str) -> QColor:
+    qt_color = QColor(color)
+    if not qt_color.isValid():
+        qt_color = QColor("#808080")
+    return qt_color
+
+
+def _shade_color(color: str, factor: float) -> str:
+    qt_color = _parse_color(color)
+    if factor >= 1:
+        qt_color = qt_color.lighter(round(factor * 100))
+    else:
+        qt_color = qt_color.darker(round(100 / factor))
+    return qt_color.name()
+
+
+def _qss_rgba(color: str, alpha: int) -> str:
+    qt_color = _parse_color(color)
+    return f"rgba({qt_color.red()},{qt_color.green()},{qt_color.blue()},{alpha})"
+
+
+def _append_qss(element, qss: str):
+    # FreeSimpleGUIQt styles every widget with a stylesheet that has no
+    # :hover/:pressed/:disabled rules, which disables Qt's native rendering of
+    # those states. Appending to the element's persistent QtStyle (re-applied on
+    # every element.update()) keeps the state rules in place across
+    # enable/disable toggles.
+    style = element.qt_styles[0]
+    style.append_css_to_end.append(qss)
+    element.Widget.setStyleSheet(style.build_css_string())
+
+
+def style_button(window, key, pad=False, fit_window=False):
     button = window[key]
-    button.set_stylesheet(
-        button.get_stylesheet() + " QPushButton { padding: 0px 12px; }"
+    fg, bg = sg.theme_button_color()
+    fg = fg if fg else (sg.theme_text_color() or "#000000")
+    bg = bg if bg else (sg.theme_background_color() or "#d0d0d0")
+    if pad:
+        _append_qss(button, " QPushButton { padding: 0px 12px; }")
+    _append_qss(
+        button,
+        f" QPushButton:hover {{ background-color: {_shade_color(bg, 1.15)}; }}"
+        f" QPushButton:pressed {{ background-color: {_shade_color(bg, 0.7)}; }}"
+        f" QPushButton:disabled {{"
+        f" color: {_qss_rgba(fg, 90)};"
+        f" background-color: {_qss_rgba(bg, 110)};"
+        f" }}",
     )
-    layout = window.QTWindow.layout()
-    layout.invalidate()
-    if fit_window:
-        window.QT_QMainWindow.adjustSize()
-    layout.activate()
+    if pad:
+        layout = window.QTWindow.layout()
+        layout.invalidate()
+        if fit_window:
+            window.QT_QMainWindow.adjustSize()
+        layout.activate()
+
+
+def style_element_disabled(window, key):
+    element = window[key]
+    widget = element.Widget
+    class_name = widget.metaObject().className()
+    text_color = sg.theme_text_color() or "#000000"
+    _append_qss(
+        element,
+        f" {class_name}:disabled {{ color: {_qss_rgba(text_color, 110)}; }}",
+    )
 
 
 def fit_window_to_content(window, width):
@@ -96,7 +171,7 @@ def error_popup(msg: str):
         [[sg.Text(msg)], [sg.Stretch(), sg.Button("Continue")]],
         finalize=True,
     )
-    pad_button(window, "Continue", fit_window=True)
+    style_button(window, "Continue", pad=True, fit_window=True)
     window.read(close=True)
 
 
@@ -109,7 +184,7 @@ def third_party_license_popup(licenses: str):
         ],
         finalize=True,
     )
-    pad_button(window, "Continue", fit_window=True)
+    style_button(window, "Continue", pad=True, fit_window=True)
     window.read(close=True)
 
 
@@ -132,12 +207,25 @@ def license_popup():
         ],
         finalize=True,
     )
-    pad_button(window, "-THIRD-PARTY-LICENSES-BUTTON-", fit_window=True)
-    pad_button(window, "Continue", fit_window=True)
+    style_button(window, "-THIRD-PARTY-LICENSES-BUTTON-", pad=True, fit_window=True)
+    style_button(window, "Continue", pad=True, fit_window=True)
     event, _ = window.read(close=True)
 
     if event == "-THIRD-PARTY-LICENSES-BUTTON-":
         third_party_license_popup(third_party_license)
+
+
+def _upload_worker(
+    data: GamepadlaUploadData,
+    name: str,
+    connection: GamePadConnection,
+    result_queue: queue.Queue[bool],
+):
+    try:
+        result_queue.put(upload_data(data=data, name=name, connection=connection))
+    except Exception:  # noqa: BLE001
+        traceback.print_exc()
+        result_queue.put(False)
 
 
 def upload_popup(data: GamepadlaUploadData):
@@ -182,6 +270,11 @@ def upload_popup(data: GamepadlaUploadData):
         finalize=True,
     )
 
+    style_button(window, "Cancel", pad=True)
+    style_button(window, "Upload", pad=True, fit_window=True)
+    for key in CONNECTION_RADIO_KEYS:
+        style_element_disabled(window, key)
+
     def get_connection_type(values) -> GamePadConnection:
         if values["-RADIO-CONNECTION-DONGLE-"]:
             return GamePadConnection.DONGLE
@@ -192,25 +285,51 @@ def upload_popup(data: GamepadlaUploadData):
         else:
             raise GamepadlaError("No valid connection chosen.")
 
-    while True:
-        event, values = window.read()
+    def set_upload_controls(enabled: bool):
+        for key in CONNECTION_RADIO_KEYS:
+            window[key].update(disabled=not enabled)
+        window["-CONTROLLER-NAME-INPUT-"].update(disabled=not enabled)
+        window["Cancel"].update(disabled=not enabled)
+        window["Upload"].update(
+            text="Upload" if enabled else "Uploading...",
+            disabled=not enabled,
+        )
 
-        if event == sg.WIN_CLOSED or event == "Cancel":
+    upload_queue: queue.Queue[bool] = queue.Queue()
+    uploading = False
+
+    while True:
+        event, values = window.read(timeout=100)
+
+        if event == sg.WIN_CLOSED:
+            break
+
+        elif uploading:
+            try:
+                success = upload_queue.get_nowait()
+            except queue.Empty:
+                continue
+            uploading = False
+            if success:
+                stamp = data["test_key"]
+                webbrowser.open(f"https://gamepadla.com/result/{stamp}/")
+                break
+            set_upload_controls(enabled=True)
+            error_popup("Failed uploading results.")
+
+        elif event == "Cancel":
             break
 
         elif event == "Upload":
             connection_type = get_connection_type(values)
             controller_name = window["-CONTROLLER-NAME-INPUT-"].get()
-            if upload_data(
-                data=data,
-                name=controller_name,
-                connection=connection_type,
-            ):
-                stamp = data["test_key"]
-                webbrowser.open(f"https://gamepadla.com/result/{stamp}/")
-                break
-            else:
-                error_popup("Failed uploading results.")
+            set_upload_controls(enabled=False)
+            uploading = True
+            threading.Thread(
+                target=_upload_worker,
+                args=(data, controller_name, connection_type, upload_queue),
+                daemon=True,
+            ).start()
 
     window.close()
 
@@ -251,13 +370,15 @@ def gui():
     else:
         sg.theme("TanBlue")
 
+    licenses_button_enabled = read_license(LICENSE_FILE_NAME) != ""
+
     layout = [
         [
             sg.Stretch(),
             sg.Button(
                 "Licenses",
                 key="-SHOW-LICENSES-BUTTON-",
-                disabled=(read_license(LICENSE_FILE_NAME) == ""),
+                disabled=not licenses_button_enabled,
             ),
         ],
         [
@@ -379,7 +500,14 @@ def gui():
         " QProgressBar::chunk { background: transparent; }"
     )
     progress_bar_widget.setStyleSheet(hidden_progress_bar_stylesheet)
-    pad_button(window, "-SHOW-LICENSES-BUTTON-")
+    style_button(window, "-SHOW-LICENSES-BUTTON-", pad=True)
+    style_button(window, "-REFRESH-JOYSTICKS-BUTTON-")
+    style_button(window, "-START-TEST-BUTTON-")
+    style_button(window, "-UPLOAD-BUTTON-")
+    style_button(window, "-SAVE-BUTTON-")
+    style_button(window, "-COPY-MARKDOWN-BUTTON-")
+    for key in ("-GAMEPAD-LIST-", *OPTION_KEYS):
+        style_element_disabled(window, key)
     fit_window_to_content(window, 400)
 
     def update_joysticks():
@@ -481,8 +609,21 @@ def gui():
             ]
         )
 
+    def set_ui_locked(locked: bool):
+        window["-SHOW-LICENSES-BUTTON-"].update(
+            disabled=locked or not licenses_button_enabled
+        )
+        window["-REFRESH-JOYSTICKS-BUTTON-"].update(disabled=locked)
+        window["-GAMEPAD-LIST-"].update(disabled=locked)
+        for key in OPTION_KEYS:
+            window[key].update(disabled=locked)
+        window["-START-TEST-BUTTON-"].update(disabled=locked)
+        has_result = result is not None
+        window["-UPLOAD-BUTTON-"].update(disabled=locked or not has_result)
+        window["-SAVE-BUTTON-"].update(disabled=locked or not has_result)
+        window["-COPY-MARKDOWN-BUTTON-"].update(disabled=locked or not has_result)
+
     while True:
-        window["-START-TEST-BUTTON-"].update(disabled=False)
         event, values = window.read()
 
         if event == sg.WIN_CLOSED:
@@ -502,10 +643,10 @@ def gui():
                 error_popup("No Gamepads Found")
                 continue
 
-            window["-START-TEST-BUTTON-"].update(disabled=True)
-
             samples = get_sample_count(values)
             stick = get_stick(values)
+
+            set_ui_locked(locked=True)
 
             reset_progress_bar()
             toggle_progress_bar(True)
@@ -518,15 +659,13 @@ def gui():
                 tick=update_progress_bar,
             )
 
+            set_ui_locked(locked=False)
+
             toggle_progress_bar(False)
 
             update_result_table(result=result)
 
             data = wrap_data_for_server(result=result)
-
-            window["-UPLOAD-BUTTON-"].update(disabled=False)
-            window["-SAVE-BUTTON-"].update(disabled=False)
-            window["-COPY-MARKDOWN-BUTTON-"].update(disabled=False)
 
         elif event == "-UPLOAD-BUTTON-" and data is not None:
             upload_popup(data=data)
