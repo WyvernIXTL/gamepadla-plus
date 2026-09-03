@@ -51,6 +51,9 @@ jobs:
       - name: Prepare Snap
         if: ${{ matrix.snap == 'yes' }}
         run: task package:prepare-snap
+      - name: Refresh LXD to 6.x
+        if: ${{ matrix.snap == 'yes' }}
+        run: sudo snap install lxd --channel=6/stable
       - name: Package Snap
         if: ${{ matrix.snap == 'yes' }}
         uses: snapcore/action-build@3bdaa03e1ba6bf59a65f84a751d943d549a54e79 # v1.3.0
