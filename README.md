@@ -57,14 +57,14 @@ uv tool install --python 3.11 gamepadla-plus@1.8.2
 
 ### Linux
 
-#### Snap
+#### [Snap](https://snapcraft.io/)
 
 ```sh
 sudo snap install gamepadla-plus
 sudo snap connect gamepadla-plus:joystick
 ```
 
-#### AppImages and Portable Builds
+#### [AppImages](https://appimage.org/) and Portable Builds
 
 See the "Assets" section on the release page:
 
