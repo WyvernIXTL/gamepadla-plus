@@ -1,0 +1,119 @@
+name: gamepadla-plus
+title: Gamepadla+
+summary: Gamepad Polling Rate and Latency Testing Tool (CLI & GUI)
+version: "1.9.0"
+description: |
+  Gamepadla+ is a program for measuring the polling rate and synthetic latency of gamepads aka. controllers.
+
+  * Supports DInput and XInput
+  * Provides CLI (Command Line Interface) and GUI (Graphical User Interface)
+  * Shows polling rate and latency metrics
+
+source-code: https://github.com/WyvernIXTL/gamepadla-plus
+license: MIT
+base: core26
+contact: dev@mckellar.eu
+issues: https://github.com/WyvernIXTL/gamepadla-plus/issues
+website: https://github.com/WyvernIXTL/gamepadla-plus
+icon: icon/gamepadla-plus-icon.svg
+type: app
+grade: stable
+confinement: strict # or devmode
+compression: lzo
+
+lint:
+  ignore:
+    - missing-library:
+        - PySide6/qt-plugins/platformthemes/libqgtk3.so
+        - PySide6/qt-plugins/printsupport/libcupsprintersupport.so
+        - PySide6/qt-plugins/egldeviceintegrations/libqeglfs-kms-integration.so
+    - gpu:
+        - usr/lib/*/dri/*
+        - usr/lib/*/gbm/*
+        - usr/lib/*/libEGL_mesa*
+        - usr/lib/*/libGLX_mesa*
+        - usr/lib/*/libdrm_*
+    - unused-library:
+        - '*libEGL_mesa*'
+        - '*libGLX_mesa*'
+        - '*libvulkan*'
+        - '*libICE*'
+        - '*libSM*'
+
+platforms:
+  amd64:
+    build-on:
+      - amd64
+    build-for:
+      - amd64
+  arm64:
+    build-on:
+      - arm64
+    build-for:
+      - arm64
+
+parts:
+  gamepadla-plus:
+    plugin: dump
+    source: dist/gamepadla-plus-snap
+    organize:
+      com.adam_mckellar.gamepadla.desktop: meta/gui/gamepadla-plus.desktop
+    override-build: |
+      craftctl default
+      mkdir -p "$CRAFT_PART_INSTALL/bin"
+      cat > "$CRAFT_PART_INSTALL/bin/gamepadla-plus" <<'EOF'
+      #!/bin/sh
+      exec "$SNAP/gamepadla-plus" "$@"
+      EOF
+      chmod +x "$CRAFT_PART_INSTALL/bin/gamepadla-plus"
+    override-prime: |
+      craftctl default
+      sed -i \
+        -e 's|^Exec=.*|Exec=gamepadla-plus|' \
+        -e 's|^TryExec=.*|TryExec=gamepadla-plus|' \
+        -e 's|^Icon=.*|Icon=${SNAP}/meta/gui/icon.svg|' \
+        "$CRAFT_PRIME/meta/gui/gamepadla-plus.desktop"
+    stage-packages:
+      - libx11-6
+      - libx11-xcb1
+      - libice6
+      - libsm6
+      - libxcb1
+      - libxcb-cursor0
+      - libxcb-glx0
+      - libxcb-icccm4
+      - libxcb-image0
+      - libxcb-keysyms1
+      - libxcb-randr0
+      - libxcb-render-util0
+      - libxcb-render0
+      - libxcb-shape0
+      - libxcb-shm0
+      - libxcb-sync1
+      - libxcb-util1
+      - libxcb-xfixes0
+      - libxcb-xkb1
+      - libxkbcommon0
+      - libxkbcommon-x11-0
+      - libfontconfig1
+      - libgl1
+      - libegl1
+      - libgbm1
+      - libwayland-client0
+      - libwayland-cursor0
+      - libwayland-egl1
+
+apps:
+  gamepadla-plus:
+    command: bin/gamepadla-plus
+    plugs:
+      - network
+      - home
+      - hardware-observe
+      - joystick
+      - x11
+      - wayland
+      - audio-playback
+      - desktop
+    aliases:
+      - gamepadla-plus

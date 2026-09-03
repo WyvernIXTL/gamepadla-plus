@@ -5,7 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.9.0 -- 2026-09-03
+
+### Added
+
+- Automatically switch to white theme if detected.
+- Bumped sample selection in GUI.
+
+### Changed
+
+- Improved testing and metrics.
+- Switch to Qt backed renderer.
+- Changed theme for dark mode.
+- Updated result file format to reflect better metrics.
+- Marked upload to gamepadla.com as legacy.
+- Buttons and radios are visibly disabled during testing.
+- GUI remains usable during upload.
+
+### Fixed
+
+- PyPi releases shipping without source files. 😅 Sorry!
+- GUI not correctly scaling with the display scale factor.
+- Controllers connected after startup not being detected by the refresh button in the GUI on Linux.
+- Starting test after unplugging and refreshing gamepads likely crashing the program.
+
 
 ## v1.8.2 -- 2026-08-29
 

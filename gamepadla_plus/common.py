@@ -1,6 +1,7 @@
 import json
 import os
 import platform
+import sys
 import time
 import uuid
 from collections.abc import Callable
@@ -11,8 +12,6 @@ import numpy as np
 import pygame
 import requests
 from pygame.joystick import JoystickType
-
-from gamepadla_plus.__about__ import __version__
 
 
 class StickSelector(str, Enum):
@@ -36,7 +35,12 @@ def get_joysticks() -> list[JoystickType] | None:
 
     Pygame NEEDS to be initialized first.
     """
+
+    # To detect new gamepads on all platforms, the joystick module needs to be reinitialized.
+    pygame.event.pump()
+    pygame.joystick.quit()
     pygame.joystick.init()
+
     joysticks = [
         pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())
     ]
@@ -75,15 +79,26 @@ def filter_outliers(timings: list[float]) -> FilteringResult:
     )
 
 
+def jitter_rating(jitter_pct: float) -> str:
+    if jitter_pct < 2:
+        return "excellent"
+    if jitter_pct < 10:
+        return "normal"
+    return "sloppy"
+
+
 class TestResults(TypedDict):
     os_name: str
-    joystick_name: str
+    gamepad_name: str
     polling_rate: float
+    polling_rate_avg: float
     timings: list[float]
     timings_filtered_avg: float
     timings_filtered_min: float
     timings_filtered_max: float
     jitter: float
+    jitter_pct: float
+    missed_report_ratio: float
     outlier_lower_ratio: float
     outlier_lower_avg: float | None
     outlier_upper_ratio: float
@@ -102,8 +117,6 @@ def test_execution(
     Pygame NEEDS to be initialized first.
     """
 
-    pygame_joystick.init()  # Initialize the selected joystick
-
     match stick_selected:
         case StickSelector.LEFT:
             axis_x = 0  # Axis for the left stick
@@ -120,6 +133,8 @@ def test_execution(
     x_old: float = 0.0
     y_old: float = 0.0
 
+    STICK_ENGAGE_THRESHOLD = 0.1
+
     # initialize values
     while True:
         pygame.event.pump()
@@ -127,7 +142,7 @@ def test_execution(
         y = pygame_joystick.get_axis(axis_y)
         pygame.event.clear()
 
-        if not ("0.0" in str(x) and "0.0" in str(y)):
+        if not (abs(x) < STICK_ENGAGE_THRESHOLD and abs(y) < STICK_ENGAGE_THRESHOLD):
             x_old = x
             y_old = y
             start = time.perf_counter_ns()
@@ -141,7 +156,9 @@ def test_execution(
         pygame.event.clear()
 
         # Ensure the stick has moved significantly (anti-drift)
-        if not ("0.0" in str(x) and "0.0" in str(y)) and (x != x_old or y != y_old):
+        if not (
+            abs(x) < STICK_ENGAGE_THRESHOLD and abs(y) < STICK_ENGAGE_THRESHOLD
+        ) and (x != x_old or y != y_old):
             end = time.perf_counter_ns()
             delay = (end - start) / 1_000_000
             start = end
@@ -155,17 +172,36 @@ def test_execution(
     filter_result = filter_outliers(timings)
 
     timings_filtered_avg = np.mean(filter_result["timings_filtered"])
-    polling_rate = 1000 / timings_filtered_avg
+    period_estimate = float(np.percentile(filter_result["timings_filtered"], 10))
+    polling_rate = 1000 / period_estimate
+
+    on_time = [
+        d
+        for d in filter_result["timings_filtered"]
+        if 0.5 * period_estimate <= d <= 1.5 * period_estimate
+    ]
+    if not on_time:
+        on_time = filter_result["timings_filtered"]
+
+    on_time_avg = float(np.mean(on_time))
+    jitter_pct = float(np.std(on_time)) / on_time_avg * 100
+    missed_report_ratio = float(
+        len([d for d in timings if d > 1.5 * period_estimate]) / sample_count
+    )
+    polling_rate_avg = 1000 / timings_filtered_avg
 
     return TestResults(
         os_name=platform.system(),
-        joystick_name=pygame_joystick.get_name(),
+        gamepad_name=pygame_joystick.get_name(),
         polling_rate=float(polling_rate),
+        polling_rate_avg=float(polling_rate_avg),
         timings=timings,
         timings_filtered_avg=float(timings_filtered_avg),
         timings_filtered_min=min(filter_result["timings_filtered"]),
         timings_filtered_max=max(filter_result["timings_filtered"]),
         jitter=float(np.std(filter_result["timings_filtered"])),
+        jitter_pct=jitter_pct,
+        missed_report_ratio=missed_report_ratio,
         outlier_lower_avg=float(np.mean(filter_result["outliers_lower"]))
         if len(filter_result["outliers_lower"]) > 0
         else None,
@@ -204,18 +240,21 @@ def wrap_data_for_server(result: TestResults) -> GamepadlaUploadData:
     uname = platform.uname()
     os_version = uname.version
 
+    # Aimed compatibiliy with Polling v1.3.1.4
+    # which I just noticed is outdated, nice.
+    # Polling v2 is not open source, so compatibliy won't happen until that is released.
     return GamepadlaUploadData(
         test_key=str(stamp),
-        version=f"gamepadla-plus@{__version__}",
+        version="1.3.1.4",
         url="https://gamepadla.com",
         date=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-        driver=result["joystick_name"],
+        driver=result["gamepad_name"],
         os_name=result["os_name"],
         os_version=os_version,
         min_latency=round(result["timings_filtered_min"], 2),
         avg_latency=round(result["timings_filtered_avg"], 2),
         max_latency=round(result["timings_filtered_max"], 2),
-        polling_rate=round(result["polling_rate"], 2),
+        polling_rate=round(result["polling_rate_avg"], 2),
         jitter=round(result["jitter"], 2),
         mathod="GP",
         delay_list=", ".join([f"{x:.2f}" for x in result["timings"]]),
@@ -240,17 +279,23 @@ def upload_data(
     return response.status_code == 200
 
 
-def write_to_file(data: GamepadlaUploadData, path: str):
+def write_to_file(result: TestResults, path: str):
     """
     Writes result to file.
     """
     with open(path, "w") as outfile:
-        json.dump(data, outfile, indent=4)
+        json.dump(result, outfile, indent=4)
 
 
 def project_root_path() -> str:
     src_path = os.path.dirname(os.path.realpath(__file__))
-    return src_path + "/../"
+    root_path = os.path.abspath(os.path.join(src_path, os.pardir))
+    if not os.path.isdir(root_path):
+        # Compiled binaries resolve __file__ to a virtual path whose parent
+        # directories do not exist on disk. The data files are located next to
+        # the binary instead.
+        root_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+    return root_path + "/"
 
 
 def read_license(license_file_name: str) -> str:

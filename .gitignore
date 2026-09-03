@@ -10,6 +10,11 @@ __pycache__
 THIRD-PARTY-LICENSES.txt
 *.7z
 *.exe
+*.snap
+/SHA512SUMS
+/SHA256SUMS
+*.AppImage
+*.tar.xz
 
 
 # Byte-compiled / optimized / DLL files

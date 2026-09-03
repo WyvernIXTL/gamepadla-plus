@@ -19,29 +19,77 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 * Shows polling rate and latency metrics
 
 
-![GUI preview](https://github.com/WyvernIXTL/gamepadla-plus/blob/cf529db1f42d04e9291f18344ebbfb4677a72f04/img/gamepadla-plus-gui-demo-v1.8.0.webp)
+![GUI preview](https://github.com/WyvernIXTL/gamepadla-plus/blob/702007e81a85bc3588da16aa96eca4a383b91dd8/img/gamepadla-plus-gui-demo-v1.9.0.webp)
 
-[![asciicast](https://asciinema.org/a/1264153.svg)](https://asciinema.org/a/1264153)
+[![asciicast](https://asciinema.org/a/1264547.svg)](https://asciinema.org/a/1264547)
 
 
 ## Installation
 
-### Prebuilt Binaries (Windows)
-
-<a href="https://github.com/WyvernIXTL/gamepadla-plus/releases/latest/download/gamepadla-plus-windows-x64-installer.exe">
-  <img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" height="65">
-</a>
-
-   
-
 > [!TIP]
 > Releases have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
 
+### Windows
 
-### From Source with [`uv`](https://github.com/astral-sh/uv) (Windows / Linux / MacOS)
+#### Microsoft Store *(Recommended)*
+
+<a href="https://get.microsoft.com/installer/download/9nxr3b5txfph?referrer=appbadge" target="_self" >
+	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
+</a>
+
+#### Installer
+
+[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=1.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-x64-installer.exe)
+
+#### Portable Builds
+
+See the "Assets" section on the release page:
+
+[![Releases v1.9.0](https://badgen.net/static/github/Releases%20v1.9.0/?icon=github&label&scale=1.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0)
+
+
+#### From Source
+
+Using [`uv`](https://github.com/astral-sh/uv):
+```sh
+uv tool install --python 3.11 gamepadla-plus@1.9.0
+```
+
+### Linux
+
+#### [Snap](https://snapcraft.io/) *(Recommended)*
+
+If you are no using Ubuntu, Manjaro or Solus you'll likely have to install [`snapd`](https://snapcraft.io/docs/tutorials/install-the-daemon/) first.
 
 ```sh
-uv tool install --python 3.11 gamepadla-plus
+sudo snap install gamepadla-plus
+sudo snap connect gamepadla-plus:joystick
+```
+
+#### [AppImages](https://appimage.org/) and Portable Builds
+
+See the "Assets" section on the release page:
+
+[![Releases v1.9.0](https://badgen.net/static/github/Releases%20v1.9.0/?icon=github&label&scale=1.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0)
+
+
+#### From Source
+
+Using [`uv`](https://github.com/astral-sh/uv):
+```sh
+uv tool install --python 3.11 gamepadla-plus@1.9.0
+```
+
+### macOS
+
+> [!WARNING]
+> The app has not been tested with macOS.
+
+#### From Source
+
+Using [`uv`](https://github.com/astral-sh/uv):
+```sh
+uv tool install --python 3.11 gamepadla-plus@1.9.0
 ```
 
 
@@ -49,7 +97,7 @@ uv tool install --python 3.11 gamepadla-plus
 
 1. Execute the program `Gamepadla+` without any arguments.
 2. If you haven't connected any controller do it now and click `Refresh`.
-3. Click `Test` and rotate the stick you chose slowly at the edge.
+3. Click `Test` and rotate the stick you chose fast in a circle.
 4. Optionally save the result to a JSON file or upload the result to <gamepadla.com>.
 
 
@@ -153,6 +201,11 @@ Gamepadla+ or gamepadla-plus is a hard fork of [Gamepadla](https://github.com/ca
 
 The testing is based on the method of Christian P.: <https://github.com/chrizonix/XInputTest>.
 
+## Misc.
+
+### Result Upload Functionality to gamepadla.com
+
+The upload functionality to [gamepadla.com](https://gamepadla.com) is compatible with Polling v1.3.1.4.
 
 ## License
 

@@ -18,6 +18,7 @@ from gamepadla_plus.common import (
     StickSelector,
     TestResults,
     get_joysticks,
+    jitter_rating,
     read_license,
     test_execution,
     upload_data,
@@ -57,22 +58,28 @@ def markdown_str_from_result(result: TestResults) -> str:
         else "no outliers"
     )
 
+    jitter_string = (
+        f"{result['jitter_pct']:.2f} % ({jitter_rating(result['jitter_pct'])}), "
+        f"{result['jitter']:.3f} ms"
+    )
+
     return f"""
-| Parameter           | Value                                       |
-|---------------------|---------------------------------------------|
-| Gamepad mode        | {result["joystick_name"]}                   |
-| Operating System    | {result["os_name"]}                         |
-| Polling Rate Avg.   | {result["polling_rate"]:.3f} Hz             |
-|                     |                                             |
-| Average latency     | {result["timings_filtered_avg"]:.3f} ms     |
-| Minimal latency     | {result["timings_filtered_min"]:.3f} ms     |
-| Maximum latency     | {result["timings_filtered_max"]:.3f} ms     |
-| Jitter              | {result["jitter"]:.3f} ms                   |
-|                     |                                             |
-| Outlier lower Avg.  | {outlier_lower_avg_string}                  |
-| Outlier lower %     | {result["outlier_lower_ratio"] * 100:.3f} % |
-| Outlier upper Avg.  | {outlier_upper_avg_string}                  |
-| Outlier upper %     | {result["outlier_upper_ratio"] * 100:.3f} % |
+| Parameter                  | Value                                       |
+|----------------------------|---------------------------------------------|
+| Gamepad Name               | {result["gamepad_name"]}                    |
+| Operating System           | {result["os_name"]}                         |
+| Polling Rate (p10)         | {result["polling_rate"]:.3f} Hz             |
+|                            |                                             |
+| Average latency            | {result["timings_filtered_avg"]:.3f} ms     |
+| Minimal latency            | {result["timings_filtered_min"]:.3f} ms     |
+| Maximum latency            | {result["timings_filtered_max"]:.3f} ms     |
+| Jitter (CV)                | {jitter_string}                             |
+| Missed Reports             | {result["missed_report_ratio"] * 100:.2f} % |
+|                            |                                             |
+| Outlier lower Avg. (IQR)   | {outlier_lower_avg_string}                  |
+| Outlier lower % (IQR)      | {result["outlier_lower_ratio"] * 100:.3f} % |
+| Outlier upper Avg. (IQR)   | {outlier_upper_avg_string}                  |
+| Outlier upper % (IQR)      | {result["outlier_upper_ratio"] * 100:.3f} % |
 """
 
 
@@ -86,7 +93,10 @@ def test(
         StickSelector, typer.Option(help="Choose which stick to test with.")
     ] = StickSelector.LEFT,
     upload: Annotated[
-        bool, typer.Option(help="Upload result to <gamepadla.com>?")
+        bool,
+        typer.Option(
+            help="Upload result to <gamepadla.com>? (legacy; result may not be counted)"
+        ),
     ] = False,
     gamepad_name: Annotated[
         str | None, typer.Option(help="Name of the game pad")
@@ -137,17 +147,17 @@ def test(
 
     rprint(Markdown(markdown_str_from_result(result)))
 
-    data = wrap_data_for_server(result=result)
-
     if out is not None:
         try:
-            write_to_file(data=data, path=out)
+            write_to_file(result=result, path=out)
             rprint(f"[green]Wrote result to file {out}[/green]")
         except Exception:
             rprint(f"[red]Failed to write result to path {out}.[/red]")
             raise
 
     if upload:
+        data = wrap_data_for_server(result=result)
+
         # Keeping ty happy. Though it does not actually make any sense...
         if gamepad_name is None or gamepad_connection is None:
             sys.exit(1)

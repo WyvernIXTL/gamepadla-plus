@@ -46,3 +46,20 @@ To extract the hero image:
 ```sh
 ffmpeg -sseof -3 -i .\gamepadla-plus-trailer2-v1.8.2.mp4 -q:v 31 -update true gamepadla-plus-heroimage-v1.8.2.png
 ```
+
+## Other
+
+### Export Icon from SVG to PNG
+
+**Transparent and large:**
+```sh
+magick -background transparent -density 300 .\icon\gamepadla-plus-icon.svg .\icon\gamepadla-plus-icon_export-transparent.png
+oxipng -o max -Z --fast .\icon\gamepadla-plus-icon_export-transparent.png
+```
+
+**Linux Desktop:**
+
+```sh
+magick -background white -density 600 .\icon\gamepadla-plus-icon.svg -resize 512x512 .\icon\gamepadla-plus-icon_export-solid.png
+oxipng -o max -Z --fast .\icon\gamepadla-plus-icon_export-solid.png
+```
