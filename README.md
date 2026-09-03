@@ -26,6 +26,9 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 ## Installation
 
+> [!TIP]
+> Releases have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
+
 ### Windows
 
 #### Microsoft Store
@@ -36,12 +39,7 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 #### Installer
 
-> [!TIP]
-> Releases have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
-
-[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/latest/download/gamepadla-plus-windows-x64-installer.exe)
-
-<!--[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.8.2/gamepadla-plus-v1.8.2-windows-x64-installer.exe)-->
+[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=2.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.8.2/gamepadla-plus-v1.8.2-windows-x64-installer.exe)
 
 #### Portable Builds
 
