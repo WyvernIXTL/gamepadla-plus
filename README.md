@@ -143,21 +143,25 @@ gamepadla-plus test
 ```
 ```
 # gamepadla-plus test
-100%|████████████████████████████████████████████████████████████ | 01.00 ms
+100%|████████████████████████████████████████████████████████████ | 00.97 ms
 
 
-  Parameter           Value
- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Gamepad mode        Xbox 360 Controller
-  Operating System    Windows
-  Polling Rate Max.   1000 Hz
-  Polling Rate Avg.   964.36 Hz
-  Stability           96.44%
+  Parameter                  Value
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Gamepad Name               Xbox 360 Controller
+  Operating System           Windows
+  Polling Rate (p10)         1051.635 Hz
 
-  Minimal latency     0.51 ms
-  Average latency     1.04 ms
-  Maximum latency     2.0 ms
-  Jitter              0.16 ms
+  Average latency            1.001 ms
+  Minimal latency            0.879 ms
+  Maximum latency            1.127 ms
+  Jitter (CV)                4.31 % (normal), 0.043 ms
+  Missed Reports             5.80 %
+
+  Outlier lower Avg. (IQR)   0.657 ms
+  Outlier lower % (IQR)      9.600 %
+  Outlier upper Avg. (IQR)   1.922 ms
+  Outlier upper % (IQR)      10.900 %
 
 ```
 
