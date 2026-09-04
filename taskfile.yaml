@@ -52,7 +52,7 @@ tasks:
       --output-filename="Gamepadla+"
       --output-dir=dist
       --output-folder-name=Gamepadla+
-      --lto=auto
+      --lto=yes
       --windows-icon-from-ico=icon/gamepadla-plus.ico
       --windows-console-mode=hide
       gamepadla_plus
@@ -83,7 +83,7 @@ tasks:
       --output-filename="Gamepadla+"
       --output-folder-name=Gamepadla+
       --output-dir=dist
-      --lto=auto
+      --lto=yes
       --linux-app-icon=icon/gamepadla-plus-icon_export-solid.png
       --linux-app-console-mode=disable
       --linux-app-license=MIT
