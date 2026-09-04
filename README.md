@@ -39,13 +39,12 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 #### Installer
 
-[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=1.5)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-x64-installer.exe)
+[![Download Windows x64 Installer](https://badgen.net/static/Windows%20x64/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-x64-installer.exe)
 
 #### Portable Builds
 
-See the "Assets" section on the release page:
-
-[![Releases v1.9.0](https://badgen.net/static/github/Releases%20v1.9.0/?icon=github&label&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/tag/v1.9.0)
+[![Download Windows x64 Portable Build](https://badgen.net/static/Windows%20x64/Download%20Portable/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-x64-portable.7z)
+[![Download Windows arm64 Portable Build](https://badgen.net/static/Windows%20arm64/Download%20Portable/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-arm64-portable.7z)
 
 #### [Scoop](https://scoop.sh/)
 
@@ -65,10 +64,9 @@ uv tool install --python 3.11 gamepadla-plus@1.9.0
 
 #### [Snap](https://snapcraft.io/) *(Recommended)*
 
+If you are not using Ubuntu, Manjaro, Solus or Zorin, you'll likely have to install [`snapd`](https://snapcraft.io/docs/tutorials/install-the-daemon/) first.
 
 [![Get it from the Snap Store](https://snapcraft.io/en/dark/install.svg)](https://snapcraft.io/gamepadla-plus)
-
-If you are not using Ubuntu, Manjaro or Solus, you'll likely have to install [`snapd`](https://snapcraft.io/docs/tutorials/install-the-daemon/) first.
 
 ```sh
 sudo snap install gamepadla-plus
@@ -77,9 +75,11 @@ sudo snap connect gamepadla-plus:joystick
 
 #### [AppImages](https://appimage.org/) and Portable Builds
 
-See the "Assets" section on the release page:
+[![Download Linux x64 Portable Build](https://badgen.net/static/Linux%20x64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-x64.AppImage)
+[![Download Linux arm64 Portable Build](https://badgen.net/static/Linux%20arm64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-arm64.AppImage)
 
-[![Releases v1.9.0](https://badgen.net/static/github/Releases%20v1.9.0/?icon=github&label&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/tag/v1.9.0)
+[![Download Linux x64 Portable Build](https://badgen.net/static/Linux%20x64/Download%20Portable/?icon=linux&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-x64-portable.tar.xz)
+[![Download Linux arm64 Portable Build](https://badgen.net/static/Linux%20arm64/Download%20Portable/?icon=linux&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-arm64-portable.tar.xz)
 
 
 #### From Source
