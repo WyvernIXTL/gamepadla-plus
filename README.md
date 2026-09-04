@@ -75,8 +75,8 @@ sudo snap connect gamepadla-plus:joystick
 
 #### [AppImages](https://appimage.org/) and Portable Builds
 
-[![Download Linux x64 Portable Build](https://badgen.net/static/Linux%20x64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-x64.AppImage)
-[![Download Linux arm64 Portable Build](https://badgen.net/static/Linux%20arm64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-arm64.AppImage)
+[![Download Linux x64 AppImage](https://badgen.net/static/Linux%20x64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-x64.AppImage)
+[![Download Linux arm64 AppImage](https://badgen.net/static/Linux%20arm64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-arm64.AppImage)
 
 [![Download Linux x64 Portable Build](https://badgen.net/static/Linux%20x64/Download%20Portable/?icon=linux&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-x64-portable.tar.xz)
 [![Download Linux arm64 Portable Build](https://badgen.net/static/Linux%20arm64/Download%20Portable/?icon=linux&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-arm64-portable.tar.xz)
