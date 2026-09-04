@@ -56,6 +56,14 @@ keywords = [
 ]
 requires-python = ">=3.10"
 classifiers = [
+    # Tested Python Versions:
+    "Python :: 3.10",
+    "Python :: 3.11",
+    "Python :: 3.12",
+    "Python :: 3.13",
+    "Python :: 3.14",
+
+    # Marketing:
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: Microsoft :: Windows",

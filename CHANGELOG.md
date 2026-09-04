@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Moved to `pygame-ce` and subsequently removed max supported python versions.
+  Instead, the README documents the supported versions.
 
 ## v1.9.0 -- 2026-09-03
 
