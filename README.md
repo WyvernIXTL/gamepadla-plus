@@ -1,3 +1,5 @@
+
+
 <div align="center">
 
 <img src="https://raw.githubusercontent.com/WyvernIXTL/gamepadla-plus/e17852e16a02d095f564ba0caf6589466f7004e5/icon/gamepadla-plus-icon-round-white.svg" alt="Gamepadla+ Icon"  width="200"/>
@@ -191,7 +193,7 @@ gamepadla-plus test --out data.json
 ### Upload Result to <gamepadla.com>
 
 ```
-gamepadla-plus test --upload
+gamepadla-plus test --upload --gamepad-name "Xbox 360 Controller" --gamepad-connection Cable
 ```
 
 
