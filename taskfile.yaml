@@ -252,5 +252,12 @@ tasks:
 
 
   package:windows:sign:download-package-sign:
-    cmds:
+    deps:
       - package:fetch-third-party-licenses
+    cmds:
+      - task: package:windows:sign:download-artifacts
+      - task: package:windows:sign:unpack-artifacts
+      - task: package:windows:sign:sign-portable
+      - task: package:windows:sign:verify-signature-portable
+      - task: package:windows:sign:package-portable
+      - task: package:package:windows-installer
