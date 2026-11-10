@@ -68,10 +68,14 @@ uv tool install --python 3.11 gamepadla-plus@1.9.0
 
 If you are not using Ubuntu, Manjaro, Solus or Zorin, you'll likely have to install [`snapd`](https://snapcraft.io/docs/tutorials/install-the-daemon/) first.
 
-[![Get it from the Snap Store](https://snapcraft.io/en/dark/install.svg)](https://snapcraft.io/gamepadla-plus)
+[<img src="https://snapcraft.io/en/dark/install.svg" width="200" alt="Get it from the Snap Store">](https://snapcraft.io/gamepadla-plus)
 
 ```sh
 sudo snap install gamepadla-plus
+```
+
+*If you download the snap packages from GitHub releases page, you also need to execute:*
+```sh
 sudo snap connect gamepadla-plus:joystick
 ```
 
