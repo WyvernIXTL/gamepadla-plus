@@ -52,7 +52,6 @@ tasks:
       --output-filename="Gamepadla+"
       --output-dir=dist
       --output-folder-name=Gamepadla+
-      --lto=yes
       --windows-icon-from-ico=icon/gamepadla-plus.ico
       --windows-console-mode=hide
       gamepadla_plus
@@ -83,7 +82,6 @@ tasks:
       --output-filename="Gamepadla+"
       --output-folder-name=Gamepadla+
       --output-dir=dist
-      --lto=yes
       --linux-app-icon=icon/gamepadla-plus-icon_export-solid.png
       --linux-app-console-mode=disable
       --linux-app-license=MIT
@@ -141,7 +139,6 @@ tasks:
 
   package:package:
     deps:
-      - package:package:windows-installer
       - package:package:portable
     platforms:
       - windows/amd64
@@ -190,11 +187,23 @@ tasks:
       - rm -rf dist/gamepadla-plus-snap
       - rm -f THIRD-PARTY-LICENSES.txt
 
-  package:shasum:
+  package:shasum:windows:
     ignore_error: true
     cmds:
-      - shasum -a 512 *.exe >> SHA512SUMS
-      - shasum -a 512 *.tar.xz >> SHA512SUMS
-      - shasum -a 512 *.7z >> SHA512SUMS
-      - shasum -a 512 *.AppImage >> SHA512SUMS
-      - shasum -a 512 *.snap >> SHA512SUMS
+      - shasum -a 512 *.exe >> SHA512SUMS-WINDOWS
+      - shasum -a 512 *.7z >> SHA512SUMS-WINDOWS
+
+  package:shasum:linux:
+    ignore_error: true
+    cmds:
+      - shasum -a 512 *.exe >> SHA512SUMS-LINUX
+      - shasum -a 512 *.tar.xz >> SHA512SUMS-LINUX
+      - shasum -a 512 *.7z >> SHA512SUMS-LINUX
+      - shasum -a 512 *.AppImage >> SHA512SUMS-LINUX
+      - shasum -a 512 *.snap >> SHA512SUMS-LINUX
+
+  package:shasum:
+    ignore_error: true
+    deps:
+      - package:shasum:windows
+      - package:shasum:linux
