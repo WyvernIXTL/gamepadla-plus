@@ -54,7 +54,7 @@ scoop install stupid-bucket/gamepadla-plus
 
 #### From Source
 
-Using [`uv`](https://github.com/astral-sh/uv) (tested with ![PyPI Python Version](https://img.shields.io/pypi/pyversions/gamepadla-plus)):
+Using [`uv`](https://github.com/astral-sh/uv):
 ```sh
 uv tool install --python 3.11 gamepadla-plus@1.9.1
 ```
@@ -90,7 +90,7 @@ sudo snap connect gamepadla-plus:joystick
 
 #### From Source
 
-Using [`uv`](https://github.com/astral-sh/uv) (tested with ![PyPI Python Version](https://img.shields.io/pypi/pyversions/gamepadla-plus)):
+Using [`uv`](https://github.com/astral-sh/uv):
 ```sh
 uv tool install --python 3.11 gamepadla-plus@1.9.1
 ```
