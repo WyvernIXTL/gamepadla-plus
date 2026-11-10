@@ -20,7 +20,7 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 * Shows polling rate and latency metrics
 
 
-![GUI preview](https://github.com/WyvernIXTL/gamepadla-plus/blob/702007e81a85bc3588da16aa96eca4a383b91dd8/img/gamepadla-plus-gui-demo-v1.9.0.webp)
+![GUI preview](https://github.com/WyvernIXTL/gamepadla-plus/blob/702007e81a85bc3588da16aa96eca4a383b91dd8/img/gamepadla-plus-gui-demo-v1.9.1.webp)
 
 [![asciicast](https://asciinema.org/a/1264547.svg)](https://asciinema.org/a/1264547)
 
@@ -32,7 +32,7 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 #### Installer
 
-[![Download Windows Installer](https://badgen.net/static/Windows%20x64/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-installer.exe)
+[![Download Windows Installer](https://badgen.net/static/Windows%20x64/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-windows-installer.exe)
 
 #### Microsoft Store
 
@@ -42,8 +42,8 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 #### Portable Builds
 
-[![Download Windows x64 Portable Build](https://badgen.net/static/Windows%20x64/Download%20Portable/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-x64-portable.7z)
-[![Download Windows arm64 Portable Build](https://badgen.net/static/Windows%20arm64/Download%20Portable/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-arm64-portable.7z)
+[![Download Windows x64 Portable Build](https://badgen.net/static/Windows%20x64/Download%20Portable/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-windows-x64-portable.7z)
+[![Download Windows arm64 Portable Build](https://badgen.net/static/Windows%20arm64/Download%20Portable/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-windows-arm64-portable.7z)
 
 #### [Scoop](https://scoop.sh/)
 
@@ -56,7 +56,7 @@ scoop install stupid-bucket/gamepadla-plus
 
 Using [`uv`](https://github.com/astral-sh/uv) (tested with ![PyPI Python Version](https://img.shields.io/pypi/pyversions/gamepadla-plus)):
 ```sh
-uv tool install --python 3.11 gamepadla-plus@1.9.0
+uv tool install --python 3.11 gamepadla-plus@1.9.1
 ```
 
 ### Linux
@@ -81,18 +81,18 @@ sudo snap connect gamepadla-plus:joystick
 
 #### [AppImages](https://appimage.org/) and Portable Builds
 
-[![Download Linux x64 AppImage](https://badgen.net/static/Linux%20x64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-x64.AppImage)
-[![Download Linux arm64 AppImage](https://badgen.net/static/Linux%20arm64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-arm64.AppImage)
+[![Download Linux x64 AppImage](https://badgen.net/static/Linux%20x64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-x64.AppImage)
+[![Download Linux arm64 AppImage](https://badgen.net/static/Linux%20arm64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-arm64.AppImage)
 
-[![Download Linux x64 Portable Build](https://badgen.net/static/Linux%20x64/Download%20Portable/?icon=linux&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-x64-portable.tar.xz)
-[![Download Linux arm64 Portable Build](https://badgen.net/static/Linux%20arm64/Download%20Portable/?icon=linux&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-arm64-portable.tar.xz)
+[![Download Linux x64 Portable Build](https://badgen.net/static/Linux%20x64/Download%20Portable/?icon=linux&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-linux-x64-portable.tar.xz)
+[![Download Linux arm64 Portable Build](https://badgen.net/static/Linux%20arm64/Download%20Portable/?icon=linux&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-linux-arm64-portable.tar.xz)
 
 
 #### From Source
 
 Using [`uv`](https://github.com/astral-sh/uv) (tested with ![PyPI Python Version](https://img.shields.io/pypi/pyversions/gamepadla-plus)):
 ```sh
-uv tool install --python 3.11 gamepadla-plus@1.9.0
+uv tool install --python 3.11 gamepadla-plus@1.9.1
 ```
 
 ### macOS
@@ -104,7 +104,7 @@ uv tool install --python 3.11 gamepadla-plus@1.9.0
 
 Using [`uv`](https://github.com/astral-sh/uv):
 ```sh
-uv tool install --python 3.11 gamepadla-plus@1.9.0
+uv tool install --python 3.11 gamepadla-plus@1.9.1
 ```
 
 
