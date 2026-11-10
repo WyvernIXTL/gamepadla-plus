@@ -186,6 +186,7 @@ tasks:
       - rm -rf dist/Gamepadla+.installer-build
       - rm -rf dist/gamepadla-plus-snap
       - rm -f THIRD-PARTY-LICENSES.txt
+      - rm -rf packaged-windows-tobesigned-*
 
   package:shasum:windows:
     ignore_error: true
@@ -205,3 +206,12 @@ tasks:
     deps:
       - package:shasum:windows
       - package:shasum:linux
+
+  package:windows:download-artifacts:
+    vars:
+      WORKFLOW_ID:
+        sh: gh run list --workflow package.yml --limit 1 --json databaseId --jq '.[0].databaseId'
+    cmds:
+      - gh run download {{.WORKFLOW_ID}} --pattern "packaged-windows-tobesigned-*"
+
+  
