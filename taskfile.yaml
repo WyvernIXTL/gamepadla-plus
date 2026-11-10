@@ -196,9 +196,7 @@ tasks:
   package:shasum:linux:
     ignore_error: true
     cmds:
-      - shasum -a 512 *.exe >> SHA512SUMS-LINUX
       - shasum -a 512 *.tar.xz >> SHA512SUMS-LINUX
-      - shasum -a 512 *.7z >> SHA512SUMS-LINUX
       - shasum -a 512 *.AppImage >> SHA512SUMS-LINUX
       - shasum -a 512 *.snap >> SHA512SUMS-LINUX
 
