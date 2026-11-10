@@ -32,7 +32,7 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 #### Installer
 
-[![Download Windows Installer](https://badgen.net/static/Windows%20x64/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-windows-installer.exe)
+[![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-windows-installer.exe)
 
 #### Microsoft Store
 
