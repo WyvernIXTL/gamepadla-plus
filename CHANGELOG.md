@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Upgraded dependencies. Indirect dependencies used for the upload functionality where outdated and had from vulnerabilities.
+- Upgraded dependencies. Transitive dependencies used for the upload functionality where outdated and where vulnerable.
 
 
 ## v1.9.0 -- 2026-09-03
