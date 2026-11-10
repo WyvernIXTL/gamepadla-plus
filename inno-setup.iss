@@ -34,6 +34,7 @@ PrivilegesRequiredOverridesAllowed=commandline
 OutputDir=.
 OutputBaseFilename=gamepadla-plus-v{#MyAppVersion}-windows-installer
 Compression=lzma2/ultra64
+LZMAUseSeparateProcess=yes
 LZMANumBlockThreads=6
 SolidCompression=true
 WizardStyle=modern
