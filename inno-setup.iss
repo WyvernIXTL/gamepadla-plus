@@ -39,6 +39,7 @@ SolidCompression=true
 WizardStyle=modern
 SetupIconFile=.\icon\gamepadla-plus.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
+SignTool=MsSign $f
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
