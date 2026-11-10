@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Moved to `pygame-ce` and subsequently removed max supported python versions.
+  Instead, the README documents the supported versions.
+- Windows releases are signed now.
+- Removed `-linux` suffix in AppImage name due to <https://github.com/AppImage/appimage.github.io/pull/5060>.
+
+### Fixed
+
+- Upgraded dependencies. Indirect dependencies used for the upload functionality where outdated and had from vulnerabilities.
+
 
 ## v1.9.0 -- 2026-09-03
 

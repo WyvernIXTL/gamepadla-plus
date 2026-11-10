@@ -20,7 +20,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\gamepadla-plus
 ; "ArchitecturesAllowed=x64compatible" specifies that Setup cannot run
 ; on anything but x64 and Windows 11 on Arm.
-ArchitecturesAllowed=x64compatible
+ArchitecturesAllowed=x64os arm64
 ; "ArchitecturesInstallIn64BitMode=x64compatible" requests that the
 ; install be done in "64-bit mode" on x64 or Windows 11 on Arm,
 ; meaning it should use the native 64-bit Program Files directory and
@@ -32,13 +32,15 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=commandline
 OutputDir=.
-OutputBaseFilename=gamepadla-plus-v{#MyAppVersion}-windows-x64-installer
+OutputBaseFilename=gamepadla-plus-v{#MyAppVersion}-windows-installer
 Compression=lzma2/ultra64
+LZMAUseSeparateProcess=yes
 LZMANumBlockThreads=6
 SolidCompression=true
 WizardStyle=modern
 SetupIconFile=.\icon\gamepadla-plus.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
+SignTool=MsSignGPLA sign /fd SHA256 /tr http://ts.harica.gr /td SHA256 /a $f
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -47,8 +49,9 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "dist\Gamepadla+\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\packaged-windows-tobesigned-windows-latest\Gamepadla+\*"; DestDir: "{app}"; Check: IsX64OS; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "dist\packaged-windows-tobesigned-windows-11-arm\Gamepadla+\*"; DestDir: "{app}"; Check: IsArm64; Flags: ignoreversion recursesubdirs createallsubdirs solidbreak
+Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion solidbreak
 Source: "THIRD-PARTY-LICENSES.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.md"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

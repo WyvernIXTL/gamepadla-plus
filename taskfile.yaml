@@ -52,7 +52,6 @@ tasks:
       --output-filename="Gamepadla+"
       --output-dir=dist
       --output-folder-name=Gamepadla+
-      --lto=auto
       --windows-icon-from-ico=icon/gamepadla-plus.ico
       --windows-console-mode=hide
       gamepadla_plus
@@ -83,7 +82,6 @@ tasks:
       --output-filename="Gamepadla+"
       --output-folder-name=Gamepadla+
       --output-dir=dist
-      --lto=auto
       --linux-app-icon=icon/gamepadla-plus-icon_export-solid.png
       --linux-app-console-mode=disable
       --linux-app-license=MIT
@@ -114,7 +112,9 @@ tasks:
     vars:
       VERSION:
         sh: uv run ./helper/version.py
-    cmd: iscc /DMyAppVersion={{.VERSION}} ./inno-setup.iss
+      SIGNTOOL_PATH:
+        sh: uv run ./helper/signtool-path.py
+    cmd: iscc /SMsSignGPLA="{{.SIGNTOOL_PATH}} \$p" /DMyAppVersion={{.VERSION}} ./inno-setup.iss 
 
   package:package:portable:
     platforms:
@@ -141,7 +141,6 @@ tasks:
 
   package:package:
     deps:
-      - package:package:windows-installer
       - package:package:portable
     platforms:
       - windows/amd64
@@ -189,12 +188,76 @@ tasks:
       - rm -rf dist/Gamepadla+.installer-build
       - rm -rf dist/gamepadla-plus-snap
       - rm -f THIRD-PARTY-LICENSES.txt
+      - rm -rf dist/packaged-windows-tobesigned-*
+
+  package:shasum:windows:
+    ignore_error: true
+    cmds:
+      - shasum -a 512 *.exe >> SHA512SUMS-WINDOWS
+      - shasum -a 512 *.7z >> SHA512SUMS-WINDOWS
+
+  package:shasum:linux:
+    ignore_error: true
+    cmds:
+      - shasum -a 512 *.tar.xz >> SHA512SUMS-LINUX
+      - shasum -a 512 *.AppImage >> SHA512SUMS-LINUX
+      - shasum -a 512 *.snap >> SHA512SUMS-LINUX
 
   package:shasum:
     ignore_error: true
+    deps:
+      - package:shasum:windows
+      - package:shasum:linux
+
+  package:windows:sign:download-artifacts:
+    vars:
+      WORKFLOW_ID:
+        sh: gh run list --workflow package.yml --limit 1 --json databaseId --jq '.[0].databaseId'
     cmds:
-      - shasum -a 512 *.exe >> SHA512SUMS
-      - shasum -a 512 *.tar.xz >> SHA512SUMS
-      - shasum -a 512 *.7z >> SHA512SUMS
-      - shasum -a 512 *.AppImage >> SHA512SUMS
-      - shasum -a 512 *.snap >> SHA512SUMS
+      - gh run download {{.WORKFLOW_ID}} --pattern "packaged-windows-tobesigned-*" -D dist
+
+  package:windows:sign:unpack-artifacts:
+    cmds:
+      - ouch decompress -y ./dist/packaged-windows-tobesigned-windows-latest/gamepadla-plus-v1.9.0-windows-x64-portable.7z --dir ./dist/packaged-windows-tobesigned-windows-latest
+      - rm -f ./dist/packaged-windows-tobesigned-windows-latest/gamepadla-plus-v1.9.0-windows-x64-portable.7z
+      - ouch decompress -y ./dist/packaged-windows-tobesigned-windows-11-arm/gamepadla-plus-v1.9.0-windows-arm64-portable.7z --dir ./dist/packaged-windows-tobesigned-windows-11-arm
+      - rm -f ./dist/packaged-windows-tobesigned-windows-11-arm/gamepadla-plus-v1.9.0-windows-arm64-portable.7z
+
+  package:windows:sign:sign-portable:
+    vars:
+      SIGNTOOL_PATH:
+        sh: uv run ./helper/signtool-path.py
+    cmds:
+      - "'{{.SIGNTOOL_PATH}}' sign /fd SHA256 /tr http://ts.harica.gr /td SHA256 /a ./dist/packaged-windows-tobesigned-windows-latest/Gamepadla+/Gamepadla+.exe"
+      - "'{{.SIGNTOOL_PATH}}' sign /fd SHA256 /tr http://ts.harica.gr /td SHA256 /a ./dist/packaged-windows-tobesigned-windows-11-arm/Gamepadla+/Gamepadla+.exe"
+
+  package:windows:sign:verify-signature-portable:
+    vars:
+      SIGNTOOL_PATH:
+        sh: uv run ./helper/signtool-path.py
+    cmds:
+      - "'{{.SIGNTOOL_PATH}}' verify /pa /v ./dist/packaged-windows-tobesigned-windows-latest/Gamepadla+/Gamepadla+.exe"
+      - "'{{.SIGNTOOL_PATH}}' verify /pa /v ./dist/packaged-windows-tobesigned-windows-11-arm/Gamepadla+/Gamepadla+.exe"
+
+  package:windows:sign:package-portable:
+    vars:
+      VERSION:
+        sh: uv run ./helper/version.py
+    cmds:
+      - 7z a -mmt=6 -mx=9 -ms=on gamepadla-plus-v{{.VERSION}}-windows-x64-portable.7z ./dist/packaged-windows-tobesigned-windows-latest/Gamepadla+
+      - 7z a -mmt=6 -mx=9 -ms=on gamepadla-plus-v{{.VERSION}}-windows-arm64-portable.7z ./dist/packaged-windows-tobesigned-windows-11-arm/Gamepadla+
+      # Ouch does not use solid compression.
+      # - ouch compress --slow -y ./dist/packaged-windows-tobesigned-windows-latest/Gamepadla+ gamepadla-plus-v{{.VERSION}}-windows-x64-portable.7z
+      # - ouch compress --slow -y ./dist/packaged-windows-tobesigned-windows-11-arm/Gamepadla+ gamepadla-plus-v{{.VERSION}}-windows-arm64-portable.7z
+
+
+  package:windows:sign:download-package-sign:
+    deps:
+      - package:fetch-third-party-licenses
+    cmds:
+      - task: package:windows:sign:download-artifacts
+      - task: package:windows:sign:unpack-artifacts
+      - task: package:windows:sign:sign-portable
+      - task: package:windows:sign:verify-signature-portable
+      - task: package:windows:sign:package-portable
+      - task: package:package:windows-installer

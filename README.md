@@ -9,6 +9,7 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/gamepadla-plus)](https://pypi.org/project/gamepadla-plus/)
 [![GitHub License](https://img.shields.io/github/license/WyvernIXTL/gamepadla-plus)](https://github.com/WyvernIXTL/gamepadla-plus/blob/main/LICENSE.txt)
+![PyPI Python Version](https://img.shields.io/pypi/pyversions/gamepadla-plus)
 
 </div>
 
@@ -26,20 +27,18 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 ## Installation
 
-> [!TIP]
-> Releases have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
 
 ### Windows
 
-#### Microsoft Store *(Recommended)*
+#### Installer
+
+[![Download Windows Installer](https://badgen.net/static/Windows%20x64/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-installer.exe)
+
+#### Microsoft Store
 
 <a href="https://get.microsoft.com/installer/download/9nxr3b5txfph?referrer=appbadge" target="_self" >
 	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
 </a>
-
-#### Installer
-
-[![Download Windows x64 Installer](https://badgen.net/static/Windows%20x64/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-x64-installer.exe)
 
 #### Portable Builds
 
@@ -55,28 +54,35 @@ scoop install stupid-bucket/gamepadla-plus
 
 #### From Source
 
-Using [`uv`](https://github.com/astral-sh/uv):
+Using [`uv`](https://github.com/astral-sh/uv) (tested with ![PyPI Python Version](https://img.shields.io/pypi/pyversions/gamepadla-plus)):
 ```sh
 uv tool install --python 3.11 gamepadla-plus@1.9.0
 ```
 
 ### Linux
 
+> [!TIP]
+> Linux binaries have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
+
 #### [Snap](https://snapcraft.io/) *(Recommended)*
 
 If you are not using Ubuntu, Manjaro, Solus or Zorin, you'll likely have to install [`snapd`](https://snapcraft.io/docs/tutorials/install-the-daemon/) first.
 
-[![Get it from the Snap Store](https://snapcraft.io/en/dark/install.svg)](https://snapcraft.io/gamepadla-plus)
+[<img src="https://snapcraft.io/en/dark/install.svg" width="200" alt="Get it from the Snap Store">](https://snapcraft.io/gamepadla-plus)
 
 ```sh
 sudo snap install gamepadla-plus
+```
+
+*If you download the snap packages from GitHub releases page, you also need to execute:*
+```sh
 sudo snap connect gamepadla-plus:joystick
 ```
 
 #### [AppImages](https://appimage.org/) and Portable Builds
 
-[![Download Linux x64 AppImage](https://badgen.net/static/Linux%20x64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-x64.AppImage)
-[![Download Linux arm64 AppImage](https://badgen.net/static/Linux%20arm64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-arm64.AppImage)
+[![Download Linux x64 AppImage](https://badgen.net/static/Linux%20x64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-x64.AppImage)
+[![Download Linux arm64 AppImage](https://badgen.net/static/Linux%20arm64/Download%20AppImage/?icon=appimage&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-arm64.AppImage)
 
 [![Download Linux x64 Portable Build](https://badgen.net/static/Linux%20x64/Download%20Portable/?icon=linux&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-x64-portable.tar.xz)
 [![Download Linux arm64 Portable Build](https://badgen.net/static/Linux%20arm64/Download%20Portable/?icon=linux&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-linux-arm64-portable.tar.xz)
@@ -84,7 +90,7 @@ sudo snap connect gamepadla-plus:joystick
 
 #### From Source
 
-Using [`uv`](https://github.com/astral-sh/uv):
+Using [`uv`](https://github.com/astral-sh/uv) (tested with ![PyPI Python Version](https://img.shields.io/pypi/pyversions/gamepadla-plus)):
 ```sh
 uv tool install --python 3.11 gamepadla-plus@1.9.0
 ```
