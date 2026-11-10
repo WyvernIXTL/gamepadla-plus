@@ -27,21 +27,18 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 ## Installation
 
-> [!TIP]
-> Windows binaries are signed while Linux binaries have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
-
 
 ### Windows
 
-#### Microsoft Store *(Recommended)*
+#### Installer
+
+[![Download Windows Installer](https://badgen.net/static/Windows%20x64/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-installer.exe)
+
+#### Microsoft Store
 
 <a href="https://get.microsoft.com/installer/download/9nxr3b5txfph?referrer=appbadge" target="_self" >
 	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
 </a>
-
-#### Installer
-
-[![Download Windows x64 Installer](https://badgen.net/static/Windows%20x64/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.0/gamepadla-plus-v1.9.0-windows-x64-installer.exe)
 
 #### Portable Builds
 
@@ -63,6 +60,9 @@ uv tool install --python 3.11 gamepadla-plus@1.9.0
 ```
 
 ### Linux
+
+> [!TIP]
+> Linux binaries have [*attestation*](https://github.com/WyvernIXTL/gamepadla-plus/attestations/) that they were built in CI.
 
 #### [Snap](https://snapcraft.io/) *(Recommended)*
 
