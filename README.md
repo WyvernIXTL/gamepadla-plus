@@ -34,16 +34,16 @@ Gamepadla+ is a program for measuring the polling rate and synthetic latency of 
 
 [![Download Windows Installer](https://badgen.net/static/Windows/Download%20Installer/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-windows-installer.exe)
 
+#### Portable Builds
+
+[![Download Windows x64 Portable Build](https://badgen.net/static/Windows%20x64/Download%20Portable/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-windows-x64-portable.7z)
+[![Download Windows arm64 Portable Build](https://badgen.net/static/Windows%20arm64/Download%20Portable/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-windows-arm64-portable.7z)
+
 #### Microsoft Store
 
 <a href="https://get.microsoft.com/installer/download/9nxr3b5txfph?referrer=appbadge" target="_self" >
 	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
 </a>
-
-#### Portable Builds
-
-[![Download Windows x64 Portable Build](https://badgen.net/static/Windows%20x64/Download%20Portable/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-windows-x64-portable.7z)
-[![Download Windows arm64 Portable Build](https://badgen.net/static/Windows%20arm64/Download%20Portable/?icon=windows&scale=1.3)](https://github.com/WyvernIXTL/gamepadla-plus/releases/download/v1.9.1/gamepadla-plus-v1.9.1-windows-arm64-portable.7z)
 
 #### [Scoop](https://scoop.sh/)
 
